@@ -1,7 +1,8 @@
 package av.VRP.rt;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,7 +14,6 @@ public class MainFrame extends JFrame {
     private JPanel panel1;
     private JButton btn_download_data;
     private JTextArea ta_data_output;
-    private JButton button1;
 
     public MainFrame() {
         super("MainFrame");
@@ -37,6 +37,10 @@ public class MainFrame extends JFrame {
                 ta_data_output.append("test \n");
             }
         });
+    }
+
+    public void showData(String row) {
+        ta_data_output.append(row);
     }
 
     {
@@ -64,8 +68,12 @@ public class MainFrame extends JFrame {
         btn_download_data = new JButton();
         btn_download_data.setText("Dowload data");
         panel2.add(btn_download_data, BorderLayout.NORTH);
+        final JScrollPane scrollPane1 = new JScrollPane();
+        scrollPane1.setVerticalScrollBarPolicy(22);
+        panel2.add(scrollPane1, BorderLayout.CENTER);
         ta_data_output = new JTextArea();
-        panel2.add(ta_data_output, BorderLayout.CENTER);
+        ta_data_output.setMinimumSize(new Dimension(100, 107));
+        scrollPane1.setViewportView(ta_data_output);
     }
 
     /**

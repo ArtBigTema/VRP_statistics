@@ -25,10 +25,21 @@
                   <text value="Dowload data"/>
                 </properties>
               </component>
-              <component id="7eeee" class="javax.swing.JTextArea" binding="ta_data_output">
+              <scrollpane id="af0c3">
                 <constraints border-constraint="Center"/>
-                <properties/>
-              </component>
+                <properties>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="7eeee" class="javax.swing.JTextArea" binding="ta_data_output">
+                    <constraints/>
+                    <properties>
+                      <minimumSize width="100" height="107"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
         </children>
