@@ -1,8 +1,8 @@
 package av.VRP.rt;
 
-import av.VRP.rt.Utils.ThreadParser;
+import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.generator.VRPStaticData;
-import av.VRP.rt.generator.VRPgeneratorListener;
+import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.substance.Point;
 import av.VRP.rt.substance.PointT;
 
@@ -39,7 +39,8 @@ public class Main implements VRPgeneratorListener {
     }
 
     public static void main(String[] args) {
-        new Main();
+        new ListFrame();
+      //  new Main();
     }
 
     @Override

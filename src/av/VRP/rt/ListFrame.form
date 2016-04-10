@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="av.VRP.rt.ListFrame">
+  <grid id="27dc6" binding="panel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="e017b" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="e5f44" class="javax.swing.JButton" binding="dowloadLinksButton" default-binding="true">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <text value="DowloadLinks"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="5c6af" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="1d220" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints border-constraint="South"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="cefc3" class="javax.swing.JButton" binding="dowloadLinkButton" default-binding="true">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <enabled value="false"/>
+                  <text value="DownloadLink"/>
+                </properties>
+              </component>
+              <component id="2861" class="javax.swing.JProgressBar" binding="progressBar" default-binding="true">
+                <constraints border-constraint="South"/>
+                <properties>
+                  <borderPainted value="false"/>
+                  <indeterminate value="true"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <scrollpane id="eb0bd">
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="d8314" class="javax.swing.JList" binding="listLink">
+                <constraints/>
+                <properties>
+                  <font size="14"/>
+                  <selectionMode value="0"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
