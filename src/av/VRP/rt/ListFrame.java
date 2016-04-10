@@ -7,7 +7,9 @@ import av.VRP.rt.listener.FileWriterListener;
 import av.VRP.rt.parser.ThreadWriter;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -69,8 +71,11 @@ public class ListFrame extends JFrame implements FileWriterListener {
 
     public void aggregateList() {
         progressBar.setVisible(true);
-        String row = HttpApi.getInstance().getContent(Constant.URL_ALL);
-        String[] rows = Utils.strToArray(row, "\n");
+
+        String rowGreenYellow = HttpApi.getInstance().getContent(Constant.URL_ALL_GREEN_AND_YELLOW);
+        String rowUber = HttpApi.getInstance().getContent(Constant.URL_ALL_UBER);
+
+        String[] rows = Utils.strToArray(rowUber + rowGreenYellow, "\n");
 
         listLink.setListData(rows);
         dowloadLinkButton.setEnabled(true);
