@@ -6,6 +6,10 @@ import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.substance.Point;
 import av.VRP.rt.substance.PointT;
 
+import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 /**
  * Created by Artem on 09.04.2016.
  */
@@ -39,8 +43,14 @@ public class Main implements VRPgeneratorListener {
     }
 
     public static void main(String[] args) {
-        new ListFrame();
-      //  new Main();
+        ListFrame lf = new ListFrame();
+        lf.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {//FIXME
+                new Main();
+            }
+        });
+
     }
 
     @Override

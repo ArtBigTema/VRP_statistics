@@ -88,7 +88,7 @@ public class ListFrame extends JFrame implements FileWriterListener {
     @Override
     public void stoped() {
         progressBar.setVisible(false);
-        JOptionPane.showMessageDialog(null, "Succes", "Title", JOptionPane.INFORMATION_MESSAGE);//FIXME
+        JOptionPane.showMessageDialog(this, "Succes", "Title", JOptionPane.INFORMATION_MESSAGE);//FIXME
         setVisible(false); //you can't see me!
         dispose(); //Destroy the JFrame object
     }
