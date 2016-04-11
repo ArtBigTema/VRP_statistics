@@ -39,8 +39,8 @@ public class MainFrame extends JFrame {
         });
     }
 
-    public void showData(String row) {
-        ta_data_output.append(row);
+    public void showData(Object row) {
+        ta_data_output.append(row.toString() + "\n");
     }
 
     {
@@ -74,6 +74,12 @@ public class MainFrame extends JFrame {
         ta_data_output = new JTextArea();
         ta_data_output.setMinimumSize(new Dimension(100, 107));
         scrollPane1.setViewportView(ta_data_output);
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new BorderLayout(0, 0));
+        tabbedPane1.addTab("Визуализация", panel3);
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new BorderLayout(0, 0));
+        tabbedPane1.addTab("Untitled", panel4);
     }
 
     /**

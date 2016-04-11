@@ -6,16 +6,25 @@ package av.VRP.rt.substance;
 public class PointT {
     public Point startPoint;//FIXME remove public
     public Point endPoint;
+
     public int delay;
     public int dis;
 
     public PointT(Point startPoint, Point endPoint) {
         this.startPoint = startPoint;
+        this.startPoint.isStartPoint = true;//FIXME
         this.endPoint = endPoint;
+        this.startPoint.isStartPoint = false;//FIXME
     }
 
     public PointT(Point startPoint) {
         this.startPoint = startPoint;
+    }
+
+    public static PointT constructPointT(String s) {
+        //FIXME
+
+        return null;
     }
 
     public void setDelay(int delay) {
