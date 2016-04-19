@@ -32,38 +32,46 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
     }
 
     @Override
+    public synchronized void start() {
+        super.start();
+    }
+
+    @Override
     public void run() {
         String line = "";
         int i = 0;
-        int count = 4;//max = 200 000
+        int count = 2;//max = 200 000
         StringBuilder sb = new StringBuilder();
         try {
             line = br.readLine();
 
-            while (line != null && count != 0) {
-                count--;
-                i++;
-                sb.append(line);
-                sb.append(System.lineSeparator());
+            while (line != null) {// && count != 0) {
+                if (!line.isEmpty()) {
+                    count--;
+                    i++;
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
 
-                listener.generated(PointWithTime.construct(line));
-                //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
-                listener.show(Utils.strToArray(line, ","));
+                    listener.generated(PointWithTime.construct(line));
+                   //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
+                      listener.show(Utils.strToArray(line, ","));
 
+
+                    //    this.sleep(2);
+                }
                 line = br.readLine();
-
-                //    this.sleep(2);
             }
             // String everything = sb.toString().replace("\"", "");
             //  writer.append(everything);
             //  writer.append(System.lineSeparator());
 
-            listener.stoped(num);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {//FIXME
             try {
                 br.close();
+                // this.interrupt();
+                listener.stoped(num);
                 //  writer.close();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -6,9 +6,6 @@ import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.substance.PointWithTime;
 import av.VRP.rt.substance.Trips;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created by Artem on 09.04.2016.
@@ -39,10 +36,11 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
         parser4.setListener(this);
 
         frame.showData(System.currentTimeMillis());
+
         parser1.start();
-        // parser2.start();
-        // parser3.start();
-        // parser4.start();
+        parser2.start();
+        parser3.start();
+        parser4.start();
     }
 
     public static void main(String[] args) {
@@ -60,9 +58,9 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
 
     @Override
     public void generated(PointWithTime t) {
-        if (t != null)
+        if (t != null) {
             trips.add(t);
-
+        }
         //    frame.showData(t.toString() + "\n");
     }
 
@@ -73,21 +71,25 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
 
     @Override
     public void stoped(int count) {
-        //  n++;
-        //  if (n > 3) {
-        // frame.showData(sb.toString());
-        //   frame.showData(trips.size());
-        //   frame.showData(System.currentTimeMillis());
-        // }
-        // frame.setTable(Utils.listToTable(trips));
-        System.out.println("stopped " + count);
-        frame.showData(System.currentTimeMillis());
+        n++;
+        System.err.println("stopped " + count);
+        if (n > 3) {
+            // frame.showData(sb.toString());
+            //   frame.showData(trips.size());
+            //   frame.showData(System.currentTimeMillis());
 
-        checkData();
+            // frame.setTable(Utils.listToTable(trips));
+            System.err.println("stopped " + count);
+            frame.showData(System.currentTimeMillis());
+
+          //  trips.removeNull();
+            trips.sortWithDate();
+            checkData();
+        }
     }
 
     private void checkData() {
-        System.err.println(trips.getCountTripsForDay() + " дня совпало");
+        trips.getCountTripsForEveryDay();
     }
 
     @Override

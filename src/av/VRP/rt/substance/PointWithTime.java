@@ -2,6 +2,7 @@ package av.VRP.rt.substance;
 
 import av.VRP.rt.Utils.Utils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -12,7 +13,7 @@ import java.util.Date;
 /**
  * Created by Artem on 09.04.2016.
  */
-public class PointWithTime extends Point {//FIXME remove public
+public class PointWithTime extends Point implements Comparable<PointWithTime> {//FIXME remove public
     //"12/31/2014 0:03:00",40.7366,-73.9906,"B02512"
     public String dateTime = "";
     public String date = "";
@@ -83,5 +84,10 @@ public class PointWithTime extends Point {//FIXME remove public
 
     public boolean checkSameDay(String date) {
         return checkSameDay(fmt.parseDateTime(date));
+    }
+
+    @Override
+    public int compareTo(PointWithTime o) {
+        return DateTimeComparator.getDateOnlyInstance().compare(this._dateTime, o._dateTime);//FIXME if null
     }
 }
