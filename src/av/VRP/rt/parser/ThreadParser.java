@@ -1,5 +1,6 @@
 package av.VRP.rt.parser;
 
+import av.VRP.rt.Utils.Utils;
 import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.substance.PointT;
 import av.VRP.rt.substance.PointWithTime;
@@ -34,20 +35,23 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
     public void run() {
         String line = "";
         int i = 0;
-        int count = 2000;//max = 200 000
+        int count = 4;//max = 200 000
         StringBuilder sb = new StringBuilder();
         try {
             line = br.readLine();
 
-            while (line != null ) {
+            while (line != null && count != 0) {
                 count--;
                 i++;
                 sb.append(line);
                 sb.append(System.lineSeparator());
-                line = br.readLine();
 
                 listener.generated(PointWithTime.construct(line));
-              //  listener.show(num, i + ":  " + line + "\n");
+                //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
+                listener.show(Utils.strToArray(line, ","));
+
+                line = br.readLine();
+
                 //    this.sleep(2);
             }
             // String everything = sb.toString().replace("\"", "");

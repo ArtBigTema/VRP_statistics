@@ -1,10 +1,15 @@
 package av.VRP.rt;
 
+import av.VRP.rt.Utils.Constant;
+import net.sourceforge.chart2d.*;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 /**
  * Created by Artem on 09.04.2016.
@@ -14,6 +19,8 @@ public class MainFrame extends JFrame {
     private JPanel panel1;
     private JButton btn_download_data;
     private JTextArea ta_data_output;
+    private JTable tableTrips;
+    private JPanel visualization;
 
     public MainFrame() {
         super("MainFrame");
@@ -37,10 +44,27 @@ public class MainFrame extends JFrame {
                 ta_data_output.append("test \n");
             }
         });
+        tableTrips.setModel(
+                new DefaultTableModel(null, Constant.TABLE_TITLES) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                }
+        );
+        tableTrips.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        visualization.add(getChart2DDemoK());
     }
+
 
     public void showData(Object row) {
         ta_data_output.append(row.toString() + "\n");
+    }
+
+    public synchronized void addRow(String[] row) {
+        DefaultTableModel model = (DefaultTableModel) tableTrips.getModel();
+        model.addRow(row);
     }
 
     {
@@ -64,7 +88,7 @@ public class MainFrame extends JFrame {
         panel1.add(tabbedPane1, BorderLayout.CENTER);
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Untitled", panel2);
+        tabbedPane1.addTab("Загрузка данных", panel2);
         btn_download_data = new JButton();
         btn_download_data.setText("Dowload data");
         panel2.add(btn_download_data, BorderLayout.NORTH);
@@ -73,13 +97,20 @@ public class MainFrame extends JFrame {
         panel2.add(scrollPane1, BorderLayout.CENTER);
         ta_data_output = new JTextArea();
         ta_data_output.setMinimumSize(new Dimension(100, 107));
+        ta_data_output.setText("");
         scrollPane1.setViewportView(ta_data_output);
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Визуализация", panel3);
-        final JPanel panel4 = new JPanel();
-        panel4.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Untitled", panel4);
+        tabbedPane1.addTab("Таблица данных", panel3);
+        final JScrollPane scrollPane2 = new JScrollPane();
+        scrollPane2.setEnabled(true);
+        scrollPane2.setVerifyInputWhenFocusTarget(true);
+        panel3.add(scrollPane2, BorderLayout.CENTER);
+        tableTrips = new JTable();
+        scrollPane2.setViewportView(tableTrips);
+        visualization = new JPanel();
+        visualization.setLayout(new BorderLayout(0, 0));
+        tabbedPane1.addTab("Визуализация", visualization);
     }
 
     /**

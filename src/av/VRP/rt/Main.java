@@ -3,16 +3,12 @@ package av.VRP.rt;
 import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.generator.VRPStaticData;
 import av.VRP.rt.listener.VRPgeneratorListener;
-import av.VRP.rt.substance.Point;
-import av.VRP.rt.substance.PointT;
 import av.VRP.rt.substance.PointWithTime;
-
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import av.VRP.rt.substance.Trips;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Artem on 09.04.2016.
@@ -23,12 +19,12 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
     public StringBuilder sb;
     public int n = 0;
 
-    private volatile List<PointWithTime> trips = Collections.EMPTY_LIST;
+    private volatile Trips trips;
 
     public Main() {
         frame = new MainFrame();
         sb = new StringBuilder();
-        trips = new ArrayList<>();
+        trips = new Trips();
 
         VRPStaticData data = new VRPStaticData();
         data.setListener(this);
@@ -42,11 +38,11 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
         ThreadParser parser4 = new ThreadParser(4);
         parser4.setListener(this);
 
-        parser1.start();
-        parser2.start();
-        parser3.start();
-        parser4.start();
         frame.showData(System.currentTimeMillis());
+        parser1.start();
+        // parser2.start();
+        // parser3.start();
+        // parser4.start();
     }
 
     public static void main(String[] args) {
@@ -77,23 +73,32 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
 
     @Override
     public void stoped(int count) {
-        n++;
-        if (n > 3) {
-            // frame.showData(sb.toString());
-            frame.showData(trips.size());
-            frame.showData(System.currentTimeMillis());
-        }
+        //  n++;
+        //  if (n > 3) {
+        // frame.showData(sb.toString());
+        //   frame.showData(trips.size());
+        //   frame.showData(System.currentTimeMillis());
+        // }
+        // frame.setTable(Utils.listToTable(trips));
+        System.out.println("stopped " + count);
+        frame.showData(System.currentTimeMillis());
+
+        checkData();
+    }
+
+    private void checkData() {
+        System.err.println(trips.getCountTripsForDay() + " дня совпало");
     }
 
     @Override
-    public void show(String row) {
-        frame.showData(row);
+    public void show(String[] row) {
+        frame.addRow(row);
     }
 
     @Override
     public void show(int n, String row) {
         //  sb.append(System.currentTimeMillis() + "-" + n + "." + row);
 
-        //    frame.showData(n + "." + row);
+        frame.showData(n + "." + row);
     }
 }

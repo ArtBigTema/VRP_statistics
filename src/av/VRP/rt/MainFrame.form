@@ -14,7 +14,7 @@
         <children>
           <grid id="ffbf7" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
-              <tabbedpane title="Untitled"/>
+              <tabbedpane title="Загрузка данных"/>
             </constraints>
             <properties/>
             <border type="none"/>
@@ -36,23 +36,39 @@
                     <constraints/>
                     <properties>
                       <minimumSize width="100" height="107"/>
+                      <text value=""/>
                     </properties>
                   </component>
                 </children>
               </scrollpane>
             </children>
           </grid>
-          <grid id="fa294" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="9b91a" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
-              <tabbedpane title="Визуализация"/>
+              <tabbedpane title="Таблица данных"/>
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <scrollpane id="7f9f6">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <enabled value="true"/>
+                  <verifyInputWhenFocusTarget value="true"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="ea9df" class="javax.swing.JTable" binding="tableTrips" default-binding="true">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
           </grid>
-          <grid id="9b91a" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="fa294" binding="visualization" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
-              <tabbedpane title="Untitled"/>
+              <tabbedpane title="Визуализация"/>
             </constraints>
             <properties/>
             <border type="none"/>
