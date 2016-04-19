@@ -30,11 +30,11 @@ public class MainFrame extends JFrame {
 
 
         createUIComponents();
-        this.setPreferredSize(new Dimension(500, 500));
+        this.setPreferredSize(new Dimension(900, 500));
         this.setMinimumSize(new Dimension(500, 500));
         this.pack();
         this.setVisible(true);
-
+        tabbedPane1.setSelectedIndex(2);//FIXME remove
     }
 
     private void createUIComponents() {
@@ -53,10 +53,85 @@ public class MainFrame extends JFrame {
                 }
         );
         tableTrips.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        visualization.add(getChart2DDemoK());
     }
 
+    private Chart2D getChart2DDemoK(String[] days, Long[] dots, String month) {
+        LBChart2D chart = getStandartChard2D(month, days);
+
+        Dataset dataset = new Dataset(1, days.length, 1);
+
+        for (int i = 0; i < dataset.getNumSets(); ++i) {
+            for (int j = 0; j < dataset.getNumCats(); ++j) {
+                for (int k = 0; k < dataset.getNumItems(); k++) {
+                    dataset.set(i, j, k,
+                            dots[j].floatValue());
+                }
+            }
+        }
+        chart.addDataset(dataset);
+        //Optional validation:  Prints debug messages if invalid only.
+        if (!chart.validate(false)) chart.validate(true);
+
+
+        return chart;
+    }
+
+    public LBChart2D getStandartChard2D(String title, String[] labels) {
+        //<-- Begin Chart2D configuration -->
+
+        //Configure object properties
+        Object2DProperties object2DProps = new Object2DProperties();
+        object2DProps.setObjectTitleText(title);
+
+        //Configure chart properties
+        Chart2DProperties chart2DProps = new Chart2DProperties();
+        chart2DProps.setChartDataLabelsPrecision(1);
+
+        //Configure legend properties
+        LegendProperties legendProps = new LegendProperties();
+        String[] legendLabels = new String[]{title};// {"2001", "2000", "1999"};
+        legendProps.setLegendLabelsTexts(legendLabels);
+
+        //Configure graph chart properties
+        GraphChart2DProperties graphChart2DProps = new GraphChart2DProperties();
+        String[] labelsAxisLabels = labels;
+        //   {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Nov", "Dec"};
+        graphChart2DProps.setLabelsAxisLabelsTexts(labelsAxisLabels);
+        graphChart2DProps.setLabelsAxisTitleText("Days");
+        graphChart2DProps.setNumbersAxisTitleText("Count");
+        graphChart2DProps.setLabelsAxisTicksAlignment(graphChart2DProps.CENTERED);
+
+        //Configure graph properties
+        GraphProperties graphProps = new GraphProperties();
+        graphProps.setGraphBarsExistence(false);
+        graphProps.setGraphLinesExistence(true);
+        graphProps.setGraphLinesThicknessModel(2);
+        graphProps.setGraphLinesWithinCategoryOverlapRatio(1f);
+        graphProps.setGraphDotsExistence(true);
+        //   graphProps.setGraphDotsThicknessModel(10);
+        //  graphProps.setGraphDotsWithinCategoryOverlapRatio(1f);
+        graphProps.setGraphAllowComponentAlignment(true);
+
+        //Configure dataset
+
+
+        //Configure graph component colors
+        MultiColorsProperties multiColorsProps = new MultiColorsProperties();
+
+        //Configure chart
+        LBChart2D chart2D = new LBChart2D();
+        chart2D.setObject2DProperties(object2DProps);
+        chart2D.setChart2DProperties(chart2DProps);
+        chart2D.setLegendProperties(legendProps);
+        chart2D.setGraphChart2DProperties(graphChart2DProps);
+        chart2D.addGraphProperties(graphProps);
+        chart2D.addMultiColorsProperties(multiColorsProps);
+
+
+        //<-- End Chart2D configuration -->
+
+        return chart2D;
+    }
 
     public void showData(Object row) {
         ta_data_output.append(row.toString() + "\n");
@@ -65,6 +140,10 @@ public class MainFrame extends JFrame {
     public synchronized void addRow(String[] row) {
         DefaultTableModel model = (DefaultTableModel) tableTrips.getModel();
         model.addRow(row);
+    }
+
+    public void showGraph(String[] days, Long[] dots, String month) {
+        visualization.add(getChart2DDemoK(days, dots, month));
     }
 
     {

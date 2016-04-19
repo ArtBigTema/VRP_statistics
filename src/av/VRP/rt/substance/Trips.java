@@ -2,6 +2,7 @@ package av.VRP.rt.substance;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class Trips {
     private List<PointWithTime> trips;
+    private List<DateTime> days;
 
     public Trips() {
         trips = Collections.synchronizedList(new ArrayList<PointWithTime>());
@@ -27,6 +29,7 @@ public class Trips {
 
 
     public long getCountTripsForDay(DateTime date) {
+        //переделать для отсортированного, без перебора всего массива //FIXME
         long count = 0l;
 
         for (PointWithTime point : trips) {
@@ -38,29 +41,68 @@ public class Trips {
         return count;
     }
 
-    public List<Long> getCountTripsForEveryDay() {
-        //переделать для отсортированного, без перебора всего массива //FIXME
-        PointWithTime dateStart = trips.get(0);
-        PointWithTime dateEnd = trips.get(size() - 1);
+    public List<String> getActiveDaysStr() {
+        List<String> result = new ArrayList<>();
 
-        int days = Days.daysBetween(
-                dateStart.getDateTime().toLocalDate(), dateEnd.getDateTime().toLocalDate())
-                .getDays();
-
-        List<Long> counts = new ArrayList<>(days);
-
-        while (days >= 0) {
-            counts.add(getCountTripsForDay(dateEnd.getDateTime().minusDays(days--)));
+        for (DateTime date : getActiveDays()) {
+            result.add(String.valueOf(date.toLocalDate().getDayOfMonth()));
         }
 
-        return counts;
+        return result;
+    }
+
+    public List<DateTime> getActiveDays() {
+        List<DateTime> result = new ArrayList<>();
+
+        PointWithTime dateEnd = getDateEnd();
+        int days = getDaysBetweenDateSE(getDateStart(), getDateEnd());
+
+        while (days >= 0) {
+            result.add(dateEnd.getDateTime().minusDays(days--));
+        }
+
+        return result;
+    }
+
+    public int getDaysBetweenDateSE(PointWithTime dateStart, PointWithTime dateEnd) {
+        return Days.daysBetween(
+                dateStart.getDateTime().toLocalDate(), dateEnd.getDateTime().toLocalDate())
+                .getDays();
+    }
+
+    public PointWithTime getDateStart() {
+        return trips.get(0);//FIXME if sorted
+    }
+
+    public PointWithTime getDateEnd() {
+        return trips.get(size() - 1);//FIXME if sorted
+    }
+
+    public List<Long> getCountTripsForEveryDay() {
+        //переделать для отсортированного, без перебора всего массива //FIXME
+        List<Long> result = new ArrayList<>();
+
+        for (DateTime date : getActiveDays()) {
+            //  System.err.println(date);
+            //  System.err.println(getCountTripsForDay(date));
+            //  System.err.println("");
+            result.add(getCountTripsForDay(date));
+        }
+
+        return result;
     }
 
     public void sortWithDate() {
+        System.err.println("sorting");
         Collections.sort(trips);
+        System.err.println("sorted");
     }
 
     public void removeNull() {
         trips.removeAll(Collections.singleton(null));
+    }
+
+    public String getMonthYear() {
+        return getDateStart()._dateTime.toString("MMM YYYY");
     }
 }

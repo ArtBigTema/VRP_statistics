@@ -6,6 +6,8 @@ import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.substance.PointWithTime;
 import av.VRP.rt.substance.Trips;
 
+import java.util.List;
+
 
 /**
  * Created by Artem on 09.04.2016.
@@ -82,14 +84,19 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
             System.err.println("stopped " + count);
             frame.showData(System.currentTimeMillis());
 
-          //  trips.removeNull();
+            //  trips.removeNull();
             trips.sortWithDate();
             checkData();
         }
     }
 
     private void checkData() {
-        trips.getCountTripsForEveryDay();
+        List<String> dates = trips.getActiveDaysStr();
+        List<Long> counts = trips.getCountTripsForEveryDay();
+        String month = trips.getMonthYear();
+
+        frame.showGraph(
+                dates.toArray(new String[dates.size()]), counts.toArray(new Long[counts.size()]), month);
     }
 
     @Override

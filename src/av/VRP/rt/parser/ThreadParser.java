@@ -40,12 +40,12 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
     public void run() {
         String line = "";
         int i = 0;
-        int count = 2;//max = 200 000
+        int count = 12;//max = 200 000
         StringBuilder sb = new StringBuilder();
         try {
             line = br.readLine();
 
-            while (line != null) {// && count != 0) {
+            while (line != null){// && count != 0) {
                 if (!line.isEmpty()) {
                     count--;
                     i++;
@@ -53,9 +53,8 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
                     sb.append(System.lineSeparator());
 
                     listener.generated(PointWithTime.construct(line));
-                   //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
-                      listener.show(Utils.strToArray(line, ","));
-
+                    //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
+                    listener.show(Utils.strToArray(line, ","));
 
                     //    this.sleep(2);
                 }
