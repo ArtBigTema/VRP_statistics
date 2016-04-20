@@ -1,5 +1,6 @@
 package av.VRP.rt.parser;
 
+import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
 import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.substance.PointT;
@@ -23,6 +24,7 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
             br = new BufferedReader(
                     new FileReader("data/file" + n + ".txt"));
         } catch (IOException e) {
+            Log.e(e.getMessage());
             e.printStackTrace();//FIXME
         }
     }
@@ -45,7 +47,7 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
         try {
             line = br.readLine();
 
-            while (line != null){// && count != 0) {
+            while (line != null) {// && count != 0) {
                 if (!line.isEmpty()) {
                     count--;
                     i++;
@@ -66,6 +68,7 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
 
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e(e.getMessage());
         } finally {//FIXME
             try {
                 br.close();
@@ -74,6 +77,7 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
                 //  writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.e(e.getMessage());
             }
         }
     }

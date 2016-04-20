@@ -1,5 +1,6 @@
 package av.VRP.rt;
 
+import av.VRP.rt.Utils.Log;
 import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.generator.VRPStaticData;
 import av.VRP.rt.listener.VRPgeneratorListener;
@@ -74,14 +75,14 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
     @Override
     public void stoped(int count) {
         n++;
-        System.err.println("stopped " + count);
+        Log.d("stopped " + count);
         if (n > 3) {
             // frame.showData(sb.toString());
             //   frame.showData(trips.size());
             //   frame.showData(System.currentTimeMillis());
 
             // frame.setTable(Utils.listToTable(trips));
-            System.err.println("stopped " + count);
+            Log.d("stopped " + count);
             frame.showData(System.currentTimeMillis());
 
             //  trips.removeNull();

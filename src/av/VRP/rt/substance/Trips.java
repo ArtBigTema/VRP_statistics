@@ -1,8 +1,9 @@
 package av.VRP.rt.substance;
 
+import av.VRP.rt.Utils.Log;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +14,6 @@ import java.util.List;
  */
 public class Trips {
     private List<PointWithTime> trips;
-    private List<DateTime> days;
 
     public Trips() {
         trips = Collections.synchronizedList(new ArrayList<PointWithTime>());
@@ -93,9 +93,9 @@ public class Trips {
     }
 
     public void sortWithDate() {
-        System.err.println("sorting");
+        Log.d("sorting");
         Collections.sort(trips);
-        System.err.println("sorted");
+        Log.d("sorted");
     }
 
     public void removeNull() {

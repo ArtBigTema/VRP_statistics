@@ -1,5 +1,6 @@
 package av.VRP.rt.substance;
 
+import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
@@ -46,6 +47,7 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
                 return new PointWithTime(elements[1], elements[2], elements[0]);
             }
         }
+        Log.e("null pointer");
         return null;
     }
 
@@ -54,12 +56,12 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
         date = s.split("\\s+")[0];
         time = s.split("\\s+")[1];
 
-
         try {
             _date = sdf.parse(s);
             _dateTime = fmt.parseDateTime(s);
         } catch (ParseException e) {
             e.printStackTrace();//FIXME
+            Log.e(e.getMessage());
         }
     }
 
