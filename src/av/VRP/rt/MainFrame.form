@@ -12,35 +12,75 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="ffbf7" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="ccc69" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <tabbedpane title="Загрузка данных"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="fc4ca" class="javax.swing.JButton" binding="btn_download_data">
-                <constraints border-constraint="North"/>
-                <properties>
-                  <text value="Dowload data"/>
-                </properties>
-              </component>
-              <scrollpane id="af0c3">
+              <grid id="688f8" binding="panel" layout-manager="BorderLayout" hgap="0" vgap="0">
                 <constraints border-constraint="Center"/>
-                <properties>
-                  <verticalScrollBarPolicy value="22"/>
-                </properties>
+                <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="7eeee" class="javax.swing.JTextArea" binding="ta_data_output">
-                    <constraints/>
-                    <properties>
-                      <minimumSize width="100" height="107"/>
-                      <text value=""/>
-                    </properties>
-                  </component>
+                  <grid id="7c02c" layout-manager="BorderLayout" hgap="0" vgap="0">
+                    <constraints border-constraint="North"/>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="8a880" class="javax.swing.JButton" binding="dowloadLinksButton" default-binding="true">
+                        <constraints border-constraint="Center"/>
+                        <properties>
+                          <text value="DowloadLinks"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="9e77d" layout-manager="BorderLayout" hgap="0" vgap="0">
+                    <constraints border-constraint="Center"/>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <grid id="a0917" layout-manager="BorderLayout" hgap="0" vgap="0">
+                        <constraints border-constraint="South"/>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="fc341" class="javax.swing.JButton" binding="dowloadLinkButton" default-binding="true">
+                            <constraints border-constraint="Center"/>
+                            <properties>
+                              <enabled value="false"/>
+                              <text value="DownloadLink"/>
+                            </properties>
+                          </component>
+                          <component id="64418" class="javax.swing.JProgressBar" binding="progressBar" default-binding="true">
+                            <constraints border-constraint="South"/>
+                            <properties>
+                              <borderPainted value="false"/>
+                              <indeterminate value="true"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                      <scrollpane id="ea332">
+                        <constraints border-constraint="Center"/>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="7cf70" class="javax.swing.JList" binding="listLink">
+                            <constraints/>
+                            <properties>
+                              <font size="14"/>
+                              <selectionMode value="2"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </scrollpane>
+                    </children>
+                  </grid>
                 </children>
-              </scrollpane>
+              </grid>
             </children>
           </grid>
           <grid id="9b91a" layout-manager="BorderLayout" hgap="0" vgap="0">
@@ -66,13 +106,42 @@
               </scrollpane>
             </children>
           </grid>
-          <grid id="fa294" binding="visualization" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="fa294" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <tabbedpane title="Визуализация"/>
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <grid id="fd750" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="447b9" class="javax.swing.JButton" binding="btn_statistic">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <enabled value="true"/>
+                      <text value="Подсчитать статистику"/>
+                    </properties>
+                  </component>
+                  <component id="acdd9" class="javax.swing.JProgressBar" binding="pb_calc_stat">
+                    <constraints border-constraint="South"/>
+                    <properties>
+                      <borderPainted value="false"/>
+                      <indeterminate value="true"/>
+                      <visible value="false"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="49829" binding="visualization" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children/>
+              </grid>
+            </children>
           </grid>
         </children>
       </tabbedpane>

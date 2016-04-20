@@ -55,7 +55,7 @@
                 <constraints/>
                 <properties>
                   <font size="14"/>
-                  <selectionMode value="0"/>
+                  <selectionMode value="2"/>
                 </properties>
               </component>
             </children>

@@ -5,10 +5,10 @@ package av.VRP.rt.Utils;
  */
 public class Constant {
 
-    public static final String URL_ALL_GREEN_AND_YELLOW = "https://raw.githubusercontent.com/toddwschneider/nyc-taxi-data/master/raw_data_urls.txt";
-    public static final String URL_ALL_UBER = "https://raw.githubusercontent.com/toddwschneider/nyc-taxi-data/master/raw_uber_data_urls.txt";
+    public static final String URL_ALL_GREEN_AND_YELLOW = "https://raw.githubusercontent.com/ArtBigTema/VRP_statistics/master/resources/nyc-taxi-data_green_and_yellow.txt";
+    public static final String URL_ALL_UBER = "https://raw.githubusercontent.com/ArtBigTema/VRP_statistics/master/resources/nyc-taxi-data_uber.txt";
 
-    public static final String URL_FIRST = "https://storage.googleapis.com/tlc-trip-data/2013/green_tripdata_2013-08.csv";
+    public static final String URL_FIRST = "https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-apr14.csv";
 
     public static final String TITLE1 = "Date&Time";
     //   public static final String TITLE2 = "Time";

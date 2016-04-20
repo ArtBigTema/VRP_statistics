@@ -55,6 +55,7 @@ public class ListFrame extends JFrame implements FileWriterListener {
     }
 
     private void aggregateLink() {
+        started();
         ThreadWriter thread = new ThreadWriter(getLinkFromList());
         thread.setListener(this);
         thread.start();
@@ -83,7 +84,6 @@ public class ListFrame extends JFrame implements FileWriterListener {
         progressBar.setVisible(false);
     }
 
-    @Override
     public void started() {
         progressBar.setVisible(true);
         dowloadLinksButton.setEnabled(false);
@@ -91,7 +91,14 @@ public class ListFrame extends JFrame implements FileWriterListener {
     }
 
     @Override
-    public void stoped() {
+    public void onError() {
+        JOptionPane.showMessageDialog(this, "Fail", "Title", JOptionPane.ERROR_MESSAGE);//FIXME
+        dowloadLinksButton.setEnabled(false);
+        dowloadLinkButton.setEnabled(false);
+    }
+
+    @Override
+    public void onSuccess() {
         progressBar.setVisible(false);
         JOptionPane.showMessageDialog(this, "Succes", "Title", JOptionPane.INFORMATION_MESSAGE);//FIXME
         setVisible(false); //you can't see me!
@@ -132,7 +139,7 @@ public class ListFrame extends JFrame implements FileWriterListener {
         panel2.add(scrollPane1, BorderLayout.CENTER);
         listLink = new JList();
         listLink.setFont(new Font(listLink.getFont().getName(), listLink.getFont().getStyle(), 14));
-        listLink.setSelectionMode(0);
+        listLink.setSelectionMode(2);
         scrollPane1.setViewportView(listLink);
     }
 

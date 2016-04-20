@@ -1,15 +1,18 @@
 package av.VRP.rt;
 
 import av.VRP.rt.Utils.Constant;
+
 import net.sourceforge.chart2d.*;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Dimension;
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by Artem on 09.04.2016.
@@ -17,10 +20,15 @@ import java.util.Random;
 public class MainFrame extends JFrame {
     private JTabbedPane tabbedPane1;
     private JPanel panel1;
-    private JButton btn_download_data;
-    private JTextArea ta_data_output;
     private JTable tableTrips;
     private JPanel visualization;
+    private JPanel panel;
+    private JButton dowloadLinksButton;
+    private JButton dowloadLinkButton;
+    private JProgressBar progressBar;
+    private JList listLink;
+    private JButton btn_statistic;
+    private JProgressBar pb_calc_stat;
 
     public MainFrame() {
         super("MainFrame");
@@ -28,22 +36,16 @@ public class MainFrame extends JFrame {
         setContentPane(tabbedPane1);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-
         createUIComponents();
         this.setPreferredSize(new Dimension(900, 500));
         this.setMinimumSize(new Dimension(500, 500));
         this.pack();
         this.setVisible(true);
-        tabbedPane1.setSelectedIndex(2);//FIXME remove
+        //  tabbedPane1.setSelectedIndex(2);//FIXME remove
     }
 
     private void createUIComponents() {
-        btn_download_data.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ta_data_output.append("test \n");
-            }
-        });
+
         tableTrips.setModel(
                 new DefaultTableModel(null, Constant.TABLE_TITLES) {
                     @Override
@@ -52,9 +54,85 @@ public class MainFrame extends JFrame {
                     }
                 }
         );
+
         tableTrips.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        progressBar.setVisible(false);
+        dowloadLinksButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Main.getInstance().aggregateList();
+            }
+        });
+        dowloadLinkButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Main.getInstance().aggregateLink(getLinkFromList());
+            }
+        });
+        btn_statistic.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pb_calc_stat.setVisible(true);
+                btn_statistic.setVisible(false);
+                Main.getInstance().aggregateStatistic();
+            }
+        });
+
+        listLink.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                dowloadLinkButton.setEnabled(true);
+            }
+        });
     }
 
+    public List getLinkFromList() {
+        if (listLink.getSelectedValue() == null) {
+            return Collections.singletonList(Constant.URL_FIRST);
+        } else {
+            return listLink.getSelectedValuesList();
+        }
+    }
+
+    public void setListData(String[] listData) {
+        listLink.setListData(listData);
+
+        dowloadLinkButton.setEnabled(true);
+        dowloadLinksButton.setEnabled(false);
+        progressBar.setVisible(false);
+    }
+
+    public void startDownloading() {
+        visualization.removeAll();
+        listLink.setEnabled(false);
+        progressBar.setVisible(true);
+        dowloadLinksButton.setEnabled(false);
+        dowloadLinkButton.setEnabled(false);
+        btn_statistic.setVisible(false);
+    }
+
+    public void endDownloading() {
+        listLink.setEnabled(true);
+        progressBar.setVisible(false);
+        btn_statistic.setVisible(true);
+
+        tabbedPane1.setSelectedIndex(1);
+        JOptionPane.showMessageDialog(this, "Succes", "Title", JOptionPane.INFORMATION_MESSAGE);//FIXME
+    }
+
+    public void addRow(String[] row) {
+        DefaultTableModel model = (DefaultTableModel) tableTrips.getModel();
+        model.addRow(row);
+    }
+
+    public void showGraph(String[] days, Long[] dots, String month) {
+        pb_calc_stat.setVisible(false);
+        btn_statistic.setVisible(false);
+        visualization.add(getChart2DDemoK(days, dots, month));
+    }
+
+    //FIXME move
     private Chart2D getChart2DDemoK(String[] days, Long[] dots, String month) {
         LBChart2D chart = getStandartChard2D(month, days);
 
@@ -133,19 +211,6 @@ public class MainFrame extends JFrame {
         return chart2D;
     }
 
-    public void showData(Object row) {
-        ta_data_output.append(row.toString() + "\n");
-    }
-
-    public synchronized void addRow(String[] row) {
-        DefaultTableModel model = (DefaultTableModel) tableTrips.getModel();
-        model.addRow(row);
-    }
-
-    public void showGraph(String[] days, Long[] dots, String month) {
-        visualization.add(getChart2DDemoK(days, dots, month));
-    }
-
     {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
 // >>> IMPORTANT!! <<<
@@ -168,28 +233,62 @@ public class MainFrame extends JFrame {
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new BorderLayout(0, 0));
         tabbedPane1.addTab("Загрузка данных", panel2);
-        btn_download_data = new JButton();
-        btn_download_data.setText("Dowload data");
-        panel2.add(btn_download_data, BorderLayout.NORTH);
-        final JScrollPane scrollPane1 = new JScrollPane();
-        scrollPane1.setVerticalScrollBarPolicy(22);
-        panel2.add(scrollPane1, BorderLayout.CENTER);
-        ta_data_output = new JTextArea();
-        ta_data_output.setMinimumSize(new Dimension(100, 107));
-        ta_data_output.setText("");
-        scrollPane1.setViewportView(ta_data_output);
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout(0, 0));
+        panel2.add(panel, BorderLayout.CENTER);
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Таблица данных", panel3);
+        panel.add(panel3, BorderLayout.NORTH);
+        dowloadLinksButton = new JButton();
+        dowloadLinksButton.setText("DowloadLinks");
+        panel3.add(dowloadLinksButton, BorderLayout.CENTER);
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new BorderLayout(0, 0));
+        panel.add(panel4, BorderLayout.CENTER);
+        final JPanel panel5 = new JPanel();
+        panel5.setLayout(new BorderLayout(0, 0));
+        panel4.add(panel5, BorderLayout.SOUTH);
+        dowloadLinkButton = new JButton();
+        dowloadLinkButton.setEnabled(false);
+        dowloadLinkButton.setText("DownloadLink");
+        panel5.add(dowloadLinkButton, BorderLayout.CENTER);
+        progressBar = new JProgressBar();
+        progressBar.setBorderPainted(false);
+        progressBar.setIndeterminate(true);
+        panel5.add(progressBar, BorderLayout.SOUTH);
+        final JScrollPane scrollPane1 = new JScrollPane();
+        panel4.add(scrollPane1, BorderLayout.CENTER);
+        listLink = new JList();
+        listLink.setFont(new Font(listLink.getFont().getName(), listLink.getFont().getStyle(), 14));
+        listLink.setSelectionMode(2);
+        scrollPane1.setViewportView(listLink);
+        final JPanel panel6 = new JPanel();
+        panel6.setLayout(new BorderLayout(0, 0));
+        tabbedPane1.addTab("Таблица данных", panel6);
         final JScrollPane scrollPane2 = new JScrollPane();
         scrollPane2.setEnabled(true);
         scrollPane2.setVerifyInputWhenFocusTarget(true);
-        panel3.add(scrollPane2, BorderLayout.CENTER);
+        panel6.add(scrollPane2, BorderLayout.CENTER);
         tableTrips = new JTable();
         scrollPane2.setViewportView(tableTrips);
+        final JPanel panel7 = new JPanel();
+        panel7.setLayout(new BorderLayout(0, 0));
+        tabbedPane1.addTab("Визуализация", panel7);
+        final JPanel panel8 = new JPanel();
+        panel8.setLayout(new BorderLayout(0, 0));
+        panel7.add(panel8, BorderLayout.NORTH);
+        btn_statistic = new JButton();
+        btn_statistic.setEnabled(true);
+        btn_statistic.setText("Подсчитать статистику");
+        panel8.add(btn_statistic, BorderLayout.CENTER);
+        pb_calc_stat = new JProgressBar();
+        pb_calc_stat.setBorderPainted(false);
+        pb_calc_stat.setIndeterminate(true);
+        pb_calc_stat.setVisible(false);
+        panel8.add(pb_calc_stat, BorderLayout.SOUTH);
         visualization = new JPanel();
         visualization.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Визуализация", visualization);
+        panel7.add(visualization, BorderLayout.CENTER);
     }
 
     /**

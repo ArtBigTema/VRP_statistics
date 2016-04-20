@@ -1,9 +1,8 @@
 package av.VRP.rt.parser;
 
-import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.HttpApi;
+import av.VRP.rt.Utils.Log;
 import av.VRP.rt.listener.FileWriterListener;
-import av.VRP.rt.listener.VRPgeneratorListener;
 
 import java.io.*;
 
@@ -19,9 +18,14 @@ public class ThreadWriter extends Thread implements Runnable {//FIXME all
         try {
             in = HttpApi.getInstance().getInputStream(url);
         } catch (IOException e) {
+            Log.e(e.getMessage());
             e.printStackTrace();//fixme
         }
         new File("Files").mkdir();
+    }
+
+    public ThreadWriter(String[] urls) {
+        this(urls[0]);
     }
 
     public void setListener(FileWriterListener listener) {
@@ -30,10 +34,6 @@ public class ThreadWriter extends Thread implements Runnable {//FIXME all
 
     @Override
     public void run() {
-        if (listener != null) {
-            listener.started();
-        }
-
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
         String line = "";
@@ -61,14 +61,22 @@ public class ThreadWriter extends Thread implements Runnable {//FIXME all
                 writer.close();
             }
         } catch (IOException e) {
+            if (listener != null) {
+                listener.onError();
+            }
+            Log.e(e.getMessage());
             e.printStackTrace();
         } finally {//FIXME
             if (listener != null) {
-                listener.stoped();
+                listener.onSuccess();
             }
             try {
                 br.close();
             } catch (IOException e) {
+                if (listener != null) {
+                    listener.onError();
+                }
+                Log.e(e.getMessage());
                 e.printStackTrace();
             }
         }

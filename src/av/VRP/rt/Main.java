@@ -1,9 +1,13 @@
 package av.VRP.rt;
 
+import av.VRP.rt.Utils.Constant;
+import av.VRP.rt.Utils.HttpApi;
 import av.VRP.rt.Utils.Log;
+import av.VRP.rt.Utils.Utils;
+import av.VRP.rt.listener.FileWriterListener;
 import av.VRP.rt.parser.ThreadParser;
-import av.VRP.rt.generator.VRPStaticData;
 import av.VRP.rt.listener.VRPgeneratorListener;
+import av.VRP.rt.parser.ThreadWriter;
 import av.VRP.rt.substance.PointWithTime;
 import av.VRP.rt.substance.Trips;
 
@@ -13,21 +17,39 @@ import java.util.List;
 /**
  * Created by Artem on 09.04.2016.
  */
-public class Main implements VRPgeneratorListener<PointWithTime> {
-    public MainFrame frame;//FIXME remove public
+public class Main implements VRPgeneratorListener<PointWithTime>, FileWriterListener {
+    private static volatile Main instance;
+    private MainFrame frame;
 
-    public StringBuilder sb;
     public int n = 0;
 
     private volatile Trips trips;
 
-    public Main() {
+    public static Main getInstance() {
+        if (instance == null) {
+            instance = new Main();
+        }
+        return instance;
+    }
+
+    private Main() {
         frame = new MainFrame();
-        sb = new StringBuilder();
         trips = new Trips();
 
+
+        Log.p(System.currentTimeMillis());
+
+    }
+
+    public static void main(String[] args) {
+        getInstance();
+    }
+
+    public void startParserThread() {
+         /*
         VRPStaticData data = new VRPStaticData();
         data.setListener(this);
+        */
 
         ThreadParser parser1 = new ThreadParser(1);
         parser1.setListener(this);
@@ -38,25 +60,15 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
         ThreadParser parser4 = new ThreadParser(4);
         parser4.setListener(this);
 
-        frame.showData(System.currentTimeMillis());
-
         parser1.start();
         parser2.start();
         parser3.start();
         parser4.start();
     }
 
-    public static void main(String[] args) {
-        new Main();
-
-      /*  ListFrame lf = new ListFrame();
-        lf.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {//FIXME
-                new Main();
-            }
-        });*/
-
+    public void aggregateStatistic() {
+        trips.sortWithDate();
+        showStatistic();
     }
 
     @Override
@@ -69,29 +81,25 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
 
     @Override
     public void started() {
-
+        n = 0;
+        frame.startDownloading();
     }
 
     @Override
     public void stoped(int count) {
         n++;
-        Log.d("stopped " + count);
+        Log.d("stopped ", count);
         if (n > 3) {
-            // frame.showData(sb.toString());
-            //   frame.showData(trips.size());
-            //   frame.showData(System.currentTimeMillis());
+            Log.d("last stopped ", count);
 
-            // frame.setTable(Utils.listToTable(trips));
-            Log.d("stopped " + count);
-            frame.showData(System.currentTimeMillis());
-
-            //  trips.removeNull();
-            trips.sortWithDate();
-            checkData();
+            // trips.removeNull();
+            //  trips.sortWithDate();
+            // showStatistic();
+            frame.endDownloading();//начать парсить
         }
     }
 
-    private void checkData() {
+    private void showStatistic() {//FIXME rename
         List<String> dates = trips.getActiveDaysStr();
         List<Long> counts = trips.getCountTripsForEveryDay();
         String month = trips.getMonthYear();
@@ -109,6 +117,38 @@ public class Main implements VRPgeneratorListener<PointWithTime> {
     public void show(int n, String row) {
         //  sb.append(System.currentTimeMillis() + "-" + n + "." + row);
 
-        frame.showData(n + "." + row);
+        Log.p(n, ". ", row);
+    }
+
+    public void aggregateList() {
+        Log.p("Скачивание списка ссылок");
+
+        String rowGreenYellow = HttpApi.getInstance().getContent(Constant.URL_ALL_GREEN_AND_YELLOW);
+        String rowUber = HttpApi.getInstance().getContent(Constant.URL_ALL_UBER);
+
+        String[] rows = Utils.strToArray(rowUber + "\n" + rowGreenYellow, "\n");
+
+        frame.setListData(rows);
+    }
+
+    public void aggregateLink(List<String> list) {
+        Log.p("Скачивание выбранной ссылки");
+        Log.p(list.toString());
+
+        frame.startDownloading();
+        ThreadWriter thread = new ThreadWriter(list.toArray(new String[list.size()]));
+        thread.setListener(this);
+        thread.start();
+    }
+
+    @Override
+    public void onSuccess() {
+        startParserThread();
+        // frame.endDownloading();//начать парсить
+    }
+
+    @Override
+    public void onError() {
+        frame.endDownloading();
     }
 }

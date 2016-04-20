@@ -15,10 +15,14 @@ public class Log {//FIXME log to file
     }
 
     public static void d(Object s) {
-        System.err.println(s.toString());
+        e(s.toString());
     }
 
     public static void d(Object s, Object ss) {
-        System.err.println(s.toString() + " " + ss.toString());
+        d(s.toString() + " " + ss.toString());
+    }
+
+    public static void p(Object s, String divider, String ss) {
+        p(s + divider + ss);
     }
 }
