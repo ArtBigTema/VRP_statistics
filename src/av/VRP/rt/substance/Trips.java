@@ -1,5 +1,6 @@
 package av.VRP.rt.substance;
 
+import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Log;
 
 import org.joda.time.DateTime;
@@ -13,13 +14,26 @@ import java.util.List;
  * Created by Artem on 19.04.2016.
  */
 public class Trips {
-    private List<PointWithTime> trips;
+    private List<Trip> trips;
+    private String title;
 
     public Trips() {
-        trips = Collections.synchronizedList(new ArrayList<PointWithTime>());
+        trips = Collections.synchronizedList(new ArrayList<Trip>());
     }
 
-    public void add(PointWithTime t) {
+    public void setTitle(String title) {
+        if (title.contains(Constant.GREEN)) {
+            title = Constant.GREEN;
+        }
+        if (title.contains(Constant.YELLOW)) {
+            title = Constant.YELLOW;
+        }
+        if (title.contains(Constant.UBER)) {
+            title = Constant.UBER;
+        }
+    }
+
+    public void add(Trip t) {
         trips.add(t);
     }
 
@@ -27,12 +41,16 @@ public class Trips {
         return trips.size();
     }
 
+    public void clear() {
+        trips.clear();
+        title = "";
+    }
 
     public long getCountTripsForDay(DateTime date) {
         //переделать для отсортированного, без перебора всего массива //FIXME
         long count = 0l;
 
-        for (PointWithTime point : trips) {
+        for (Trip point : trips) {
             if (point.checkSameDay(date)) {
                 count++;
             }
@@ -54,7 +72,7 @@ public class Trips {
     public List<DateTime> getActiveDays() {
         List<DateTime> result = new ArrayList<>();
 
-        PointWithTime dateEnd = getDateEnd();
+        Trip dateEnd = getDateEnd();
         int days = getDaysBetweenDateSE(getDateStart(), getDateEnd());
 
         while (days >= 0) {
@@ -64,17 +82,17 @@ public class Trips {
         return result;
     }
 
-    public int getDaysBetweenDateSE(PointWithTime dateStart, PointWithTime dateEnd) {
+    public int getDaysBetweenDateSE(Trip dateStart, Trip dateEnd) {
         return Days.daysBetween(
                 dateStart.getDateTime().toLocalDate(), dateEnd.getDateTime().toLocalDate())
                 .getDays();
     }
 
-    public PointWithTime getDateStart() {
+    public Trip getDateStart() {
         return trips.get(0);//FIXME if sorted
     }
 
-    public PointWithTime getDateEnd() {
+    public Trip getDateEnd() {
         return trips.get(size() - 1);//FIXME if sorted
     }
 
@@ -103,6 +121,6 @@ public class Trips {
     }
 
     public String getMonthYear() {
-        return getDateStart()._dateTime.toString("MMM YYYY");
+        return getDateStart().getStartPoint()._dateTime.toString("MMM YYYY");
     }
 }

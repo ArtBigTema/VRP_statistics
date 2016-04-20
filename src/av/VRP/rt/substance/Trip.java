@@ -3,10 +3,13 @@ package av.VRP.rt.substance;
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
+
 /**
  * Created by Artem on 20.04.2016.
  */
-public class Trip {
+public class Trip implements Comparable<Trip> {
     private PointWithTime startPoint;
     private PointWithTime endPoint;
 
@@ -24,24 +27,17 @@ public class Trip {
             return null;
         }
 
-        if (s.length() > 100) {//FIXME if split size>10 or else
-            String[] elements = Utils.strToArray(s, ",");
-
-            if (elements.length > 10) {//FIXME const
-                return new Trip(
-                        new PointWithTime(elements[1], elements[8], elements[9]),//FIXME const
-                        new PointWithTime(elements[2], elements[10], elements[11]));//FIXME const
-            }
+        String[] elements = Utils.strToArray(s, ",");
+        if (s.length() > 100 || elements.length > 10) {//FIXME if split size>10 or else
+            return new Trip(
+                    new PointWithTime(elements[8], elements[9], elements[1]),//FIXME const
+                    new PointWithTime(elements[10], elements[11], elements[2]));//FIXME const
         }
 
-        if (s.length() > 20) {//FIXME
-            String[] elements = Utils.strToArray(s, ",");
-
-            if (elements.length > 3) {//FIXME const
-                return new Trip(
-                        PointWithTime.construct(s),//FIXME const
-                        null);
-            }
+        if (s.length() > 20 || elements.length > 3) {//FIXME const
+            return new Trip(
+                    PointWithTime.construct(s),//FIXME const
+                    null);
         }
 
         Log.e("null pointer");
@@ -56,11 +52,24 @@ public class Trip {
         return endPoint;
     }
 
+    public DateTime getDateTime() {
+        return getStartPoint().getDateTime();
+    }
+
+    public boolean checkSameDay(DateTime date) {
+        return getStartPoint().checkSameDay(date);
+    }
+
     @Override
     public String toString() {
         return "Trip{" +
                 "startPoint=" + startPoint.toString() +
                 ", endPoint=" + endPoint.toString() +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Trip o) {
+        return DateTimeComparator.getDateOnlyInstance().compare(this.getStartPoint().getDateTime(), o.getStartPoint().getDateTime());//FIXME if null
     }
 }

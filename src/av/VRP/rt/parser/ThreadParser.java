@@ -3,8 +3,7 @@ package av.VRP.rt.parser;
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
 import av.VRP.rt.listener.VRPgeneratorListener;
-import av.VRP.rt.substance.PointT;
-import av.VRP.rt.substance.PointWithTime;
+import av.VRP.rt.substance.Trip;
 
 import java.io.*;
 
@@ -22,7 +21,7 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
 
         try {
             br = new BufferedReader(
-                    new FileReader("data/file" + n + ".txt"));
+                    new FileReader("Files/file" + n + ".txt"));
         } catch (IOException e) {
             Log.e(e.getMessage());
             e.printStackTrace();//FIXME
@@ -54,7 +53,7 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
                     sb.append(line);
                     sb.append(System.lineSeparator());
 
-                    listener.generated(PointWithTime.construct(line));
+                    listener.generated(Trip.construct(line));
                     //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
                     listener.show(Utils.strToArray(line, ","));
 

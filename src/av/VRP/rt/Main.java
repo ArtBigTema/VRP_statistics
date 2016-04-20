@@ -8,7 +8,7 @@ import av.VRP.rt.listener.FileWriterListener;
 import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.parser.ThreadWriter;
-import av.VRP.rt.substance.PointWithTime;
+import av.VRP.rt.substance.Trip;
 import av.VRP.rt.substance.Trips;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by Artem on 09.04.2016.
  */
-public class Main implements VRPgeneratorListener<PointWithTime>, FileWriterListener {
+public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     private static volatile Main instance;
     private MainFrame frame;
 
@@ -36,9 +36,12 @@ public class Main implements VRPgeneratorListener<PointWithTime>, FileWriterList
         frame = new MainFrame();
         trips = new Trips();
 
-
         Log.p(System.currentTimeMillis());
+    }
 
+    public void clear() {
+        trips.clear();
+        n = 0;
     }
 
     public static void main(String[] args) {
@@ -46,11 +49,13 @@ public class Main implements VRPgeneratorListener<PointWithTime>, FileWriterList
     }
 
     public void startParserThread() {
+        clear();
          /*
         VRPStaticData data = new VRPStaticData();
         data.setListener(this);
         */
 
+        //fixme count
         ThreadParser parser1 = new ThreadParser(1);
         parser1.setListener(this);
         ThreadParser parser2 = new ThreadParser(2);
@@ -72,7 +77,7 @@ public class Main implements VRPgeneratorListener<PointWithTime>, FileWriterList
     }
 
     @Override
-    public void generated(PointWithTime t) {
+    public void generated(Trip t) {
         if (t != null) {
             trips.add(t);
         }
@@ -110,7 +115,7 @@ public class Main implements VRPgeneratorListener<PointWithTime>, FileWriterList
 
     @Override
     public void show(String[] row) {
-        frame.addRow(row);
+        frame.addRow(row); //FIXME add all rows
     }
 
     @Override
@@ -135,6 +140,7 @@ public class Main implements VRPgeneratorListener<PointWithTime>, FileWriterList
         Log.p("Скачивание выбранной ссылки");
         Log.p(list.toString());
 
+        trips.setTitle(list.toString());
         frame.startDownloading();
         ThreadWriter thread = new ThreadWriter(list.toArray(new String[list.size()]));
         thread.setListener(this);
