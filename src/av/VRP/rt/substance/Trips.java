@@ -21,14 +21,14 @@ public class Trips {
         trips = Collections.synchronizedList(new ArrayList<Trip>());
     }
 
-    public void setTitle(String title) {
-        if (title.contains(Constant.GREEN)) {
+    public void setTitle(String url) {
+        if (url.contains(Constant.GREEN)) {
             title = Constant.GREEN;
         }
-        if (title.contains(Constant.YELLOW)) {
+        if (url.contains(Constant.YELLOW)) {
             title = Constant.YELLOW;
         }
-        if (title.contains(Constant.UBER)) {
+        if (url.contains(Constant.UBER)) {
             title = Constant.UBER;
         }
     }
@@ -59,14 +59,14 @@ public class Trips {
         return count;
     }
 
-    public List<String> getActiveDaysStr() {
+    public String[] getActiveDaysStr() {
         List<String> result = new ArrayList<>();
 
         for (DateTime date : getActiveDays()) {
             result.add(String.valueOf(date.toLocalDate().getDayOfMonth()));
         }
 
-        return result;
+        return result.toArray(new String[result.size()]);
     }
 
     public List<DateTime> getActiveDays() {
@@ -96,7 +96,7 @@ public class Trips {
         return trips.get(size() - 1);//FIXME if sorted
     }
 
-    public List<Long> getCountTripsForEveryDay() {
+    public Long[] getCountTripsForEveryDay() {
         //переделать для отсортированного, без перебора всего массива //FIXME
         List<Long> result = new ArrayList<>();
 
@@ -107,7 +107,7 @@ public class Trips {
             result.add(getCountTripsForDay(date));
         }
 
-        return result;
+        return result.toArray(new Long[result.size()]);
     }
 
     public void sortWithDate() {
@@ -122,5 +122,9 @@ public class Trips {
 
     public String getMonthYear() {
         return getDateStart().getStartPoint()._dateTime.toString("MMM YYYY");
+    }
+
+    public boolean getMode() {//FIXME rename
+        return title.contains(Constant.UBER);
     }
 }

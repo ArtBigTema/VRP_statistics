@@ -2,6 +2,7 @@ package av.VRP.rt;
 
 import av.VRP.rt.Utils.Constant;
 
+import av.VRP.rt.Utils.Utils;
 import net.sourceforge.chart2d.*;
 
 import javax.swing.*;
@@ -41,19 +42,9 @@ public class MainFrame extends JFrame {
         this.setMinimumSize(new Dimension(500, 500));
         this.pack();
         this.setVisible(true);
-        //  tabbedPane1.setSelectedIndex(2);//FIXME remove
     }
 
     private void createUIComponents() {
-
-        tableTrips.setModel(
-                new DefaultTableModel(null, Constant.TABLE_TITLES) {
-                    @Override
-                    public boolean isCellEditable(int row, int column) {
-                        return false;
-                    }
-                }
-        );
 
         tableTrips.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -130,6 +121,17 @@ public class MainFrame extends JFrame {
         pb_calc_stat.setVisible(false);
         btn_statistic.setVisible(false);
         visualization.add(getChart2DDemoK(days, dots, month));
+    }
+
+    public void setTableModel(boolean isShort) {//Case
+        tableTrips.setModel(
+                new DefaultTableModel(null, Utils.getTitleForTable(isShort)) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                }
+        );
     }
 
     //FIXME move
@@ -280,6 +282,7 @@ public class MainFrame extends JFrame {
         btn_statistic = new JButton();
         btn_statistic.setEnabled(true);
         btn_statistic.setText("Подсчитать статистику");
+        btn_statistic.setVisible(false);
         panel8.add(btn_statistic, BorderLayout.CENTER);
         pb_calc_stat = new JProgressBar();
         pb_calc_stat.setBorderPainted(false);

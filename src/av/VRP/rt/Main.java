@@ -40,6 +40,7 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     }
 
     public void clear() {
+        Log.p("Clear list");
         trips.clear();
         n = 0;
     }
@@ -49,8 +50,7 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     }
 
     public void startParserThread() {
-        clear();
-         /*
+        /*
         VRPStaticData data = new VRPStaticData();
         data.setListener(this);
         */
@@ -80,6 +80,7 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     public void generated(Trip t) {
         if (t != null) {
             trips.add(t);
+            frame.addRow(t.toTableVector());
         }
         //    frame.showData(t.toString() + "\n");
     }
@@ -96,7 +97,7 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
         Log.d("stopped ", count);
         if (n > 3) {
             Log.d("last stopped ", count);
-
+            Log.d("Size ", trips.size());
             // trips.removeNull();
             //  trips.sortWithDate();
             // showStatistic();
@@ -105,12 +106,11 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     }
 
     private void showStatistic() {//FIXME rename
-        List<String> dates = trips.getActiveDaysStr();
-        List<Long> counts = trips.getCountTripsForEveryDay();
+        String[] dates = trips.getActiveDaysStr();
+        Long[] counts = trips.getCountTripsForEveryDay();
         String month = trips.getMonthYear();
 
-        frame.showGraph(
-                dates.toArray(new String[dates.size()]), counts.toArray(new Long[counts.size()]), month);
+        frame.showGraph(dates, counts, month);
     }
 
     @Override
@@ -137,11 +137,14 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     }
 
     public void aggregateLink(List<String> list) {
+        clear();
+
         Log.p("Скачивание выбранной ссылки");
         Log.p(list.toString());
 
         trips.setTitle(list.toString());
         frame.startDownloading();
+
         ThreadWriter thread = new ThreadWriter(list.toArray(new String[list.size()]));
         thread.setListener(this);
         thread.start();
@@ -150,6 +153,7 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     @Override
     public void onSuccess() {
         startParserThread();
+        frame.setTableModel(trips.getMode());
         // frame.endDownloading();//начать парсить
     }
 

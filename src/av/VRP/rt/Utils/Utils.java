@@ -20,4 +20,8 @@ public class Utils {
         }
         return result;
     }
+
+    public static String[] getTitleForTable(boolean isShort) {
+        return isShort ? Constant.TABLE_TITLES_FOR_UBER : Constant.TABLE_TITLES_FOR_GY;
+    }
 }

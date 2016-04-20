@@ -6,6 +6,10 @@ import av.VRP.rt.Utils.Utils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Artem on 20.04.2016.
  */
@@ -19,7 +23,7 @@ public class Trip implements Comparable<Trip> {
     }
 
     //size == 100
-    //[1,2, 8, 9, 10, 11] not null
+    //[1,2, 5, 6, 7, 8] not null
     // 2,2014-01-01 00:00:07,2014-01-01 00:08:28,N,1,-73.9169921875,40.771003723144531,-73.8885498046875,40.745452880859375,1,2.52,10,0.5,0.5,0,0,,11,2,,,
     public static Trip construct(String s) {
         if (s == null || s.isEmpty()) {
@@ -30,8 +34,8 @@ public class Trip implements Comparable<Trip> {
         String[] elements = Utils.strToArray(s, ",");
         if (s.length() > 100 || elements.length > 10) {//FIXME if split size>10 or else
             return new Trip(
-                    new PointWithTime(elements[8], elements[9], elements[1]),//FIXME const
-                    new PointWithTime(elements[10], elements[11], elements[2]));//FIXME const
+                    new PointWithTime(elements[5], elements[6], elements[1]),//FIXME const
+                    new PointWithTime(elements[7], elements[8], elements[2]));//FIXME const
         }
 
         if (s.length() > 20 || elements.length > 3) {//FIXME const
@@ -58,6 +62,16 @@ public class Trip implements Comparable<Trip> {
 
     public boolean checkSameDay(DateTime date) {
         return getStartPoint().checkSameDay(date);
+    }
+
+    public String[] toTableVector() {
+        List<String> result = new ArrayList<>();
+        result.addAll(Arrays.asList(startPoint.toTableVector()));
+
+        if (endPoint != null) {
+            result.addAll(Arrays.asList(endPoint.toTableVector()));
+        }
+        return result.toArray(new String[result.size()]);
     }
 
     @Override
