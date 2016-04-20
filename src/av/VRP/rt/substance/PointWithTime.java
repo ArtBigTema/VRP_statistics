@@ -16,23 +16,19 @@ import java.util.Date;
  */
 public class PointWithTime extends Point implements Comparable<PointWithTime> {//FIXME remove public
     //"12/31/2014 0:03:00",40.7366,-73.9906,"B02512"
+    // 2,2014-01-01 00:00:07,2014-01-01 00:08:28,N,1,-73.9169921875,40.771003723144531,-73.8885498046875,40.745452880859375,1,2.52,10,0.5,0.5,0,0,,11,2,,,
     public String dateTime = "";
     public String date = "";
     public String time = "";
 
     public DateTime _dateTime;
     public Date _date;//FIXME rename
-    public DateTimeFormatter fmt = DateTimeFormat.forPattern("M/dd/yyyy HH:mm:ss");
-    public SimpleDateFormat sdf = new SimpleDateFormat("M/dd/yyyy hh:mm:ss");
 
-    public PointWithTime(double la, double ln) {
-        super(la, ln);
-    }
+    public DateTimeFormatter fmt_1 = DateTimeFormat.forPattern("M/dd/yyyy HH:mm:ss");
+    public SimpleDateFormat sdf_1 = new SimpleDateFormat("M/dd/yyyy hh:mm:ss");
 
-    public PointWithTime(double la, double ln, String dt) {
-        super(la, ln);
-        setDateTime(dt);
-    }
+  // public SimpleDateFormat sdf_1 = new SimpleDateFormat("M/dd/yyyy hh:mm:ss");
+  //  public DateTimeFormatter fmt_1 = DateTimeFormat.forPattern("M/dd/yyyy HH:mm:ss");
 
     public PointWithTime(String la, String ln, String dt) {
         super(la, ln);
@@ -52,13 +48,15 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     }
 
     public void setDateTime(String s) {
+        String divider = "";
+
         dateTime = s;
         date = s.split("\\s+")[0];
         time = s.split("\\s+")[1];
 
         try {
-            _date = sdf.parse(s);
-            _dateTime = fmt.parseDateTime(s);
+            _date = sdf_1.parse(s);
+            _dateTime = fmt_1.parseDateTime(s);
         } catch (ParseException e) {
             e.printStackTrace();//FIXME
             Log.e(e.getMessage());
@@ -85,7 +83,7 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     }
 
     public boolean checkSameDay(String date) {
-        return checkSameDay(fmt.parseDateTime(date));
+        return checkSameDay(fmt_1.parseDateTime(date));
     }
 
     @Override
