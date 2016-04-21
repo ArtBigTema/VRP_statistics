@@ -2,6 +2,7 @@ package av.VRP.rt.substance;
 
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.joda.time.format.DateTimeFormat;
@@ -26,6 +27,9 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
 
     public SimpleDateFormat sdf_2 = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
     public DateTimeFormatter fmt_2 = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss");
+
+    public SimpleDateFormat sdf_0 = new SimpleDateFormat("dd.mm.yyyy hh:mm:ss");
+    public DateTimeFormatter fmt_0 = DateTimeFormat.forPattern("dd.mm.yyyy HH:mm:ss");
 
     public PointWithTime(String la, String ln, String dt) {
         super(la, ln);
@@ -65,7 +69,7 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
 
     public String[] toTableVector() {
         String[] result = new String[]{
-                fmt_1.print(_dateTime), getLat().toString(), getLat().toString()
+                fmt_0.print(_dateTime), getLat().toString(), getLat().toString()
         };
         return result;
     }

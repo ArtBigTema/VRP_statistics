@@ -133,6 +133,9 @@ public class Trips {
         int i = 0;
         for (Trip trip : trips) {
             result[i++] = trip.toTableVector();
+            if (i > 100000) {
+                break;
+            }
         }
         return result;
     }

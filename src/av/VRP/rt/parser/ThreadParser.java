@@ -42,7 +42,7 @@ public class ThreadParser extends Thread implements Runnable {
                     //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
                     // listener.show(Utils.strToArray(line, ","));
                 } else {
-                    Log.e(line);
+                  //  Log.e(line);
                 }
                 line = br.readLine();
             }
