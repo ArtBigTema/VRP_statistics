@@ -24,9 +24,16 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     private List<ThreadWriter> writers;
     private List<ThreadParser> parsers;
 
+    private int wCount;
+    private int pCount;
+
     public int n = 0;
 
     private volatile Trips trips;
+
+    public static void main(String[] args) {
+        getInstance();
+    }
 
     public static Main getInstance() {
         if (instance == null) {
@@ -43,17 +50,15 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     public void clear() {
+        Log.p("------------------");
         Log.p("Clear list");
-        trips.clear();
-        n = 0;
-    }
 
-    public static void main(String[] args) {
-        getInstance();
+        trips.clear();
+        pCount = wCount = n = 0;
     }
 
     public void startParserThread() {
-        Log.d("start thread parser");
+        Log.d("start threads parser");
         /*
         VRPStaticData data = new VRPStaticData();
         data.setListener(this);
@@ -66,12 +71,16 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             parsers = null;
         }
 
-        parsers = new ArrayList<>(n);//FIXME n - ?
+        pCount = 0;
+        parsers = new ArrayList<>(n);
 
-        while (n != 0) {
-            ThreadParser thread = new ThreadParser(--n);//FIXME reverse
+        int count = 0;
+        while (count != n) {
+            ThreadParser thread = new ThreadParser(count++);
             thread.setListener(this);
             parsers.add(thread);
+        }
+        for (Thread thread : parsers) {//FIXME
             thread.start();
         }
     }
@@ -81,51 +90,12 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         showStatistic();
     }
 
-    @Override
-    public void generated(String s) {
-        trips.add(s);
-        //    frame.showData(t.toString() + "\n");
-    }
-
-    @Override
-    public void started() {
-        n = 0;
-        frame.startDownloading();
-    }
-
-    @Override
-    public void stoped(int count) {
-        n++;
-        Log.d("stopped thread parser");
-        if (n > parsers.size() - 1) {
-            Log.d("stopped last thread parser");//fixme indexOf
-            Log.d("Size ", trips.size());
-            // trips.removeNull();
-            //  trips.sortWithDate();
-            // showStatistic();
-            frame.setTableData(trips.toTable());
-            frame.endDownloading(true);//начать парсить
-        }
-    }
-
     private void showStatistic() {//FIXME rename
         String[] dates = trips.getActiveDaysStr();
         Long[] counts = trips.getCountTripsForEveryDay();
         String month = trips.getMonthYear();
 
         frame.showGraph(dates, counts, month);
-    }
-
-    @Override
-    public void show(String[] row) {
-
-    }
-
-    @Override
-    public void show(int n, String row) {
-        //  sb.append(System.currentTimeMillis() + "-" + n + "." + row);
-
-        Log.p(n, ". ", row);
     }
 
     public void aggregateList() {
@@ -143,7 +113,8 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         clear();
 
         Log.p("Скачивание выбранной ссылки");
-        Log.p(list.toString());
+        Log.p(list);
+        n = list.size();
 
         trips.setTitle(list.toString());
         frame.startDownloading();
@@ -156,21 +127,25 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             writers = null;
         }
 
-        writers = new ArrayList<>(list.size());
+        wCount = 0;
+        writers = new ArrayList<>(n);
+
         for (String s : list) {
             ThreadWriter thread = new ThreadWriter(s, list.indexOf(s));//FIXME
             thread.setListener(this);
             writers.add(thread);
+        }
+        for (Thread thread : writers) {//FIXME
             thread.start();
         }
     }
 
     @Override
     public void onSuccess() {
-        n++;
+        wCount++;
         Log.d("stopped thread writer");
-        if (n > writers.size() - 1) {
-            Log.d("stopped last thread writer");
+        if (wCount >= writers.size()) {
+            Log.d("stopped all threads writer");
             startParserThread();
             frame.setTableModel(false);//обновить таблицу
             // frame.endDownloading();//начать парсить
@@ -178,7 +153,43 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     @Override
+    public void show(String[] row) {
+
+    }
+
+    @Override
+    public void show(int n, String row) {
+        //  sb.append(System.currentTimeMillis() + "-" + n + "." + row);
+        Log.p(n, ". ", row);
+    }
+
+    @Override
     public void onError() {
         frame.endDownloading(false);
+    }
+
+    @Override
+    public void generated(String s) {
+        trips.add(s);
+        //    frame.showData(t.toString() + "\n");
+    }
+
+    @Override
+    public void started() {
+        frame.startDownloading();
+    }
+
+    @Override
+    public void stoped(int count) {
+        pCount++;
+        Log.d("stopped thread parser");
+
+        if (pCount >= parsers.size()) {
+            Log.d("stopped all threads parser");//fixme indexOf
+            Log.d("Trips size= ", trips.size());
+
+            frame.setTableData(trips.toTable());
+            frame.endDownloading(true);//начать парсить
+        }
     }
 }
