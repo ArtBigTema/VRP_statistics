@@ -49,18 +49,21 @@ public class MainFrame extends JFrame {
         tableTrips.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         progressBar.setVisible(false);
+
         dowloadLinksButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Main.getInstance().aggregateList();
             }
         });
+
         dowloadLinkButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Main.getInstance().aggregateLink(getLinkFromList());
             }
         });
+
         btn_statistic.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

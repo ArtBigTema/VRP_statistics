@@ -70,6 +70,8 @@ public class Trip implements Comparable<Trip> {
 
         if (endPoint != null) {
             result.addAll(Arrays.asList(endPoint.toTableVector()));
+        } else {//FIXME if > 3
+            result.addAll(Arrays.asList(new String[]{"", "", ""}));
         }
         return result.toArray(new String[result.size()]);
     }

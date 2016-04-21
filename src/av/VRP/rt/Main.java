@@ -153,7 +153,7 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     @Override
     public void onSuccess() {
         startParserThread();
-        frame.setTableModel(trips.getMode());
+        frame.setTableModel(false);//обновить таблицу
         // frame.endDownloading();//начать парсить
     }
 
