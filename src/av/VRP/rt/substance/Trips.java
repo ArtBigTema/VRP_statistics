@@ -2,6 +2,7 @@ package av.VRP.rt.substance;
 
 import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Log;
+import av.VRP.rt.Utils.Utils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -22,14 +23,13 @@ public class Trips {
     }
 
     public void setTitle(String url) {
-        if (url.contains(Constant.GREEN)) {
-            title = Constant.GREEN;
-        }
-        if (url.contains(Constant.YELLOW)) {
-            title = Constant.YELLOW;
-        }
-        if (url.contains(Constant.UBER)) {
-            title = Constant.UBER;
+        title = Utils.getTitle(url);
+    }
+
+    public void add(String s) {
+        Trip trip = Trip.construct(s);
+        if (trip != null) {
+            add(trip);
         }
     }
 
@@ -126,5 +126,14 @@ public class Trips {
 
     public boolean getMode() {//FIXME rename
         return title.contains(Constant.UBER);
+    }
+
+    public String[][] toTable() {
+        String[][] result = new String[size()][];
+        int i = 0;
+        for (Trip trip : trips) {
+            result[i++] = trip.toTableVector();
+        }
+        return result;
     }
 }

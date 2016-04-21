@@ -24,4 +24,14 @@ public class Utils {
     public static String[] getTitleForTable(boolean isShort) {
         return isShort ? Constant.TABLE_TITLES_FOR_UBER : Constant.TABLE_TITLES_FOR_GY;
     }
+
+    public static String getTitle(String url) {
+        if (url.contains(Constant.GREEN)) {
+            return Constant.GREEN;
+        }
+        if (url.contains(Constant.YELLOW)) {
+            return Constant.YELLOW;
+        }
+        return Constant.UBER;
+    }
 }

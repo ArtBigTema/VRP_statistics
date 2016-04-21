@@ -8,18 +8,21 @@ import av.VRP.rt.listener.FileWriterListener;
 import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.parser.ThreadWriter;
-import av.VRP.rt.substance.Trip;
 import av.VRP.rt.substance.Trips;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 /**
  * Created by Artem on 09.04.2016.
  */
-public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
+public class Main implements VRPgeneratorListener, FileWriterListener {
     private static volatile Main instance;
     private MainFrame frame;
+
+    private List<ThreadWriter> writers;
+    private List<ThreadParser> parsers;
 
     public int n = 0;
 
@@ -50,25 +53,27 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     }
 
     public void startParserThread() {
+        Log.d("start thread parser");
         /*
         VRPStaticData data = new VRPStaticData();
         data.setListener(this);
         */
+        if (parsers != null) {
+            for (ThreadParser parser : parsers) {
+                parser.interrupt();
+                parser = null;//FIXME ask
+            }
+            parsers = null;
+        }
 
-        //fixme count
-        ThreadParser parser1 = new ThreadParser(1);
-        parser1.setListener(this);
-        ThreadParser parser2 = new ThreadParser(2);
-        parser2.setListener(this);
-        ThreadParser parser3 = new ThreadParser(3);
-        parser3.setListener(this);
-        ThreadParser parser4 = new ThreadParser(4);
-        parser4.setListener(this);
+        parsers = new ArrayList<>(n);//FIXME n - ?
 
-        parser1.start();
-        parser2.start();
-        parser3.start();
-        parser4.start();
+        while (n != 0) {
+            ThreadParser thread = new ThreadParser(--n);//FIXME reverse
+            thread.setListener(this);
+            parsers.add(thread);
+            thread.start();
+        }
     }
 
     public void aggregateStatistic() {
@@ -77,11 +82,8 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     }
 
     @Override
-    public void generated(Trip t) {
-        if (t != null) {
-            trips.add(t);
-            frame.addRow(t.toTableVector());
-        }
+    public void generated(String s) {
+        trips.add(s);
         //    frame.showData(t.toString() + "\n");
     }
 
@@ -94,14 +96,15 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     @Override
     public void stoped(int count) {
         n++;
-        Log.d("stopped ", count);
-        if (n > 3) {
-            Log.d("last stopped ", count);
+        Log.d("stopped thread parser");
+        if (n > parsers.size() - 1) {
+            Log.d("stopped last thread parser");//fixme indexOf
             Log.d("Size ", trips.size());
             // trips.removeNull();
             //  trips.sortWithDate();
             // showStatistic();
-            frame.endDownloading();//начать парсить
+            frame.setTableData(trips.toTable());
+            frame.endDownloading(true);//начать парсить
         }
     }
 
@@ -115,7 +118,7 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
 
     @Override
     public void show(String[] row) {
-        frame.addRow(row); //FIXME add all rows
+
     }
 
     @Override
@@ -145,20 +148,37 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
         trips.setTitle(list.toString());
         frame.startDownloading();
 
-        ThreadWriter thread = new ThreadWriter(list.toArray(new String[list.size()]));
-        thread.setListener(this);
-        thread.start();
+        if (writers != null) {
+            for (ThreadWriter writer : writers) {
+                writer.interrupt();
+                writer = null;//FIXME ask
+            }
+            writers = null;
+        }
+
+        writers = new ArrayList<>(list.size());
+        for (String s : list) {
+            ThreadWriter thread = new ThreadWriter(s, list.indexOf(s));//FIXME
+            thread.setListener(this);
+            writers.add(thread);
+            thread.start();
+        }
     }
 
     @Override
     public void onSuccess() {
-        startParserThread();
-        frame.setTableModel(false);//обновить таблицу
-        // frame.endDownloading();//начать парсить
+        n++;
+        Log.d("stopped thread writer");
+        if (n > writers.size() - 1) {
+            Log.d("stopped last thread writer");
+            startParserThread();
+            frame.setTableModel(false);//обновить таблицу
+            // frame.endDownloading();//начать парсить
+        }
     }
 
     @Override
     public void onError() {
-        frame.endDownloading();
+        frame.endDownloading(false);
     }
 }

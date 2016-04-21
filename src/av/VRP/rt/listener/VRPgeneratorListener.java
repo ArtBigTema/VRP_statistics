@@ -3,9 +3,9 @@ package av.VRP.rt.listener;
 /**
  * Created by Artem on 09.04.2016.
  */
-public interface VRPgeneratorListener<E> {//FIXME
+public interface VRPgeneratorListener {//FIXME and rename
 
-    public void generated(E t);
+    public void generated(String s);
 
     public void started();
 

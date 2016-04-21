@@ -1,7 +1,6 @@
 package av.VRP.rt.parser;
 
-import av.VRP.rt.Utils.HttpApi;
-import av.VRP.rt.Utils.Log;
+import av.VRP.rt.Utils.*;
 import av.VRP.rt.listener.FileWriterListener;
 
 import java.io.*;
@@ -9,23 +8,22 @@ import java.io.*;
 /**
  * Created by Artem on 10.04.2016.
  */
-public class ThreadWriter extends Thread implements Runnable {//FIXME all
-    public int num = 200_000;//count in part
-    public InputStream in;//FIXME remove public
-    public FileWriterListener listener;
+public class ThreadWriter extends Thread implements Runnable {
+    private FileWriterListener listener;
+    private InputStream in;
+    private PrintWriter writer;
 
-    public ThreadWriter(String url) {
+    public ThreadWriter(String url, int n) {
+        Files.deleteDirectory();
+        Files.createDirectory();
+
         try {
             in = HttpApi.getInstance().getInputStream(url);
+            writer = Files.getWriter(url, n);
         } catch (IOException e) {
             Log.e(e.getMessage());
             e.printStackTrace();//fixme
         }
-        new File("Files").mkdir();
-    }
-
-    public ThreadWriter(String[] urls) {
-        this(urls[0]);
     }
 
     public void setListener(FileWriterListener listener) {
@@ -36,30 +34,17 @@ public class ThreadWriter extends Thread implements Runnable {//FIXME all
     public void run() {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
-        String line = "";
-        int i = 0;
-
         try {
-            br.readLine();
-            line = br.readLine();
-            while (line != null) {
-                int count = num;
-                i++;
-                StringBuilder sb = new StringBuilder();
+            br.readLine();// skip first stroke in csv
+            String line = br.readLine();
 
-                while (line != null
-                        && count > 0) {
-                    count--;
-                    sb.append(line);
-                    sb.append(System.lineSeparator());
-                    line = br.readLine();
-                }
-                String everything = sb.toString().replace("\"", "");
-                PrintWriter writer = getWriter(i);
-                writer.append(everything);
+            while (line != null) {
+                writer.append(line.replace("\"", ""));
                 writer.append(System.lineSeparator());
-                writer.close();
+                line = br.readLine();
             }
+
+            writer.flush();
         } catch (IOException e) {
             if (listener != null) {
                 listener.onError();
@@ -67,6 +52,7 @@ public class ThreadWriter extends Thread implements Runnable {//FIXME all
             Log.e(e.getMessage());
             e.printStackTrace();
         } finally {//FIXME
+            writer.close();
             if (listener != null) {
                 listener.onSuccess();
             }
@@ -80,9 +66,5 @@ public class ThreadWriter extends Thread implements Runnable {//FIXME all
                 e.printStackTrace();
             }
         }
-    }
-
-    public PrintWriter getWriter(int i) throws FileNotFoundException, UnsupportedEncodingException {
-        return new PrintWriter("Files/file" + i + ".txt", "UTF-8");
     }
 }

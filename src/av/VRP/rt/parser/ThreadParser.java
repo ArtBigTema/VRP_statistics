@@ -1,27 +1,20 @@
 package av.VRP.rt.parser;
 
-import av.VRP.rt.Utils.Log;
-import av.VRP.rt.Utils.Utils;
+import av.VRP.rt.Utils.*;
 import av.VRP.rt.listener.VRPgeneratorListener;
-import av.VRP.rt.substance.Trip;
 
 import java.io.*;
 
 /**
  * Created by Artem on 09.04.2016.
  */
-public class ThreadParser extends Thread implements Runnable {//FIXME all
-    public BufferedReader br;//FIXME remove public
-    public VRPgeneratorListener listener;
-    public int num = 0;
+public class ThreadParser extends Thread implements Runnable {
+    private BufferedReader br;
+    private VRPgeneratorListener listener;
 
-    //Date/Time,"Lat","Lon","Base"
-    public ThreadParser(int n) {
-        num = n;
-
+    public ThreadParser(int i) {
         try {
-            br = new BufferedReader(
-                    new FileReader("Files/file" + n + ".txt"));
+            br = new BufferedReader(Files.getReader(i));
         } catch (IOException e) {
             Log.e(e.getMessage());
             e.printStackTrace();//FIXME
@@ -39,41 +32,27 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
 
     @Override
     public void run() {
-        String line = "";
-        int i = 0;
-        int count = 1200;//max = 200 000
-        StringBuilder sb = new StringBuilder();
         try {
-            line = br.readLine();
+            String line = br.readLine();
 
-            while (line != null && !line.contains("N,1,0,0,")) {// && count != 0) {//FIXME
-                if (!line.isEmpty()) {
-                    count--;
-                    i++;
-                    sb.append(line);
-                    sb.append(System.lineSeparator());
+            while (line != null) {// && count != 0) {//FIXME
+                if (!line.isEmpty() && !line.contains(",0,0,0,0,")) {//fixme
 
-                    listener.generated(Trip.construct(line));
+                    listener.generated(line);
                     //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
                     // listener.show(Utils.strToArray(line, ","));
-
-                    //    this.sleep(2);
+                } else {
+                    Log.e(line);
                 }
                 line = br.readLine();
             }
-            // String everything = sb.toString().replace("\"", "");
-            //  writer.append(everything);
-            //  writer.append(System.lineSeparator());
-
         } catch (IOException e) {
             Log.e(e.getMessage());
             e.printStackTrace();
         } finally {//FIXME
             try {
                 br.close();
-                // this.interrupt();
-                listener.stoped(num);
-                //  writer.close();
+                listener.stoped(0);
             } catch (IOException e) {
                 Log.e(e.getMessage());
                 e.printStackTrace();

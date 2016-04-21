@@ -106,18 +106,23 @@ public class MainFrame extends JFrame {
         btn_statistic.setVisible(false);
     }
 
-    public void endDownloading() {
+    public void endDownloading(boolean isSucces) {
         listLink.setEnabled(true);
         progressBar.setVisible(false);
         btn_statistic.setVisible(true);
 
         tabbedPane1.setSelectedIndex(1);
-        JOptionPane.showMessageDialog(this, "Succes", "Title", JOptionPane.INFORMATION_MESSAGE);//FIXME
+
+        JOptionPane.showMessageDialog(this,
+                isSucces ? "Succes" : "Fail", "Title",
+                isSucces ? 1 : 0);//FIXME
     }
 
-    public void addRow(String[] row) {
+    public void setTableData(String[][] tableData) {
         DefaultTableModel model = (DefaultTableModel) tableTrips.getModel();
-        model.addRow(row);
+        for (String[] row : tableData) {
+            model.addRow(row);
+        }
     }
 
     public void showGraph(String[] days, Long[] dots, String month) {
