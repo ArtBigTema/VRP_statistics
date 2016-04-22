@@ -129,11 +129,12 @@ public class Trips {
     }
 
     public String[][] toTable() {
-        String[][] result = new String[size()][];
+        int count = Math.min(10_000, size());
+        String[][] result = new String[count][];
         int i = 0;
         for (Trip trip : trips) {
             result[i++] = trip.toTableVector();
-            if (i > 100000) {
+            if (i > count) {
                 break;
             }
         }
