@@ -71,7 +71,7 @@ public class VRPStaticData {//FIXME all
 
     private void genertate() {
         if (listener != null) {
-            listener.generated(generatePointT());
+            listener.generated(generatePointT().toString());
             // listener.generated(generatePoint());
         }
     }
