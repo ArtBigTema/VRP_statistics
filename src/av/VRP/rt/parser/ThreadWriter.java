@@ -33,12 +33,14 @@ public class ThreadWriter extends Thread implements Runnable {
     @Override
     public void run() {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        int i = 0;
 
         try {
             br.readLine();// skip first stroke in csv
             String line = br.readLine();
 
             while (line != null) {
+                i++;
                 writer.append(line.replace("\"", ""));
                 writer.append(System.lineSeparator());
                 line = br.readLine();
@@ -54,7 +56,7 @@ public class ThreadWriter extends Thread implements Runnable {
         } finally {//FIXME
             writer.close();
             if (listener != null) {
-                listener.onSuccess();
+                listener.onSuccess(i);
             }
             try {
                 br.close();

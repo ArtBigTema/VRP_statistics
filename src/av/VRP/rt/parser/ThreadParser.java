@@ -11,9 +11,11 @@ import java.io.*;
 public class ThreadParser extends Thread implements Runnable {
     private BufferedReader br;
     private VRPgeneratorListener listener;
+    private String fileName;
 
     public ThreadParser(int i) {
         try {
+            fileName = Files.getFileName(i);
             br = new BufferedReader(Files.getReader(i));
         } catch (IOException e) {
             Log.e(e.getMessage());
@@ -38,11 +40,12 @@ public class ThreadParser extends Thread implements Runnable {
             while (line != null) {// && count != 0) {//FIXME
                 if (!line.isEmpty() && !line.contains(",0,0,0,0,")) {//fixme artefact
 
-                    listener.generated(line);
+                    //listener.generated(line);
+                    listener.generated(fileName, line);
                     //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
                     // listener.show(Utils.strToArray(line, ","));
                 } else {
-                  //  Log.e(line);
+                    //  Log.e(line);
                 }
                 line = br.readLine();
             }

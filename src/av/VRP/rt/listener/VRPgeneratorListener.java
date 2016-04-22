@@ -7,6 +7,8 @@ public interface VRPgeneratorListener {//FIXME and rename
 
     public void generated(String s);
 
+    public void generated(String s, String ss);//FIXME rename
+
     public void started();
 
     public void stoped(int count);

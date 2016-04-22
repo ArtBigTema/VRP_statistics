@@ -1,25 +1,23 @@
 package av.VRP.rt.substance;
 
-import av.VRP.rt.Utils.Constant;
-import av.VRP.rt.Utils.Log;
-import av.VRP.rt.Utils.Utils;
+import av.VRP.rt.Utils.*;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Artem on 19.04.2016.
  */
 public class Trips {
     private List<Trip> trips;
+    private Map<String, Integer> mapTrips;//FIXME
     private String title;
 
     public Trips() {
         trips = Collections.synchronizedList(new ArrayList<Trip>());
+        mapTrips = Collections.synchronizedMap(new TreeMap<String, Integer>());
     }
 
     public void setTitle(String url) {
@@ -33,17 +31,39 @@ public class Trips {
         }
     }
 
+    public void add(String who, String line) {
+        Trip trip = Trip.construct(line);
+        if (trip != null) {
+            add(who, trip);
+        }
+    }
+
+    public void add(String who, Trip t) {
+        String key = who + t.getDateStr();
+
+        if (mapTrips.get(key) != null) {
+            mapTrips.put(key, mapTrips.get(key) + 1);
+        } else {
+            mapTrips.put(key, 1);
+        }
+    }
+
     public void add(Trip t) {
         trips.add(t);
     }
 
-    public int size() {
+    public int listSize() {
         return trips.size();
+    }
+
+    public int mapSize() {
+        return mapTrips.size();
     }
 
     public void clear() {
         trips.clear();
         title = "";
+        mapTrips.clear();
     }
 
     public long getCountTripsForDay(DateTime date) {
@@ -93,7 +113,7 @@ public class Trips {
     }
 
     public Trip getDateEnd() {
-        return trips.get(size() - 1);//FIXME if sorted
+        return trips.get(listSize() - 1);//FIXME if sorted
     }
 
     public Long[] getCountTripsForEveryDay() {
@@ -121,7 +141,7 @@ public class Trips {
     }
 
     public String getMonthYear() {
-        return getDateStart().getStartPoint()._dateTime.toString("MMM YYYY");
+        return getDateStart().getMonthYear();
     }
 
     public boolean getMode() {//FIXME rename
@@ -129,14 +149,10 @@ public class Trips {
     }
 
     public String[][] toTable() {
-        //     int count = Math.min(10_000, size());
-        String[][] result = new String[size()][];
+        String[][] result = new String[listSize()][];
         int i = 0;
         for (Trip trip : trips) {
             result[i++] = trip.toTableVector();
-            //   if (i > count) {
-            //    break;
-            //  }
         }
         return result;
     }

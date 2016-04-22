@@ -1,9 +1,6 @@
 package av.VRP.rt;
 
-import av.VRP.rt.Utils.Constant;
-import av.VRP.rt.Utils.HttpApi;
-import av.VRP.rt.Utils.Log;
-import av.VRP.rt.Utils.Utils;
+import av.VRP.rt.Utils.*;
 import av.VRP.rt.listener.FileWriterListener;
 import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.listener.VRPgeneratorListener;
@@ -27,7 +24,9 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     private int wCount;
     private int pCount;
 
-    public int n = 0;
+    private int n = 0;
+    private int i = 0;
+    private int size = 0;
 
     private volatile Trips trips;
 
@@ -54,11 +53,13 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         Log.p("Clear list");
 
         trips.clear();
-        pCount = wCount = n = 0;
+        pCount = wCount = size = n = i = 0;
     }
 
     public void startParserThread() {
         Log.d("start threads parser");
+        size = size / 200_000;//for 1m = 5
+
         /*
         VRPStaticData data = new VRPStaticData();
         data.setListener(this);
@@ -141,15 +142,19 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     @Override
-    public void onSuccess() {
+    public void onSuccess(int count) {
+        size += count;
+        Log.p("Trips real listSize = ", count);
         wCount++;
         Log.d("stopped thread writer");
-        if (wCount >= writers.size()) {
+
+        if (wCount >= writers.size()) {//FIXME if > then err
             Log.d("stopped all threads writer");
+            Log.p("Max real listSize = ", size);
 
             frame.showPanelReadFile();
             frame.setTableModel(false);//обновить таблицу
-            // frame.endDownloading();//начать парсить
+            frame.endDownloading(true);
         }
     }
 
@@ -171,8 +176,16 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     @Override
     public void generated(String s) {//fixme thread
-        if (trips.size() < 200_000) {//fixme artefact
-            trips.add(s);
+
+        //    frame.showData(t.toString() + "\n");
+    }
+
+    @Override
+    public void generated(String s, String ss) {//fixme thread
+        trips.add(s, ss);
+        if (++i > size) {//fixme artefact
+            i = 0;
+            trips.add(ss);
         }
         //    frame.showData(t.toString() + "\n");
     }
@@ -187,12 +200,12 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         pCount++;
         Log.d("stopped thread parser");
 
-        if (pCount >= parsers.size()) {
+        if (pCount >= parsers.size()) {//FIXME if > then err
             Log.d("stopped all threads parser");//fixme indexOf
-            Log.d("Trips size= ", trips.size());
+            Log.p("Screen Trips listSize = ", trips.listSize());
+            Log.p("Trips mapSize = ", trips.mapSize());
 
             frame.setTableData(trips.toTable());
-            frame.endDownloading(true);//начать парсить
         }
     }
 }

@@ -19,17 +19,19 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     //"12/31/2014 0:03:00",40.7366,-73.9906,"B02512"
     // 2,2014-01-01 00:00:07,2014-01-01 00:08:28,N,1,-73.9169921875,40.771003723144531,-73.8885498046875,40.745452880859375,1,2.52,10,0.5,0.5,0,0,,11,2,,,
 
-    public DateTime _dateTime;
-    public Date _date;//FIXME rename
+    private DateTime _dateTime;
+    private Date _date;//FIXME rename
 
-    public DateTimeFormatter fmt_1 = DateTimeFormat.forPattern("M/dd/yyyy HH:mm:ss");
-    public SimpleDateFormat sdf_1 = new SimpleDateFormat("M/dd/yyyy hh:mm:ss");
+    private DateTimeFormatter fmt_1 = DateTimeFormat.forPattern("M/dd/yyyy HH:mm:ss");
+    private SimpleDateFormat sdf_1 = new SimpleDateFormat("M/dd/yyyy hh:mm:ss");
 
-    public SimpleDateFormat sdf_2 = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-    public DateTimeFormatter fmt_2 = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss");
+    private SimpleDateFormat sdf_2 = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+    private DateTimeFormatter fmt_2 = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss");
 
-    public SimpleDateFormat sdf_0 = new SimpleDateFormat("dd.mm.yyyy hh:mm:ss");
-    public DateTimeFormatter fmt_0 = DateTimeFormat.forPattern("dd.mm.yyyy HH:mm:ss");
+    private SimpleDateFormat sdf_0 = new SimpleDateFormat("dd.mm.yyyy hh:mm:ss");
+    private DateTimeFormatter fmt_0 = DateTimeFormat.forPattern("dd.mm.yyyy HH:mm:ss");
+
+    private String fmt = "DD.MM.YYYY";
 
     public PointWithTime(String la, String ln, String dt) {
         super(la, ln);
@@ -39,7 +41,7 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     public static PointWithTime construct(String s) {
         if (s != null && !s.isEmpty()) {
             String[] elements = Utils.strToArray(s, ",");
-            //FIXME if size < 3
+            //FIXME if listSize < 3
             if (elements.length > 2) {
                 return new PointWithTime(elements[1], elements[2], elements[0]);
             }
@@ -72,6 +74,10 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
                 fmt_0.print(_dateTime), getLat().toString(), getLat().toString()
         };
         return result;
+    }
+
+    public String getDateStr() {
+        return _dateTime.toString(fmt);
     }
 
     @Override

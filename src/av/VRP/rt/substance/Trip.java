@@ -22,9 +22,6 @@ public class Trip implements Comparable<Trip> {
         this.endPoint = endPoint;
     }
 
-    //size == 100
-    //[1,2, 5, 6, 7, 8] not null
-    // 2,2014-01-01 00:00:07,2014-01-01 00:08:28,N,1,-73.9169921875,40.771003723144531,-73.8885498046875,40.745452880859375,1,2.52,10,0.5,0.5,0,0,,11,2,,,
     public static Trip construct(String s) {
         if (s == null || s.isEmpty()) {
             Log.e("null pointer");
@@ -32,7 +29,7 @@ public class Trip implements Comparable<Trip> {
         }
 
         String[] elements = Utils.strToArray(s, ",");
-        if (s.length() > 100 || elements.length > 10) {//FIXME if split size>10 or else
+        if (s.length() > 100 || elements.length > 10) {//FIXME if split listSize>10 or else
             return new Trip(
                     new PointWithTime(elements[5], elements[6], elements[1]),//FIXME const
                     new PointWithTime(elements[7], elements[8], elements[2]));//FIXME const
@@ -40,7 +37,7 @@ public class Trip implements Comparable<Trip> {
 
         if (s.length() > 20 || elements.length > 3) {//FIXME const
             return new Trip(
-                    PointWithTime.construct(s),//FIXME const
+                    new PointWithTime(elements[1], elements[2], elements[0]),//FIXME const
                     null);
         }
 
@@ -74,6 +71,14 @@ public class Trip implements Comparable<Trip> {
             result.addAll(Arrays.asList(new String[]{"", "", ""}));
         }
         return result.toArray(new String[result.size()]);
+    }
+
+    public String getDateStr() {
+        return startPoint.getDateStr();
+    }
+
+    public String getMonthYear() {
+        return getStartPoint().getDateTime().toString("MMM YYYY");
     }
 
     @Override

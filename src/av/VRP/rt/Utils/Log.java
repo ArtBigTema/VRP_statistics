@@ -10,6 +10,10 @@ public class Log {//FIXME log to file
         System.out.println(s.toString());
     }
 
+    public static void p(Object s, Object ss) {
+        p(s.toString() + ss.toString());
+    }
+
     public static void p(Object s, String divider, String ss) {
         p(s + divider + ss);
     }

@@ -15,6 +15,10 @@ public class Files {
         return new FileReader(getFileInDir(Constant.DIR, i));
     }
 
+    public static String getFileName(int i) throws IOException {
+        return getFileNameInDir(Constant.DIR, i);
+    }
+
     public static void createDirectory() {
         new File(Constant.DIR).mkdir();
     }
@@ -35,6 +39,10 @@ public class Files {
 
     public static String getFileInDir(String dir, int i) throws IOException {
         return new File(Constant.DIR).listFiles()[i].getCanonicalPath();
+    }
+
+    public static String getFileNameInDir(String dir, int i) throws IOException {
+        return new File(Constant.DIR).listFiles()[i].getName();
     }
 
     public static int getCountFilesInDir(String dir) {
