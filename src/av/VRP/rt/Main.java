@@ -8,6 +8,7 @@ import av.VRP.rt.parser.ThreadWriter;
 import av.VRP.rt.substance.Trips;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -93,7 +94,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     private void showStatistic() {//FIXME rename
         String[] dates = trips.getActiveDaysStr();
-        Long[] counts = trips.getCountTripsForEveryDay();
+        Integer[] counts = trips.getCountTrips();
         String month = trips.getMonthYear();
 
         frame.showGraph(dates, counts, month);
@@ -112,6 +113,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     public void aggregateLink(List<String> list) {
         clear();
+
+        if (list == null) {
+            list = Collections.singletonList(Constant.URL_FIRST);
+        }
 
         Log.p("Скачивание выбранной ссылки");
         Log.p(list);

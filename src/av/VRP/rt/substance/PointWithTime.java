@@ -31,7 +31,8 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     private SimpleDateFormat sdf_0 = new SimpleDateFormat("dd.mm.yyyy hh:mm:ss");
     private DateTimeFormatter fmt_0 = DateTimeFormat.forPattern("dd.mm.yyyy HH:mm:ss");
 
-    private String fmt = "dd.MM.yyyy";
+    public static String fmtLong = "dd.MM.yyyy";//fixme
+    public static String fmtShort = "MM.yyyy";//fixme
 
     public PointWithTime(String la, String ln, String dt) {
         super(la, ln);
@@ -77,7 +78,7 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     }
 
     public String getDateStr() {
-        return _dateTime.toString(fmt);
+        return _dateTime.toString(fmtLong);
     }
 
     @Override

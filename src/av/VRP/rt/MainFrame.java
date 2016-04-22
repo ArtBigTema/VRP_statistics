@@ -1,6 +1,5 @@
 package av.VRP.rt;
 
-import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Utils;
 
 import net.sourceforge.chart2d.*;
@@ -13,7 +12,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,11 +93,7 @@ public class MainFrame extends JFrame {
     }
 
     public List getLinkFromList() {
-        if (listLink.getSelectedValue() == null) {
-            return Collections.singletonList(Constant.URL_FIRST);
-        } else {
-            return listLink.getSelectedValuesList();
-        }
+        return listLink.getSelectedValuesList();
     }
 
     public void setListData(String[] listData) {
@@ -119,7 +113,6 @@ public class MainFrame extends JFrame {
         listLink.setEnabled(true);
         dowloadLinkButton.setEnabled(false);
         progressBar.setVisible(false);
-        pb_read_file.setVisible(false);
 
         JOptionPane.showMessageDialog(this,
                 isSucces ? "Succes" : "Fail", "Title",
@@ -135,7 +128,7 @@ public class MainFrame extends JFrame {
         pb_read_file.setVisible(false);
     }
 
-    public void showGraph(String[] days, Long[] dots, String month) {
+    public void showGraph(String[] days, Integer[] dots, String month) {
         pb_calc_stat.setVisible(false);
         btn_statistic.setVisible(false);
         visualization.add(getChart2DDemoK(days, dots, month));
@@ -161,10 +154,10 @@ public class MainFrame extends JFrame {
     }
 
     //FIXME move
-    private Chart2D getChart2DDemoK(String[] days, Long[] dots, String month) {
+    private Chart2D getChart2DDemoK(String[] days, Integer[] dots, String month) {
         LBChart2D chart = getStandartChard2D(month, days);
 
-        Dataset dataset = new Dataset(1, days.length, 1);
+        Dataset dataset = new Dataset(1, dots.length, 1);
 
         for (int i = 0; i < dataset.getNumSets(); ++i) {
             for (int j = 0; j < dataset.getNumCats(); ++j) {

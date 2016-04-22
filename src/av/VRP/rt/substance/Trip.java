@@ -78,7 +78,7 @@ public class Trip implements Comparable<Trip> {
     }
 
     public String getMonthYear() {
-        return getStartPoint().getDateTime().toString("MMM YYYY");
+        return getStartPoint().getDateTime().toString("MM.yyyy");//FIXME const
     }
 
     @Override
