@@ -146,7 +146,8 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         Log.d("stopped thread writer");
         if (wCount >= writers.size()) {
             Log.d("stopped all threads writer");
-            startParserThread();
+
+            frame.showPanelReadFile();
             frame.setTableModel(false);//обновить таблицу
             // frame.endDownloading();//начать парсить
         }

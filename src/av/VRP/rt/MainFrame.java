@@ -30,6 +30,8 @@ public class MainFrame extends JFrame {
     private JList listLink;
     private JButton btn_statistic;
     private JProgressBar pb_calc_stat;
+    private JProgressBar pb_read_file;
+    private JButton btn_read_file;
 
     public MainFrame() {
         super("MainFrame");
@@ -79,6 +81,18 @@ public class MainFrame extends JFrame {
                 dowloadLinkButton.setEnabled(true);
             }
         });
+
+        pb_read_file.setVisible(false);
+        btn_read_file.setVisible(true);
+
+        btn_read_file.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pb_read_file.setVisible(true);
+                btn_read_file.setVisible(false);
+                Main.getInstance().startParserThread();
+            }
+        });
     }
 
     public List getLinkFromList() {
@@ -111,7 +125,7 @@ public class MainFrame extends JFrame {
         progressBar.setVisible(false);
         btn_statistic.setVisible(true);
 
-        tabbedPane1.setSelectedIndex(1);
+        pb_read_file.setVisible(false);
 
         JOptionPane.showMessageDialog(this,
                 isSucces ? "Succes" : "Fail", "Title",
@@ -129,6 +143,13 @@ public class MainFrame extends JFrame {
         pb_calc_stat.setVisible(false);
         btn_statistic.setVisible(false);
         visualization.add(getChart2DDemoK(days, dots, month));
+    }
+
+    public void showPanelReadFile() {
+        tabbedPane1.setSelectedIndex(1);
+
+        pb_read_file.setVisible(false);
+        btn_read_file.setVisible(true);
     }
 
     public void setTableModel(boolean isShort) {//Case
@@ -278,28 +299,42 @@ public class MainFrame extends JFrame {
         final JScrollPane scrollPane2 = new JScrollPane();
         scrollPane2.setEnabled(true);
         scrollPane2.setVerifyInputWhenFocusTarget(true);
+        scrollPane2.setVisible(true);
         panel6.add(scrollPane2, BorderLayout.CENTER);
         tableTrips = new JTable();
         scrollPane2.setViewportView(tableTrips);
         final JPanel panel7 = new JPanel();
         panel7.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Визуализация", panel7);
+        panel6.add(panel7, BorderLayout.NORTH);
+        btn_read_file = new JButton();
+        btn_read_file.setEnabled(true);
+        btn_read_file.setText("Cчитать из файла");
+        btn_read_file.setVisible(false);
+        panel7.add(btn_read_file, BorderLayout.CENTER);
+        pb_read_file = new JProgressBar();
+        pb_read_file.setBorderPainted(false);
+        pb_read_file.setIndeterminate(true);
+        pb_read_file.setVisible(false);
+        panel7.add(pb_read_file, BorderLayout.SOUTH);
         final JPanel panel8 = new JPanel();
         panel8.setLayout(new BorderLayout(0, 0));
-        panel7.add(panel8, BorderLayout.NORTH);
+        tabbedPane1.addTab("Визуализация", panel8);
+        final JPanel panel9 = new JPanel();
+        panel9.setLayout(new BorderLayout(0, 0));
+        panel8.add(panel9, BorderLayout.NORTH);
         btn_statistic = new JButton();
         btn_statistic.setEnabled(true);
         btn_statistic.setText("Подсчитать статистику");
         btn_statistic.setVisible(false);
-        panel8.add(btn_statistic, BorderLayout.CENTER);
+        panel9.add(btn_statistic, BorderLayout.CENTER);
         pb_calc_stat = new JProgressBar();
         pb_calc_stat.setBorderPainted(false);
         pb_calc_stat.setIndeterminate(true);
         pb_calc_stat.setVisible(false);
-        panel8.add(pb_calc_stat, BorderLayout.SOUTH);
+        panel9.add(pb_calc_stat, BorderLayout.SOUTH);
         visualization = new JPanel();
         visualization.setLayout(new BorderLayout(0, 0));
-        panel7.add(visualization, BorderLayout.CENTER);
+        panel8.add(visualization, BorderLayout.CENTER);
     }
 
     /**
