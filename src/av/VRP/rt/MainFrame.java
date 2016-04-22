@@ -139,7 +139,7 @@ public class MainFrame extends JFrame {
 
         btn_read_file.setVisible(true);
         btn_read_file.setEnabled(true);
-        btn_read_file.doClick();//FIXME remove
+       // btn_read_file.doClick();//FIXME remove
     }
 
     public void setTableModel(boolean isShort) {//Case

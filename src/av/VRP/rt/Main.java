@@ -90,6 +90,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     public void aggregateStatistic() {
         trips.sortWithDate();
         showStatistic();
+        Log.p(System.currentTimeMillis());
     }
 
     private void showStatistic() {//FIXME rename
@@ -119,6 +120,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         }
 
         Log.p("Скачивание выбранной ссылки");
+        Log.p(list.size());
         Log.p(list);
         n = list.size();
 
@@ -151,7 +153,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         size += count;
         Log.p("Trips real listSize = ", count);
         wCount++;
-        Log.d("stopped thread writer");
+        Log.d("stopped thread writer ", wCount);
 
         if (wCount >= writers.size()) {//FIXME if > then err
             Log.d("stopped all threads writer");
@@ -203,7 +205,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     @Override
     public void stoped(int count) {
         pCount++;
-        Log.d("stopped thread parser");
+        Log.d("stopped thread parser ", pCount);
 
         if (pCount >= parsers.size()) {//FIXME if > then err
             Log.d("stopped all threads parser");

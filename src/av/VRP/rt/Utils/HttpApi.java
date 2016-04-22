@@ -6,6 +6,7 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Artem on 10.04.2016.
@@ -15,7 +16,10 @@ public class HttpApi {
     private OkHttpClient client;
 
     private HttpApi() {
-        client = new OkHttpClient();
+        client = new OkHttpClient()
+                .newBuilder()
+                .readTimeout(5, TimeUnit.MINUTES)
+                .build();
     }
 
     public static HttpApi getInstance() {
