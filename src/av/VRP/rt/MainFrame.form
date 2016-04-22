@@ -113,7 +113,7 @@
                   <component id="98f49" class="javax.swing.JButton" binding="btn_read_file">
                     <constraints border-constraint="Center"/>
                     <properties>
-                      <enabled value="true"/>
+                      <enabled value="false"/>
                       <text value="Cчитать из файла"/>
                       <visible value="false"/>
                     </properties>

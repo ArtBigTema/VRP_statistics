@@ -1,8 +1,8 @@
 package av.VRP.rt;
 
 import av.VRP.rt.Utils.Constant;
-
 import av.VRP.rt.Utils.Utils;
+
 import net.sourceforge.chart2d.*;
 
 import javax.swing.*;
@@ -12,7 +12,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,6 +44,7 @@ public class MainFrame extends JFrame {
         this.setPreferredSize(new Dimension(900, 500));
         this.setMinimumSize(new Dimension(500, 500));
         this.pack();
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 
@@ -82,9 +84,6 @@ public class MainFrame extends JFrame {
             }
         });
 
-        pb_read_file.setVisible(false);
-        btn_read_file.setVisible(true);
-
         btn_read_file.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,26 +104,21 @@ public class MainFrame extends JFrame {
 
     public void setListData(String[] listData) {
         listLink.setListData(listData);
-
-        dowloadLinkButton.setEnabled(true);
-        dowloadLinksButton.setEnabled(false);
-        progressBar.setVisible(false);
+        dowloadLinksButton.setVisible(false);
     }
 
     public void startDownloading() {
         visualization.removeAll();
         listLink.setEnabled(false);
         progressBar.setVisible(true);
-        dowloadLinksButton.setEnabled(false);
         dowloadLinkButton.setEnabled(false);
         btn_statistic.setVisible(false);
     }
 
     public void endDownloading(boolean isSucces) {
         listLink.setEnabled(true);
+        dowloadLinkButton.setEnabled(false);
         progressBar.setVisible(false);
-        btn_statistic.setVisible(true);
-
         pb_read_file.setVisible(false);
 
         JOptionPane.showMessageDialog(this,
@@ -137,6 +131,8 @@ public class MainFrame extends JFrame {
         for (String[] row : tableData) {
             model.addRow(row);
         }
+        btn_statistic.setVisible(true);
+        pb_read_file.setVisible(false);
     }
 
     public void showGraph(String[] days, Long[] dots, String month) {
@@ -148,8 +144,9 @@ public class MainFrame extends JFrame {
     public void showPanelReadFile() {
         tabbedPane1.setSelectedIndex(1);
 
-        pb_read_file.setVisible(false);
         btn_read_file.setVisible(true);
+        btn_read_file.setEnabled(true);
+        btn_read_file.doClick();//FIXME remove
     }
 
     public void setTableModel(boolean isShort) {//Case
@@ -307,7 +304,7 @@ public class MainFrame extends JFrame {
         panel7.setLayout(new BorderLayout(0, 0));
         panel6.add(panel7, BorderLayout.NORTH);
         btn_read_file = new JButton();
-        btn_read_file.setEnabled(true);
+        btn_read_file.setEnabled(false);
         btn_read_file.setText("Cчитать из файла");
         btn_read_file.setVisible(false);
         panel7.add(btn_read_file, BorderLayout.CENTER);
