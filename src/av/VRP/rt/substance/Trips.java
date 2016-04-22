@@ -13,15 +13,20 @@ import java.util.*;
 public class Trips {
     private List<Trip> trips;
     private Map<String, Integer> mapTrips;//FIXME
-    private String title;
+    private List<String> titles;
 
     public Trips() {
         trips = Collections.synchronizedList(new ArrayList<Trip>());
         mapTrips = Collections.synchronizedMap(new TreeMap<String, Integer>());
+        titles = new ArrayList<>();
     }
 
-    public void setTitle(String url) {
-        title = Utils.getTitle(url);
+    public void addTitle(String who) {//не убирай цифру после имени, т.к. сортировка
+        String title = who.replace(Constant.FILE_FORMAT, "&");//System.lineSeparator()
+        if (!titles.contains(title)) {
+            titles.add(title);
+            Log.p("add title " + title);
+        }
     }
 
     public void add(String s) {
@@ -40,6 +45,7 @@ public class Trips {
 
     public void add(String who, Trip t) {
         String key = who + t.getDateStr();
+        addTitle(who + t.getMonthYear());//FIXME move to ...
 
         if (mapTrips.get(key) != null) {
             mapTrips.put(key, mapTrips.get(key) + 1);
@@ -62,7 +68,7 @@ public class Trips {
 
     public void clear() {
         trips.clear();
-        title = "";
+        titles.clear();
         mapTrips.clear();
     }
 
@@ -130,7 +136,7 @@ public class Trips {
         return result.toArray(new Long[result.size()]);
     }
 
-    public void sortWithDate() {
+    public void sortWithDate() {// add comparators
         Log.d("sorting");
         Collections.sort(trips);
         Log.d("sorted");
@@ -142,10 +148,6 @@ public class Trips {
 
     public String getMonthYear() {
         return getDateStart().getMonthYear();
-    }
-
-    public boolean getMode() {//FIXME rename
-        return title.contains(Constant.UBER);
     }
 
     public String[][] toTable() {

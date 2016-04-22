@@ -26,12 +26,12 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     private SimpleDateFormat sdf_1 = new SimpleDateFormat("M/dd/yyyy hh:mm:ss");
 
     private SimpleDateFormat sdf_2 = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-    private DateTimeFormatter fmt_2 = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss");
+    private DateTimeFormatter fmt_2 = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
 
     private SimpleDateFormat sdf_0 = new SimpleDateFormat("dd.mm.yyyy hh:mm:ss");
     private DateTimeFormatter fmt_0 = DateTimeFormat.forPattern("dd.mm.yyyy HH:mm:ss");
 
-    private String fmt = "DD.MM.YYYY";
+    private String fmt = "dd.MM.yyyy";
 
     public PointWithTime(String la, String ln, String dt) {
         super(la, ln);
@@ -71,7 +71,7 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
 
     public String[] toTableVector() {
         String[] result = new String[]{
-                fmt_0.print(_dateTime), getLat().toString(), getLat().toString()
+                getDateStr(), getLat().toString(), getLat().toString()
         };
         return result;
     }

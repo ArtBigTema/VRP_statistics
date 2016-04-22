@@ -10,7 +10,6 @@ import av.VRP.rt.substance.Trips;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Created by Artem on 09.04.2016.
  */
@@ -69,6 +68,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
                 parser.interrupt();
                 parser = null;//FIXME ask
             }
+            parsers.clear();
             parsers = null;
         }
 
@@ -117,7 +117,6 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         Log.p(list);
         n = list.size();
 
-        trips.setTitle(list.toString());
         frame.startDownloading();
 
         if (writers != null) {
@@ -125,6 +124,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
                 writer.interrupt();
                 writer = null;//FIXME ask
             }
+            writers.clear();
             writers = null;
         }
 
@@ -159,6 +159,11 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     @Override
+    public void onError() {
+        frame.endDownloading(false);
+    }
+
+    @Override
     public void show(String[] row) {
 
     }
@@ -170,20 +175,15 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     @Override
-    public void onError() {
-        frame.endDownloading(false);
-    }
-
-    @Override
     public void generated(String s) {//fixme thread
 
         //    frame.showData(t.toString() + "\n");
     }
 
     @Override
-    public void generated(String s, String ss) {//fixme thread
+    public void generated(String s, String ss) {
         trips.add(s, ss);
-        if (++i > size) {//fixme artefact
+        if (++i > size) {
             i = 0;
             trips.add(ss);
         }
@@ -201,7 +201,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         Log.d("stopped thread parser");
 
         if (pCount >= parsers.size()) {//FIXME if > then err
-            Log.d("stopped all threads parser");//fixme indexOf
+            Log.d("stopped all threads parser");
             Log.p("Screen Trips listSize = ", trips.listSize());
             Log.p("Trips mapSize = ", trips.mapSize());
 
