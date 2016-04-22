@@ -18,7 +18,7 @@ public class Trips {
     private String title;
 
     public Trips() {
-        trips = Collections.synchronizedList(new ArrayList<Trip>());
+        trips = new ArrayList<>();//Collections.synchronizedList(new ArrayList<Trip>());
     }
 
     public void setTitle(String url) {

@@ -30,4 +30,10 @@ public class Constant {
     public static final String UBER = "uber";
     public static final String GREEN = "green";
     public static final String YELLOW = "yellow";
+    
+    public static final String DIR = "Files";
+    public static final String FILE = "file";
+    public static final String FILE_FORMAT = ".txt";
+    public static final String FILE_ENCODING = "UTF-8";
+
 }

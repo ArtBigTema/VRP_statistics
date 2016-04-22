@@ -39,6 +39,8 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
 
     @Override
     public void run() {
+        Log.p("----------");
+        Log.p("Thread " + num);
         String line = "";
         int i = 0;
         int count = 1200;//max = 200 000
@@ -46,14 +48,15 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
         try {
             line = br.readLine();
 
-            while (line != null && !line.contains("N,1,0,0,")) {// && count != 0) {//FIXME
-                if (!line.isEmpty()) {
+            while (line != null) {// && count != 0) {//FIXME
+                if (!line.isEmpty() && !line.contains(",0,0,0,0,")) {
                     count--;
                     i++;
                     sb.append(line);
                     sb.append(System.lineSeparator());
 
                     listener.generated(Trip.construct(line));
+                    Log.p(num + ":num ", " = ", count);
                     //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
                     // listener.show(Utils.strToArray(line, ","));
 
@@ -61,6 +64,8 @@ public class ThreadParser extends Thread implements Runnable {//FIXME all
                 }
                 line = br.readLine();
             }
+            Log.p("count", " = ", i);
+            Log.p("----------");
             // String everything = sb.toString().replace("\"", "");
             //  writer.append(everything);
             //  writer.append(System.lineSeparator());

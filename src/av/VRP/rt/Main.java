@@ -80,7 +80,7 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     public void generated(Trip t) {
         if (t != null) {
             trips.add(t);
-            frame.addRow(t.toTableVector());
+            // frame.addRow(t.toTableVector());
         }
         //    frame.showData(t.toString() + "\n");
     }
@@ -95,6 +95,7 @@ public class Main implements VRPgeneratorListener<Trip>, FileWriterListener {
     public void stoped(int count) {
         n++;
         Log.d("stopped ", count);
+        Log.d("Size ", trips.size());
         if (n > 3) {
             Log.d("last stopped ", count);
             Log.d("Size ", trips.size());

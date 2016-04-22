@@ -22,7 +22,7 @@ public class Log {//FIXME log to file
         d(s.toString() + " " + ss.toString());
     }
 
-    public static void p(Object s, String divider, String ss) {
+    public static void p(Object s, String divider, Object ss) {
         p(s + divider + ss);
     }
 }
