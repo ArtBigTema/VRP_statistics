@@ -128,7 +128,7 @@ public class MainFrame extends JFrame {
         pb_read_file.setVisible(false);
     }
 
-    public void showGraph(String[] days, Integer[] dots, String month) {
+    public void showGraph(String[][] days, Integer[][] dots, String[] month) {
         pb_calc_stat.setVisible(false);
         btn_statistic.setVisible(false);
         visualization.add(getChart2DDemoK(days, dots, month));
@@ -154,16 +154,16 @@ public class MainFrame extends JFrame {
     }
 
     //FIXME move
-    private Chart2D getChart2DDemoK(String[] days, Integer[] dots, String month) {
+    private Chart2D getChart2DDemoK(String[][] days, Integer[][] dots, String[] month) {
         LBChart2D chart = getStandartChard2D(month, days);
 
-        Dataset dataset = new Dataset(1, dots.length, 1);
+        Dataset dataset = new Dataset(dots.length, days[0].length, 1);
 
         for (int i = 0; i < dataset.getNumSets(); ++i) {
             for (int j = 0; j < dataset.getNumCats(); ++j) {
                 for (int k = 0; k < dataset.getNumItems(); k++) {
                     dataset.set(i, j, k,
-                            dots[j].floatValue());
+                            dots[i][j]);
                 }
             }
         }
@@ -175,12 +175,12 @@ public class MainFrame extends JFrame {
         return chart;
     }
 
-    public LBChart2D getStandartChard2D(String title, String[] labels) {
+    public LBChart2D getStandartChard2D(String[] title, String[][] labels) {
         //<-- Begin Chart2D configuration -->
 
         //Configure object properties
         Object2DProperties object2DProps = new Object2DProperties();
-        object2DProps.setObjectTitleText(title);
+        object2DProps.setObjectTitleText(title.toString());
 
         //Configure chart properties
         Chart2DProperties chart2DProps = new Chart2DProperties();
@@ -188,12 +188,12 @@ public class MainFrame extends JFrame {
 
         //Configure legend properties
         LegendProperties legendProps = new LegendProperties();
-        String[] legendLabels = new String[]{title};// {"2001", "2000", "1999"};
+        String[] legendLabels = title;// {"2001", "2000", "1999"};
         legendProps.setLegendLabelsTexts(legendLabels);
 
         //Configure graph chart properties
         GraphChart2DProperties graphChart2DProps = new GraphChart2DProperties();
-        String[] labelsAxisLabels = labels;
+        String[] labelsAxisLabels = labels[0];//days 1 to 30(31)
         //   {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Nov", "Dec"};
         graphChart2DProps.setLabelsAxisLabelsTexts(labelsAxisLabels);
         graphChart2DProps.setLabelsAxisTitleText("Days");

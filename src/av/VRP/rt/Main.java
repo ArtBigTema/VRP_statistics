@@ -93,11 +93,11 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     private void showStatistic() {//FIXME rename
-        String[] dates = trips.getActiveDaysStr();
-        Integer[] counts = trips.getCountTrips();
-        String month = trips.getMonthYear();
+        String[][] dates = trips.getActiveDaysStr();
+        Integer[][] counts = trips.getCountTrips();
+        String[] months = trips.getMonthYear();
 
-        frame.showGraph(dates, counts, month);
+        frame.showGraph(dates, counts, months);
     }
 
     public void aggregateList() {

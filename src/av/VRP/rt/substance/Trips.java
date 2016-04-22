@@ -80,35 +80,38 @@ public class Trips {
                         .parseDateTime(title.split("&")[1]));
     }
 
-    public String[] getActiveDaysStr() {
-        List<List<String>> result = new ArrayList<>(titles.size());
+    public String[][] getActiveDaysStr() {
+        String[][] result = new String[titles.size()][];
 
         for (String title : titles) {
             List<String> subResult = new ArrayList<>();
 
             int i = 0;
-            int lastDayOfMonth = getDateFromStr(title)
-                    .dayOfMonth().getMaximumValue();//title
+            //  int lastDayOfMonth = getDateFromStr(title)
+            //           .dayOfMonth().getMaximumValue();
+            int lastDayOfMonth = 31;
 
             while (++i <= lastDayOfMonth) {
                 subResult.add(String.valueOf(i));
             }
-            result.add(subResult);
+            result[titles.indexOf(title)] = subResult.toArray(new String[subResult.size()]);
         }
 
-        return result.get(0).toArray(new String[result.get(0).size()]);//fIXME all
+        return result;
     }
 
-    public Integer[] getCountTrips() {//FIXME method
-        List<List<Integer>> result = new ArrayList<>(titles.size());
+    public Integer[][] getCountTrips() {//FIXME method
+        Integer[][] result = new Integer[titles.size()][];
 
         for (String title : titles) {
             List<Integer> subResult = new ArrayList<>();
             List<String> keys = getKeysContainsTitle(title);
             String preKey = keys.get(0).split("&")[0] + "&";
 
-            for (int i = 1; i <= getDateFromStr(title)
-                    .dayOfMonth().getMaximumValue(); i++) {
+            int lastDayOfMonth = 31;
+            //getDateFromStr(title)
+            // .dayOfMonth().getMaximumValue()
+            for (int i = 1; i <= lastDayOfMonth; i++) {
 
                 String postKey = (i < 10 ? "0" + i : i) + "."
                         + getDateFromStr(title).toString(PointWithTime.fmtShort);
@@ -118,10 +121,10 @@ public class Trips {
                     subResult.add(0);
                 }
             }
-            result.add(subResult);
+            result[titles.indexOf(title)] = subResult.toArray(new Integer[subResult.size()]);
         }
 
-        return result.get(0).toArray(new Integer[result.get(0).size()]);
+        return result;
     }
 
     public List<String> getKeysContainsTitle(String title) {
@@ -146,8 +149,8 @@ public class Trips {
         trips.removeAll(Collections.singleton(null));
     }
 
-    public String getMonthYear() {
-        return titles.get(0).split("&")[1];//FIXME
+    public String[] getMonthYear() {
+        return titles.toArray(new String[titles.size()]);
     }
 
     public String[][] toTable() {
