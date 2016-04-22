@@ -30,14 +30,20 @@ public class Trip implements Comparable<Trip> {
 
         String[] elements = Utils.strToArray(s, ",");
         if (s.length() > 100 || elements.length > 10) {//FIXME if split listSize>10 or else
-            return new Trip(
-                    new PointWithTime(elements[5], elements[6], elements[1]),//FIXME const
-                    new PointWithTime(elements[7], elements[8], elements[2]));//FIXME const
+            if (elements[7].length() < 3) {
+                return new Trip(//yellow
+                        new PointWithTime(elements[5], elements[6], elements[1]),//FIXME const
+                        new PointWithTime(elements[9], elements[10], elements[2]));//FIXME const
+            } else {
+                return new Trip(//green
+                        new PointWithTime(elements[5], elements[6], elements[1]),//FIXME const
+                        new PointWithTime(elements[7], elements[8], elements[2]));//FIXME const
+            }
         }
 
         if (s.length() > 20 || elements.length > 3) {//FIXME const
             return new Trip(
-                    new PointWithTime(elements[1], elements[2], elements[0]),//FIXME const
+                    new PointWithTime(elements[2], elements[1], elements[0]),//FIXME const
                     null);
         }
 

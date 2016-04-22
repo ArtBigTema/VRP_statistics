@@ -72,7 +72,7 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
 
     public String[] toTableVector() {
         String[] result = new String[]{
-                getDateStr(), getLat().toString(), getLat().toString()
+                fmt_0.print(_dateTime), getLat().toString(), getLng().toString()
         };
         return result;
     }
