@@ -169,8 +169,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     @Override
-    public void generated(String s) {
-        trips.add(s);
+    public void generated(String s) {//fixme thread
+        if (trips.size() < 200_000) {//fixme artefact
+            trips.add(s);
+        }
         //    frame.showData(t.toString() + "\n");
     }
 

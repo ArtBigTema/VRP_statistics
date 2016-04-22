@@ -36,7 +36,7 @@ public class ThreadParser extends Thread implements Runnable {
             String line = br.readLine();
 
             while (line != null) {// && count != 0) {//FIXME
-                if (!line.isEmpty() && !line.contains(",0,0,0,0,")) {//fixme
+                if (!line.isEmpty() && !line.contains(",0,0,0,0,")) {//fixme artefact
 
                     listener.generated(line);
                     //    listener.show(num, i + ":  " + line + "\n");//FIXME remove
