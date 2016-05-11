@@ -21,7 +21,8 @@ public class MainFrame extends JFrame {
     private JTabbedPane tabbedPane1;
     private JPanel panel1;
     private JTable tableTrips;
-    private JPanel visualization;
+    private JPanel visualizationD;
+    private JPanel visualizationH;
     private JPanel panel;
     private JButton dowloadLinksButton;
     private JButton dowloadLinkButton;
@@ -31,6 +32,8 @@ public class MainFrame extends JFrame {
     private JProgressBar pb_calc_stat;
     private JProgressBar pb_read_file;
     private JButton btn_read_file;
+    private JButton button1;
+    private JProgressBar progressBar1;
 
     public MainFrame() {
         super("MainFrame");
@@ -102,7 +105,8 @@ public class MainFrame extends JFrame {
     }
 
     public void startDownloading() {
-        visualization.removeAll();
+        visualizationD.removeAll();
+        visualizationH.removeAll();
         listLink.setEnabled(false);
         progressBar.setVisible(true);
         dowloadLinkButton.setEnabled(false);
@@ -131,7 +135,8 @@ public class MainFrame extends JFrame {
     public void showGraph(String[][] days, Integer[][] dots, String[] month) {
         pb_calc_stat.setVisible(false);
         btn_statistic.setVisible(false);
-        visualization.add(getChart2DDemoK(days, dots, month));
+        visualizationD.add(getChart2DDemoK(days, dots, month));
+        visualizationH.add(getChart2DDemoK(days, dots, month));
     }
 
     public void showPanelReadFile() {
@@ -139,7 +144,7 @@ public class MainFrame extends JFrame {
 
         btn_read_file.setVisible(true);
         btn_read_file.setEnabled(true);
-       // btn_read_file.doClick();//FIXME remove
+        // btn_read_file.doClick();//FIXME remove
     }
 
     public void setTableModel(boolean isShort) {//Case
@@ -308,7 +313,7 @@ public class MainFrame extends JFrame {
         panel7.add(pb_read_file, BorderLayout.SOUTH);
         final JPanel panel8 = new JPanel();
         panel8.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Визуализация", panel8);
+        tabbedPane1.addTab("Визуализация Days", panel8);
         final JPanel panel9 = new JPanel();
         panel9.setLayout(new BorderLayout(0, 0));
         panel8.add(panel9, BorderLayout.NORTH);
@@ -322,9 +327,25 @@ public class MainFrame extends JFrame {
         pb_calc_stat.setIndeterminate(true);
         pb_calc_stat.setVisible(false);
         panel9.add(pb_calc_stat, BorderLayout.SOUTH);
-        visualization = new JPanel();
-        visualization.setLayout(new BorderLayout(0, 0));
-        panel8.add(visualization, BorderLayout.CENTER);
+        visualizationD = new JPanel();
+        visualizationD.setLayout(new BorderLayout(0, 0));
+        panel8.add(visualizationD, BorderLayout.CENTER);
+        final JPanel panel10 = new JPanel();
+        panel10.setLayout(new BorderLayout(0, 0));
+        tabbedPane1.addTab("Визуализация Hours", panel10);
+        final JPanel panel11 = new JPanel();
+        panel11.setLayout(new BorderLayout(0, 0));
+        panel11.setEnabled(true);
+        panel11.setVisible(true);
+        panel10.add(panel11, BorderLayout.NORTH);
+        button1 = new JButton();
+        button1.setText("Button");
+        panel11.add(button1, BorderLayout.CENTER);
+        progressBar1 = new JProgressBar();
+        panel11.add(progressBar1, BorderLayout.SOUTH);
+        visualizationH = new JPanel();
+        visualizationH.setLayout(new BorderLayout(0, 0));
+        panel10.add(visualizationH, BorderLayout.CENTER);
     }
 
     /**

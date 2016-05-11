@@ -34,6 +34,8 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     public static String fmtLong = "dd.MM.yyyy";//fixme
     public static String fmtShort = "MM.yyyy";//fixme
 
+    public static String fmtTime = "HH";//fixme
+
     public PointWithTime(String la, String ln, String dt) {
         super(la, ln);
         setDateTime(dt);
@@ -75,6 +77,10 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
                 fmt_0.print(_dateTime), getLat().toString(), getLng().toString()
         };
         return result;
+    }
+
+    public String getTimeStr() {
+        return _dateTime.toString(fmtTime);
     }
 
     public String getDateStr() {

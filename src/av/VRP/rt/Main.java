@@ -210,7 +210,8 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         if (pCount >= parsers.size()) {//FIXME if > then err
             Log.d("stopped all threads parser");
             Log.p("Screen Trips listSize = ", trips.listSize());
-            Log.p("Trips mapSize = ", trips.mapSize());
+            Log.p("Trips mapSizeForDay = ", trips.mapSizeForDay());
+            Log.p("Trips mapSizeForHour = ", trips.mapSizeForHour());
 
             frame.setTableData(trips.toTable());
         }

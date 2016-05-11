@@ -3,7 +3,6 @@ package av.VRP.rt.substance;
 import av.VRP.rt.Utils.*;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 
 import java.util.*;
@@ -14,12 +13,14 @@ import java.util.*;
 public class Trips {
     private List<Trip> trips;
 
-    private Map<String, Integer> mapTrips;//FIXME
+    private Map<String, Integer> mapTripsForDay;
+    private Map<String, Integer> mapTripsForHour;
     private List<String> titles;
 
     public Trips() {
         trips = Collections.synchronizedList(new ArrayList<Trip>());
-        mapTrips = Collections.synchronizedMap(new TreeMap<String, Integer>());
+        mapTripsForDay = Collections.synchronizedMap(new TreeMap<String, Integer>());
+        mapTripsForHour = Collections.synchronizedMap(new TreeMap<String, Integer>());
         titles = new ArrayList<>();
     }
 
@@ -49,10 +50,18 @@ public class Trips {
         String key = who.replace(Constant.FILE_FORMAT, "&") + t.getDateStr();
         addTitle(who.replace(Constant.FILE_FORMAT, "&") + t.getMonthYear());//FIXME move to ...
 
-        if (mapTrips.get(key) != null) {
-            mapTrips.put(key, mapTrips.get(key) + 1);
+        if (mapTripsForDay.get(key) != null) {
+            mapTripsForDay.put(key, mapTripsForDay.get(key) + 1);
         } else {
-            mapTrips.put(key, 1);
+            mapTripsForDay.put(key, 1);
+        }
+
+        key = who.replace(Constant.FILE_FORMAT, "&") + t.getTimeStr();
+
+        if (mapTripsForHour.get(key) != null) {
+            mapTripsForHour.put(key, mapTripsForHour.get(key) + 1);
+        } else {
+            mapTripsForHour.put(key, 1);
         }
     }
 
@@ -64,14 +73,19 @@ public class Trips {
         return trips.size();
     }
 
-    public int mapSize() {
-        return mapTrips.size();
+    public int mapSizeForDay() {
+        return mapTripsForDay.size();
+    }
+
+    public int mapSizeForHour() {
+        return mapTripsForHour.size();
     }
 
     public void clear() {
         trips.clear();
         titles.clear();
-        mapTrips.clear();
+        mapTripsForDay.clear();
+        mapTripsForHour.clear();
     }
 
     public DateTime getDateFromStr(String title) {
@@ -106,7 +120,7 @@ public class Trips {
         for (String title : titles) {
             List<Integer> subResult = new ArrayList<>();
             List<String> keys = getKeysContainsTitle(title);
-            String preKey = keys.get(0).split("&")[0] + "&";
+            String preKey = keys.get(0).split("&")[0] + "&";//FIXME to index
 
             int lastDayOfMonth = 31;
             //getDateFromStr(title)
@@ -116,7 +130,7 @@ public class Trips {
                 String postKey = (i < 10 ? "0" + i : i) + "."
                         + getDateFromStr(title).toString(PointWithTime.fmtShort);
                 if (keys.contains(preKey + postKey)) {
-                    subResult.add(mapTrips.get(preKey + postKey));
+                    subResult.add(mapTripsForDay.get(preKey + postKey));
                 } else {
                     subResult.add(0);
                 }
@@ -129,7 +143,7 @@ public class Trips {
 
     public List<String> getKeysContainsTitle(String title) {
         List<String> result = new ArrayList<>();
-        Set<String> keys = mapTrips.keySet();
+        Set<String> keys = mapTripsForDay.keySet();
 
         for (String key : keys) {
             if (key.contains(getDateFromStr(title).toString(PointWithTime.fmtShort))) {

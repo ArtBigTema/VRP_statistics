@@ -132,7 +132,7 @@
           </grid>
           <grid id="fa294" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
-              <tabbedpane title="Визуализация"/>
+              <tabbedpane title="Визуализация Days"/>
             </constraints>
             <properties/>
             <border type="none"/>
@@ -160,7 +160,42 @@
                   </component>
                 </children>
               </grid>
-              <grid id="49829" binding="visualization" layout-manager="BorderLayout" hgap="0" vgap="0">
+              <grid id="49829" binding="visualizationD" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children/>
+              </grid>
+            </children>
+          </grid>
+          <grid id="5ecbe" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <tabbedpane title="Визуализация Hours"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <grid id="74e59" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <enabled value="true"/>
+                  <visible value="true"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="3579d" class="javax.swing.JButton" binding="button1" default-binding="true">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <text value="Button"/>
+                    </properties>
+                  </component>
+                  <component id="8dd0e" class="javax.swing.JProgressBar" binding="progressBar1" default-binding="true">
+                    <constraints border-constraint="South"/>
+                    <properties/>
+                  </component>
+                </children>
+              </grid>
+              <grid id="35e7e" binding="visualizationH" layout-manager="BorderLayout" hgap="0" vgap="0">
                 <constraints border-constraint="Center"/>
                 <properties/>
                 <border type="none"/>
