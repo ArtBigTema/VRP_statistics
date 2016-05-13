@@ -21,7 +21,7 @@ public class Trips {
         trips = Collections.synchronizedList(new ArrayList<Trip>());
         mapTripsForDay = Collections.synchronizedMap(new TreeMap<String, Integer>());
         mapTripsForHour = Collections.synchronizedMap(new TreeMap<String, Integer>());
-        titles = new ArrayList<>();
+        titles = Collections.synchronizedList(new ArrayList<String>());
     }
 
     public void addTitle(String title) {//не убирай цифру после имени, т.к. сортировка
@@ -114,12 +114,35 @@ public class Trips {
         return result;
     }
 
-    public Integer[][] getCountTrips() {//FIXME method
+    public String[][] getActiveHoursStr() {
+        String[][] result = new String[titles.size()][];
+
+        for (String title : titles) {
+            List<String> subResult = new ArrayList<>();
+
+            int i = 0;
+            //  int lastDayOfMonth = getDateFromStr(title)
+            //           .dayOfMonth().getMaximumValue();
+            int lastHour = 24;
+
+            while (i < lastHour) {
+                subResult.add(String.valueOf(i++));
+            }
+            result[titles.indexOf(title)] = subResult.toArray(new String[subResult.size()]);
+        }
+
+        return result;
+    }
+
+    public Integer[][] getCountTripsForDay() {//FIXME method
         Integer[][] result = new Integer[titles.size()][];
 
         for (String title : titles) {
+            if (title == null) {
+                continue;
+            }
             List<Integer> subResult = new ArrayList<>();
-            List<String> keys = getKeysContainsTitle(title);
+            List<String> keys = getKeysContainsTitle(title, mapTripsForDay, PointWithTime.fmtShort);
             String preKey = keys.get(0).split("&")[0] + "&";//FIXME to index
 
             int lastDayOfMonth = 31;
@@ -127,7 +150,7 @@ public class Trips {
             // .dayOfMonth().getMaximumValue()
             for (int i = 1; i <= lastDayOfMonth; i++) {
 
-                String postKey = (i < 10 ? "0" + i : i) + "."
+                String postKey = (i < 10 ? "0" + i : i) + "."//fixme pattern
                         + getDateFromStr(title).toString(PointWithTime.fmtShort);
                 if (keys.contains(preKey + postKey)) {
                     subResult.add(mapTripsForDay.get(preKey + postKey));
@@ -141,15 +164,45 @@ public class Trips {
         return result;
     }
 
-    public List<String> getKeysContainsTitle(String title) {
+    public List<String> getKeysContainsTitle(String title, Map map, String format) {
         List<String> result = new ArrayList<>();
-        Set<String> keys = mapTripsForDay.keySet();
+        Set<String> keys = map.keySet();
 
         for (String key : keys) {
-            if (key.contains(getDateFromStr(title).toString(PointWithTime.fmtShort))) {
+            if (key.contains(getDateFromStr(title).toString(format))) {
                 result.add(key);
             }
         }
+        return result;
+    }
+
+    public Integer[][] getCountTripsForHour() {//FIXME method
+        Integer[][] result = new Integer[titles.size()][];
+
+        for (String title : titles) {
+            if (title == null) {
+                continue;
+            }
+            List<Integer> subResult = new ArrayList<>();
+            //     List<String> keys = getKeysContainsTitle(title, mapTripsForHour, PointWithTime.fmtTime);
+            String preKey = title.split("&")[0] + "&";//FIXME to index
+
+            int lastHour = 24;
+            //getDateFromStr(title)
+            // .dayOfMonth().getMaximumValue()
+            for (int i = 0; i < lastHour; i++) {
+
+                String postKey = (i < 10 ? "0" + i : i) + "";//fixme pattern
+                //  + getDateFromStr(title).toString(PointWithTime.fmtTime);
+                if (mapTripsForHour.containsKey(preKey + postKey)) {
+                    subResult.add(mapTripsForHour.get(preKey + postKey));
+                } else {
+                    subResult.add(0);
+                }
+            }
+            result[titles.indexOf(title)] = subResult.toArray(new Integer[subResult.size()]);
+        }
+
         return result;
     }
 
@@ -159,11 +212,17 @@ public class Trips {
         Log.d("sorted");
     }
 
+    public void sortWithHour() {// add comparators
+        Log.d("sorting");
+        Collections.sort(trips);
+        Log.d("sorted");
+    }
+
     public void removeNull() {
         trips.removeAll(Collections.singleton(null));
     }
 
-    public String[] getMonthYear() {
+    public String[] getTitles() {
         return titles.toArray(new String[titles.size()]);
     }
 

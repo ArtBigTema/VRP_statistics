@@ -142,15 +142,15 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="447b9" class="javax.swing.JButton" binding="btn_statistic">
+                  <component id="447b9" class="javax.swing.JButton" binding="btn_statistic_days">
                     <constraints border-constraint="Center"/>
                     <properties>
                       <enabled value="true"/>
-                      <text value="Подсчитать статистику"/>
+                      <text value="Подсчитать статистику поездок по дням"/>
                       <visible value="false"/>
                     </properties>
                   </component>
-                  <component id="acdd9" class="javax.swing.JProgressBar" binding="pb_calc_stat">
+                  <component id="acdd9" class="javax.swing.JProgressBar" binding="pb_calc_stat_days">
                     <constraints border-constraint="South"/>
                     <properties>
                       <borderPainted value="false"/>
@@ -183,15 +183,18 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="3579d" class="javax.swing.JButton" binding="button1" default-binding="true">
+                  <component id="3579d" class="javax.swing.JButton" binding="btn_statistic_hours">
                     <constraints border-constraint="Center"/>
                     <properties>
-                      <text value="Button"/>
+                      <text value="Подсчитать статистику поездок по часам"/>
+                      <visible value="false"/>
                     </properties>
                   </component>
-                  <component id="8dd0e" class="javax.swing.JProgressBar" binding="progressBar1" default-binding="true">
+                  <component id="8dd0e" class="javax.swing.JProgressBar" binding="pb_calc_stat_hours">
                     <constraints border-constraint="South"/>
-                    <properties/>
+                    <properties>
+                      <visible value="false"/>
+                    </properties>
                   </component>
                 </children>
               </grid>

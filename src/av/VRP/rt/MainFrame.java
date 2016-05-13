@@ -28,12 +28,12 @@ public class MainFrame extends JFrame {
     private JButton dowloadLinkButton;
     private JProgressBar progressBar;
     private JList listLink;
-    private JButton btn_statistic;
-    private JProgressBar pb_calc_stat;
+    private JButton btn_statistic_days;
+    private JProgressBar pb_calc_stat_days;
     private JProgressBar pb_read_file;
     private JButton btn_read_file;
-    private JButton button1;
-    private JProgressBar progressBar1;
+    private JButton btn_statistic_hours;
+    private JProgressBar pb_calc_stat_hours;
 
     public MainFrame() {
         super("MainFrame");
@@ -69,12 +69,21 @@ public class MainFrame extends JFrame {
             }
         });
 
-        btn_statistic.addActionListener(new ActionListener() {
+        btn_statistic_days.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                pb_calc_stat.setVisible(true);
-                btn_statistic.setVisible(false);
-                Main.getInstance().aggregateStatistic();
+                pb_calc_stat_days.setVisible(true);
+                btn_statistic_days.setVisible(false);
+                Main.getInstance().aggregateStatisticForDay();
+            }
+        });
+
+        btn_statistic_hours.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pb_calc_stat_hours.setVisible(true);
+                btn_statistic_hours.setVisible(false);
+                Main.getInstance().aggregateStatisticForHour();
             }
         });
 
@@ -110,7 +119,7 @@ public class MainFrame extends JFrame {
         listLink.setEnabled(false);
         progressBar.setVisible(true);
         dowloadLinkButton.setEnabled(false);
-        btn_statistic.setVisible(false);
+        btn_statistic_days.setVisible(false);
     }
 
     public void endDownloading(boolean isSucces) {
@@ -128,15 +137,21 @@ public class MainFrame extends JFrame {
         for (String[] row : tableData) {
             model.addRow(row);
         }
-        btn_statistic.setVisible(true);
+        btn_statistic_days.setVisible(true);
+        btn_statistic_hours.setVisible(true);
         pb_read_file.setVisible(false);
     }
 
-    public void showGraph(String[][] days, Integer[][] dots, String[] month) {
-        pb_calc_stat.setVisible(false);
-        btn_statistic.setVisible(false);
+    public void showGraphForDays(String[][] days, Integer[][] dots, String[] month) {
+        pb_calc_stat_days.setVisible(false);
+        btn_statistic_days.setVisible(false);
         visualizationD.add(getChart2DDemoK(days, dots, month));
-        visualizationH.add(getChart2DDemoK(days, dots, month));
+    }
+
+    public void showGraphForHours(String[][] days, Integer[][] dots, String[] day) {
+        pb_calc_stat_hours.setVisible(false);
+        btn_statistic_hours.setVisible(false);
+        visualizationH.add(getChart2DDemoK(days, dots, day));
     }
 
     public void showPanelReadFile() {
@@ -317,16 +332,16 @@ public class MainFrame extends JFrame {
         final JPanel panel9 = new JPanel();
         panel9.setLayout(new BorderLayout(0, 0));
         panel8.add(panel9, BorderLayout.NORTH);
-        btn_statistic = new JButton();
-        btn_statistic.setEnabled(true);
-        btn_statistic.setText("Подсчитать статистику");
-        btn_statistic.setVisible(false);
-        panel9.add(btn_statistic, BorderLayout.CENTER);
-        pb_calc_stat = new JProgressBar();
-        pb_calc_stat.setBorderPainted(false);
-        pb_calc_stat.setIndeterminate(true);
-        pb_calc_stat.setVisible(false);
-        panel9.add(pb_calc_stat, BorderLayout.SOUTH);
+        btn_statistic_days = new JButton();
+        btn_statistic_days.setEnabled(true);
+        btn_statistic_days.setText("Подсчитать статистику поездок по дням");
+        btn_statistic_days.setVisible(false);
+        panel9.add(btn_statistic_days, BorderLayout.CENTER);
+        pb_calc_stat_days = new JProgressBar();
+        pb_calc_stat_days.setBorderPainted(false);
+        pb_calc_stat_days.setIndeterminate(true);
+        pb_calc_stat_days.setVisible(false);
+        panel9.add(pb_calc_stat_days, BorderLayout.SOUTH);
         visualizationD = new JPanel();
         visualizationD.setLayout(new BorderLayout(0, 0));
         panel8.add(visualizationD, BorderLayout.CENTER);
@@ -338,11 +353,13 @@ public class MainFrame extends JFrame {
         panel11.setEnabled(true);
         panel11.setVisible(true);
         panel10.add(panel11, BorderLayout.NORTH);
-        button1 = new JButton();
-        button1.setText("Button");
-        panel11.add(button1, BorderLayout.CENTER);
-        progressBar1 = new JProgressBar();
-        panel11.add(progressBar1, BorderLayout.SOUTH);
+        btn_statistic_hours = new JButton();
+        btn_statistic_hours.setText("Подсчитать статистику поездок по часам");
+        btn_statistic_hours.setVisible(false);
+        panel11.add(btn_statistic_hours, BorderLayout.CENTER);
+        pb_calc_stat_hours = new JProgressBar();
+        pb_calc_stat_hours.setVisible(false);
+        panel11.add(pb_calc_stat_hours, BorderLayout.SOUTH);
         visualizationH = new JPanel();
         visualizationH.setLayout(new BorderLayout(0, 0));
         panel10.add(visualizationH, BorderLayout.CENTER);

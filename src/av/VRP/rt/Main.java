@@ -87,18 +87,32 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         }
     }
 
-    public void aggregateStatistic() {
+    public void aggregateStatisticForDay() {
         trips.sortWithDate();
-        showStatistic();
+        showStatisticForDay();
         Log.p(System.currentTimeMillis());
     }
 
-    private void showStatistic() {//FIXME rename
-        String[][] dates = trips.getActiveDaysStr();
-        Integer[][] counts = trips.getCountTrips();
-        String[] months = trips.getMonthYear();
+    public void aggregateStatisticForHour() {
+      //  trips.sortWithHour();
+        showStatisticForHour();
+        Log.p(System.currentTimeMillis());
+    }
 
-        frame.showGraph(dates, counts, months);
+    private void showStatisticForDay() {//FIXME rename
+        String[][] dates = trips.getActiveDaysStr();
+        Integer[][] counts = trips.getCountTripsForDay();
+        String[] months = trips.getTitles();
+
+        frame.showGraphForDays(dates, counts, months);
+    }
+
+    private void showStatisticForHour() {//FIXME rename
+        String[][] dates = trips.getActiveHoursStr();
+        Integer[][] counts = trips.getCountTripsForHour();
+        String[] months = trips.getTitles();
+
+        frame.showGraphForHours(dates, counts, months);
     }
 
     public void aggregateList() {
