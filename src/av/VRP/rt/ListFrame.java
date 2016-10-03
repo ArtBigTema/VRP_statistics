@@ -53,7 +53,7 @@ public class ListFrame extends JFrame implements FileWriterListener {
     }
 
     private void aggregateLink() {
-        ThreadWriter thread = new ThreadWriter(getLinkFromList());
+        ThreadWriter thread = new ThreadWriter(null);
         thread.setListener(this);
         thread.start();
     }
