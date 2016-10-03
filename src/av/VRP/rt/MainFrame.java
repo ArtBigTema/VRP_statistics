@@ -282,7 +282,7 @@ public class MainFrame extends JFrame implements KeyListener {
         listForecast.setListData(count);
     }
 
-    public void setListForecastF(Integer[] count) {
+    public void setListForecastF(Object[] count) {
         listForecastF.setListData(count);
     }
 
