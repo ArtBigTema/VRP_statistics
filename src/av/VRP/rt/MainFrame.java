@@ -12,12 +12,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.List;
 
 /**
  * Created by Artem on 09.04.2016.
  */
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements KeyListener {
     private JTabbedPane tabbedPane1;
     private JPanel panel1;
     private JTable tableTrips;
@@ -34,6 +36,11 @@ public class MainFrame extends JFrame {
     private JButton btn_read_file;
     private JButton btn_statistic_hours;
     private JProgressBar pb_calc_stat_hours;
+    private JButton btn_forecast;
+    private JProgressBar pb_forecast;
+    private JList listForecast;
+    private JPanel visualizationF;
+    private JList listForecastF;
 
     public MainFrame() {
         super("MainFrame");
@@ -102,6 +109,14 @@ public class MainFrame extends JFrame {
                 Main.getInstance().startParserThread();
             }
         });
+        btn_forecast.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pb_forecast.setVisible(true);
+                btn_forecast.setEnabled(false);
+                Main.getInstance().startForecast();
+            }
+        });
     }
 
     public List getLinkFromList() {
@@ -116,6 +131,7 @@ public class MainFrame extends JFrame {
     public void startDownloading() {
         visualizationD.removeAll();
         visualizationH.removeAll();
+        visualizationF.removeAll();
         listLink.setEnabled(false);
         progressBar.setVisible(true);
         dowloadLinkButton.setEnabled(false);
@@ -152,6 +168,12 @@ public class MainFrame extends JFrame {
         pb_calc_stat_hours.setVisible(false);
         btn_statistic_hours.setVisible(false);
         visualizationH.add(getChart2DDemoK(days, dots, day));
+    }
+
+    public void showGraphForForecast(String[][] days, Integer[][] dots, String[] day) {
+        pb_forecast.setVisible(false);
+        btn_forecast.setVisible(false);
+        visualizationF.add(getChart2DDemoK(days, dots, day));
     }
 
     public void showPanelReadFile() {
@@ -216,7 +238,7 @@ public class MainFrame extends JFrame {
         String[] labelsAxisLabels = labels[0];//days 1 to 30(31)
         //   {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Nov", "Dec"};
         graphChart2DProps.setLabelsAxisLabelsTexts(labelsAxisLabels);
-        graphChart2DProps.setLabelsAxisTitleText("Days");
+        graphChart2DProps.setLabelsAxisTitleText("Days|Hours");
         graphChart2DProps.setNumbersAxisTitleText("Count");
         graphChart2DProps.setLabelsAxisTicksAlignment(graphChart2DProps.CENTERED);
 
@@ -250,6 +272,36 @@ public class MainFrame extends JFrame {
         //<-- End Chart2D configuration -->
 
         return chart2D;
+    }
+
+    public void setBtnTitle(String str) {
+        btn_forecast.setText(str);
+    }
+
+    public void setListForecast(Integer[] count) {
+        listForecast.setListData(count);
+    }
+
+    public void setListForecastF(Integer[] count) {
+        listForecastF.setListData(count);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {//FIXME
+            dowloadLinkButton.doClick();
+            btn_read_file.doClick();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 
     {
@@ -328,41 +380,88 @@ public class MainFrame extends JFrame {
         panel7.add(pb_read_file, BorderLayout.SOUTH);
         final JPanel panel8 = new JPanel();
         panel8.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Визуализация Days", panel8);
+        tabbedPane1.addTab("Визуализация Hours", panel8);
         final JPanel panel9 = new JPanel();
         panel9.setLayout(new BorderLayout(0, 0));
+        panel9.setEnabled(true);
+        panel9.setVisible(true);
         panel8.add(panel9, BorderLayout.NORTH);
+        btn_statistic_hours = new JButton();
+        btn_statistic_hours.setText("Подсчитать статистику поездок по часам");
+        btn_statistic_hours.setVisible(false);
+        panel9.add(btn_statistic_hours, BorderLayout.CENTER);
+        pb_calc_stat_hours = new JProgressBar();
+        pb_calc_stat_hours.setVisible(false);
+        panel9.add(pb_calc_stat_hours, BorderLayout.SOUTH);
+        visualizationH = new JPanel();
+        visualizationH.setLayout(new BorderLayout(0, 0));
+        panel8.add(visualizationH, BorderLayout.CENTER);
+        final JPanel panel10 = new JPanel();
+        panel10.setLayout(new BorderLayout(0, 0));
+        tabbedPane1.addTab("Визуализация Days", panel10);
+        final JPanel panel11 = new JPanel();
+        panel11.setLayout(new BorderLayout(0, 0));
+        panel10.add(panel11, BorderLayout.NORTH);
         btn_statistic_days = new JButton();
         btn_statistic_days.setEnabled(true);
         btn_statistic_days.setText("Подсчитать статистику поездок по дням");
         btn_statistic_days.setVisible(false);
-        panel9.add(btn_statistic_days, BorderLayout.CENTER);
+        panel11.add(btn_statistic_days, BorderLayout.CENTER);
         pb_calc_stat_days = new JProgressBar();
         pb_calc_stat_days.setBorderPainted(false);
         pb_calc_stat_days.setIndeterminate(true);
         pb_calc_stat_days.setVisible(false);
-        panel9.add(pb_calc_stat_days, BorderLayout.SOUTH);
+        panel11.add(pb_calc_stat_days, BorderLayout.SOUTH);
         visualizationD = new JPanel();
         visualizationD.setLayout(new BorderLayout(0, 0));
-        panel8.add(visualizationD, BorderLayout.CENTER);
-        final JPanel panel10 = new JPanel();
-        panel10.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Визуализация Hours", panel10);
-        final JPanel panel11 = new JPanel();
-        panel11.setLayout(new BorderLayout(0, 0));
-        panel11.setEnabled(true);
-        panel11.setVisible(true);
-        panel10.add(panel11, BorderLayout.NORTH);
-        btn_statistic_hours = new JButton();
-        btn_statistic_hours.setText("Подсчитать статистику поездок по часам");
-        btn_statistic_hours.setVisible(false);
-        panel11.add(btn_statistic_hours, BorderLayout.CENTER);
-        pb_calc_stat_hours = new JProgressBar();
-        pb_calc_stat_hours.setVisible(false);
-        panel11.add(pb_calc_stat_hours, BorderLayout.SOUTH);
-        visualizationH = new JPanel();
-        visualizationH.setLayout(new BorderLayout(0, 0));
-        panel10.add(visualizationH, BorderLayout.CENTER);
+        panel10.add(visualizationD, BorderLayout.CENTER);
+        final JPanel panel12 = new JPanel();
+        panel12.setLayout(new BorderLayout(0, 0));
+        tabbedPane1.addTab("Прогнозирование", panel12);
+        final JPanel panel13 = new JPanel();
+        panel13.setLayout(new BorderLayout(0, 0));
+        panel12.add(panel13, BorderLayout.NORTH);
+        btn_forecast = new JButton();
+        btn_forecast.setText("Прогноз");
+        panel13.add(btn_forecast, BorderLayout.CENTER);
+        pb_forecast = new JProgressBar();
+        panel13.add(pb_forecast, BorderLayout.SOUTH);
+        final JPanel panel14 = new JPanel();
+        panel14.setLayout(new BorderLayout(0, 0));
+        panel12.add(panel14, BorderLayout.CENTER);
+        final JSplitPane splitPane1 = new JSplitPane();
+        panel14.add(splitPane1, BorderLayout.CENTER);
+        visualizationF = new JPanel();
+        visualizationF.setLayout(new BorderLayout(0, 0));
+        splitPane1.setRightComponent(visualizationF);
+        final JScrollPane scrollPane3 = new JScrollPane();
+        splitPane1.setLeftComponent(scrollPane3);
+        final JPanel panel15 = new JPanel();
+        panel15.setLayout(new BorderLayout(0, 0));
+        scrollPane3.setViewportView(panel15);
+        final JScrollPane scrollPane4 = new JScrollPane();
+        scrollPane4.setAlignmentX(0.0f);
+        scrollPane4.setMinimumSize(new Dimension(0, 0));
+        scrollPane4.setPreferredSize(new Dimension(56, 128));
+        panel15.add(scrollPane4, BorderLayout.CENTER);
+        listForecast = new JList();
+        listForecast.setAlignmentX(0.0f);
+        listForecast.setAlignmentY(0.0f);
+        listForecast.setMinimumSize(new Dimension(0, 0));
+        final DefaultListModel defaultListModel1 = new DefaultListModel();
+        listForecast.setModel(defaultListModel1);
+        listForecast.setPreferredSize(new Dimension(0, 0));
+        listForecast.setSelectionMode(0);
+        scrollPane4.setViewportView(listForecast);
+        final JScrollPane scrollPane5 = new JScrollPane();
+        scrollPane5.setPreferredSize(new Dimension(56, 128));
+        panel15.add(scrollPane5, BorderLayout.EAST);
+        listForecastF = new JList();
+        listForecastF.setAlignmentX(0.0f);
+        listForecastF.setAlignmentY(0.0f);
+        listForecastF.setMinimumSize(new Dimension(0, 0));
+        listForecastF.setPreferredSize(new Dimension(0, 0));
+        scrollPane5.setViewportView(listForecastF);
     }
 
     /**

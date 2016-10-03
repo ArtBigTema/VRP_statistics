@@ -130,44 +130,6 @@
               </grid>
             </children>
           </grid>
-          <grid id="fa294" layout-manager="BorderLayout" hgap="0" vgap="0">
-            <constraints>
-              <tabbedpane title="Визуализация Days"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <grid id="fd750" layout-manager="BorderLayout" hgap="0" vgap="0">
-                <constraints border-constraint="North"/>
-                <properties/>
-                <border type="none"/>
-                <children>
-                  <component id="447b9" class="javax.swing.JButton" binding="btn_statistic_days">
-                    <constraints border-constraint="Center"/>
-                    <properties>
-                      <enabled value="true"/>
-                      <text value="Подсчитать статистику поездок по дням"/>
-                      <visible value="false"/>
-                    </properties>
-                  </component>
-                  <component id="acdd9" class="javax.swing.JProgressBar" binding="pb_calc_stat_days">
-                    <constraints border-constraint="South"/>
-                    <properties>
-                      <borderPainted value="false"/>
-                      <indeterminate value="true"/>
-                      <visible value="false"/>
-                    </properties>
-                  </component>
-                </children>
-              </grid>
-              <grid id="49829" binding="visualizationD" layout-manager="BorderLayout" hgap="0" vgap="0">
-                <constraints border-constraint="Center"/>
-                <properties/>
-                <border type="none"/>
-                <children/>
-              </grid>
-            </children>
-          </grid>
           <grid id="5ecbe" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <tabbedpane title="Визуализация Hours"/>
@@ -206,11 +168,154 @@
               </grid>
             </children>
           </grid>
+          <grid id="fa294" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <tabbedpane title="Визуализация Days"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <grid id="fd750" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="447b9" class="javax.swing.JButton" binding="btn_statistic_days">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <enabled value="true"/>
+                      <text value="Подсчитать статистику поездок по дням"/>
+                      <visible value="false"/>
+                    </properties>
+                  </component>
+                  <component id="acdd9" class="javax.swing.JProgressBar" binding="pb_calc_stat_days">
+                    <constraints border-constraint="South"/>
+                    <properties>
+                      <borderPainted value="false"/>
+                      <indeterminate value="true"/>
+                      <visible value="false"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="49829" binding="visualizationD" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children/>
+              </grid>
+            </children>
+          </grid>
+          <grid id="2b8a" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <tabbedpane title="Прогнозирование"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <grid id="353a2" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="7d1f0" class="javax.swing.JButton" binding="btn_forecast">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <text value="Прогноз"/>
+                    </properties>
+                  </component>
+                  <component id="47841" class="javax.swing.JProgressBar" binding="pb_forecast">
+                    <constraints border-constraint="South"/>
+                    <properties/>
+                  </component>
+                </children>
+              </grid>
+              <grid id="ea000" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <splitpane id="3bbf3">
+                    <constraints border-constraint="Center"/>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <grid id="797e8" binding="visualizationF" layout-manager="BorderLayout" hgap="0" vgap="0">
+                        <constraints>
+                          <splitpane position="right"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children/>
+                      </grid>
+                      <scrollpane id="e63dd">
+                        <constraints>
+                          <splitpane position="left"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <grid id="452c5" layout-manager="BorderLayout" hgap="0" vgap="0">
+                            <constraints/>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <scrollpane id="aa9ed">
+                                <constraints border-constraint="Center"/>
+                                <properties>
+                                  <alignmentX value="0.0"/>
+                                  <minimumSize width="0" height="0"/>
+                                  <preferredSize width="56" height="128"/>
+                                </properties>
+                                <border type="none"/>
+                                <children>
+                                  <component id="f196" class="javax.swing.JList" binding="listForecast">
+                                    <constraints/>
+                                    <properties>
+                                      <alignmentX value="0.0"/>
+                                      <alignmentY value="0.0"/>
+                                      <minimumSize width="0" height="0"/>
+                                      <model/>
+                                      <preferredSize width="0" height="0"/>
+                                      <selectionMode value="0"/>
+                                    </properties>
+                                  </component>
+                                </children>
+                              </scrollpane>
+                              <scrollpane id="8d580">
+                                <constraints border-constraint="East"/>
+                                <properties>
+                                  <preferredSize width="56" height="128"/>
+                                </properties>
+                                <border type="none"/>
+                                <children>
+                                  <component id="61fa" class="javax.swing.JList" binding="listForecastF">
+                                    <constraints/>
+                                    <properties>
+                                      <alignmentX value="0.0"/>
+                                      <alignmentY value="0.0"/>
+                                      <minimumSize width="0" height="0"/>
+                                      <preferredSize width="0" height="0"/>
+                                    </properties>
+                                  </component>
+                                </children>
+                              </scrollpane>
+                            </children>
+                          </grid>
+                        </children>
+                      </scrollpane>
+                    </children>
+                  </splitpane>
+                </children>
+              </grid>
+            </children>
+          </grid>
         </children>
       </tabbedpane>
     </children>
   </grid>
   <inspectionSuppressions>
     <suppress inspection="NoLabelFor" id="7eeee"/>
+    <suppress inspection="NoLabelFor" id="8d580"/>
   </inspectionSuppressions>
 </form>

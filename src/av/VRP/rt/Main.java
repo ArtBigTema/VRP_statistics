@@ -1,6 +1,7 @@
 package av.VRP.rt;
 
 import av.VRP.rt.Utils.*;
+import av.VRP.rt.forecasting.Forecast;
 import av.VRP.rt.listener.FileWriterListener;
 import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.listener.VRPgeneratorListener;
@@ -30,6 +31,8 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     private volatile Trips trips;
 
+    private Forecast forecast;
+
     public static void main(String[] args) {
         getInstance();
     }
@@ -37,6 +40,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     public static Main getInstance() {
         if (instance == null) {
             instance = new Main();
+            Files.deleteDirectory();
         }
         return instance;
     }
@@ -94,7 +98,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     public void aggregateStatisticForHour() {
-      //  trips.sortWithHour();
+        //  trips.sortWithHour();
         showStatisticForHour();
         Log.p(System.currentTimeMillis());
     }
@@ -160,6 +164,20 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         for (Thread thread : writers) {//FIXME
             thread.start();
         }
+    }
+
+    public void agregateForecast() {
+        forecast = new Forecast(frame);
+
+        forecast.setTitle(trips.getTitles()[0]);
+        forecast.setCount(trips.getCountTripsForHour()[0]);
+        forecast.setDates(trips.getActiveHoursStr()[0]);
+
+        forecast.preStart();
+    }
+
+    public void startForecast() {
+        forecast.start();
     }
 
     @Override
@@ -228,6 +246,8 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             Log.p("Trips mapSizeForHour = ", trips.mapSizeForHour());
 
             frame.setTableData(trips.toTable());
+
+            agregateForecast();
         }
     }
 }
