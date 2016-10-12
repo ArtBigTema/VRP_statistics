@@ -130,6 +130,8 @@ public class MainFrame extends JFrame implements KeyListener {
                 dowloadLinkButton.setEnabled(true);
             }
         });
+        listForecastH.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listForecastD.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listForecastH.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {

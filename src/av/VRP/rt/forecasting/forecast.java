@@ -9,6 +9,7 @@ import av.VRP.rt.substance.Trips;
  */
 public class Forecast {
     private Integer[] count;
+    private Integer[] countSecond;
     private Integer[] countForecast;//float
     private Integer[][] countForecastA;//float
     //   private Integer[] countForecast5;//float
@@ -44,7 +45,11 @@ public class Forecast {
 
     public void startForH(int index) {
         Log.p("start forecast ForH");
-        setCount(trips.getCountTripsForHour()[index]);
+
+        //setCount(trips.getCountTripsForHour()[index]);
+        count = trips.getCountTripsForHour()[0];
+        countSecond = trips.getCountTripsForHour()[1];
+
         setDates(trips.getActiveHoursStr()[index]);
 
 
@@ -71,9 +76,9 @@ public class Forecast {
 
         int j = 0;
 
-        for (alpha = 0.9f; alpha < 1.2; alpha += 0.1f) {
-            for (delta = 0.9f; delta < 1.2; delta += 0.1f) {
-                for (gamma = 0.9f; gamma < 1.2; gamma += 0.1f) {
+        for (alpha = 0.5f; alpha < 1.5; alpha += 0.3f) {
+            for (delta = 0.5f; delta < 1.5; delta += 0.3f) {
+                for (gamma = 0.5f; gamma < 1.5; gamma += 0.3f) {
 
                     for (int i = 0; i < count.length - 12; i++) {
                         countForecastA[j][i] = count[i];
@@ -81,7 +86,7 @@ public class Forecast {
 
                     for (int i = count.length - 12; i < count.length; i++) {
                         countForecastA[j][i] = Math.round(delta *
-                                (gamma * (alpha * count[i] + (1 - alpha) * countForecastA[j][i - 1]) +
+                                (gamma * (alpha * countSecond[i] + (1 - alpha) * countForecastA[j][i - 1]) +
                                         (1 - gamma) * count[i - 2] +
                                         (1 - delta) * count[i - 12]));
                     }
