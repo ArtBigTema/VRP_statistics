@@ -5,6 +5,8 @@ import av.VRP.rt.Utils.Utils;
 import net.sourceforge.chart2d.*;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -61,6 +63,32 @@ public class MainFrame extends JFrame implements KeyListener {
         tableTrips.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         progressBar.setVisible(false);
+
+        tabbedPane1.getRootPane().setDefaultButton(dowloadLinksButton);
+        tabbedPane1.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                switch (tabbedPane1.getSelectedIndex()) {
+                    case 0:
+                        tabbedPane1.getRootPane().setDefaultButton(dowloadLinkButton);
+                        break;
+                    case 1:
+                        tabbedPane1.getRootPane().setDefaultButton(btn_read_file);
+                        break;
+                    case 2:
+                        tabbedPane1.getRootPane().setDefaultButton(btn_statistic_hours);
+                        break;
+                    case 3:
+                        tabbedPane1.getRootPane().setDefaultButton(btn_statistic_days);
+                        break;
+                    case 4:
+                        tabbedPane1.getRootPane().setDefaultButton(btn_forecast);
+                        break;
+                    case 5:
+                        break;
+                }
+            }
+        });
 
         dowloadLinksButton.addActionListener(new ActionListener() {
             @Override
@@ -125,7 +153,10 @@ public class MainFrame extends JFrame implements KeyListener {
 
     public void setListData(String[] listData) {
         listLink.setListData(listData);
+        listLink.setSelectedIndex(6);//fixme
         dowloadLinksButton.setVisible(false);
+
+        tabbedPane1.getRootPane().setDefaultButton(dowloadLinkButton);
     }
 
     public void startDownloading() {
