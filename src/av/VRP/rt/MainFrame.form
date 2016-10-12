@@ -238,7 +238,7 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="45a66" class="javax.swing.JList" default-binding="true">
+                          <component id="45a66" class="javax.swing.JList" binding="listForecastH">
                             <constraints/>
                             <properties/>
                           </component>
@@ -247,6 +247,7 @@
                       <component id="dea11" class="javax.swing.JButton" binding="btnForecastH">
                         <constraints border-constraint="South"/>
                         <properties>
+                          <enabled value="false"/>
                           <text value="Прогнозирование"/>
                         </properties>
                       </component>
@@ -288,7 +289,7 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="230fc" class="javax.swing.JList" binding="list1" default-binding="true">
+                          <component id="230fc" class="javax.swing.JList" binding="listForecastD">
                             <constraints/>
                             <properties/>
                           </component>
@@ -297,6 +298,7 @@
                       <component id="c1c2c" class="javax.swing.JButton" binding="btnForecastD">
                         <constraints border-constraint="South"/>
                         <properties>
+                          <enabled value="false"/>
                           <text value="Прогнозирование"/>
                         </properties>
                       </component>

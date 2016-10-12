@@ -61,7 +61,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     public void startParserThread() {
-        Log.d("start threads parser");
+        Log.d("startForH threads parser");
         size = size / 200_000;//for 1m = 5
 
         /*
@@ -168,16 +168,16 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     public void agregateForecast() {
         forecast = new Forecast(frame);
-
-        forecast.setTitle(trips.getTitles()[0]);
-        forecast.setCount(trips.getCountTripsForHour()[0]);
-        forecast.setDates(trips.getActiveHoursStr()[0]);
+        forecast.setTrips(trips);
 
         forecast.preStart();
     }
 
-    public void startForecast() {
-        forecast.start();
+    public void startForecastH(int index) {
+        forecast.startForH(index);
+    }
+    public void startForecastD(int index) {
+        forecast.startForD(index);
     }
 
     @Override
@@ -247,7 +247,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
             frame.setTableData(trips.toTable());
 
-            agregateForecast();
+            agregateForecast();//fixme
         }
     }
 }

@@ -38,14 +38,12 @@ public class MainFrame extends JFrame implements KeyListener {
     private JButton btn_read_file;
     private JButton btn_statistic_hours;
     private JProgressBar pb_calc_stat_hours;
-    private JButton btn_forecast;
-    private JList listForecast;
     private JPanel visualizationFH;
-    private JList listForecastF;
     private JPanel visualizationFD;
-    private JList list1;
+    private JList listForecastD;
     private JButton btnForecastD;
     private JButton btnForecastH;
+    private JList listForecastH;
 
     public MainFrame() {
         super("MainFrame");
@@ -85,9 +83,10 @@ public class MainFrame extends JFrame implements KeyListener {
                         tabbedPane1.getRootPane().setDefaultButton(btn_statistic_days);
                         break;
                     case 4:
-                        tabbedPane1.getRootPane().setDefaultButton(btn_forecast);
+                        tabbedPane1.getRootPane().setDefaultButton(btnForecastH);
                         break;
                     case 5:
+                        tabbedPane1.getRootPane().setDefaultButton(btnForecastD);
                         break;
                 }
             }
@@ -131,12 +130,27 @@ public class MainFrame extends JFrame implements KeyListener {
                 dowloadLinkButton.setEnabled(true);
             }
         });
+        listForecastH.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                btnForecastH.setEnabled(true);
+                visualizationFH.removeAll();
+            }
+        });
+        listForecastD.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                btnForecastD.setEnabled(true);
+                visualizationFD.removeAll();
+            }
+        });
 
         btn_read_file.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pb_read_file.setVisible(true);
                 btn_read_file.setVisible(false);
+                btn_read_file.setEnabled(false);
                 Main.getInstance().startParserThread();
             }
         });
@@ -144,7 +158,15 @@ public class MainFrame extends JFrame implements KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnForecastH.setEnabled(false);
-                Main.getInstance().startForecast();
+                Main.getInstance().startForecastH(listForecastH.getSelectedIndex());
+            }
+        });
+
+        btnForecastD.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnForecastD.setEnabled(false);
+                Main.getInstance().startForecastD(listForecastD.getSelectedIndex());//fixme for days
             }
         });
     }
@@ -203,9 +225,12 @@ public class MainFrame extends JFrame implements KeyListener {
         visualizationH.add(getChart2DDemoK(days, dots, day));
     }
 
-    public void showGraphForForecast(String[][] days, Integer[][] dots, String[] day) {
-        btn_forecast.setVisible(false);
+    public void showGraphForForecastH(String[][] days, Integer[][] dots, String[] day) {
         visualizationFH.add(getChart2DDemoK(days, dots, day));
+    }
+
+    public void showGraphForForecastD(String[][] days, Integer[][] dots, String[] day) {
+        visualizationFD.add(getChart2DDemoK(days, dots, day));
     }
 
     public void showPanelReadFile() {
@@ -254,7 +279,16 @@ public class MainFrame extends JFrame implements KeyListener {
 
         //Configure object properties
         Object2DProperties object2DProps = new Object2DProperties();
-        object2DProps.setObjectTitleText(title.toString());
+
+        StringBuilder sb = new StringBuilder(""); //fixme
+        for (String s : title) {
+            // String ss = s.split("&")[0];
+            //  if (!sb.toString().contains(ss)) {
+            sb.append(s.split("&")[0]);
+            sb.append("|");
+            // }
+        }
+        object2DProps.setObjectTitleText(sb.toString());//fixme need title
 
         //Configure chart properties
         Chart2DProperties chart2DProps = new Chart2DProperties();
@@ -306,16 +340,13 @@ public class MainFrame extends JFrame implements KeyListener {
         return chart2D;
     }
 
-    public void setBtnTitle(String str) {
-        btn_forecast.setText(str);
-    }
-
-    public void setListForecast(Integer[] count) {
-        listForecast.setListData(count);
-    }
-
-    public void setListForecastF(Object[] count) {
-        listForecastF.setListData(count);
+    public void setListForecast(String[] titles) {
+        listForecastH.setListData(titles);//fixme if null or 0
+        listForecastD.setListData(titles);//fixme if null or 0
+        listForecastH.setSelectedIndex(0);
+        listForecastD.setSelectedIndex(0);
+        btnForecastH.setEnabled(true);
+        btnForecastD.setEnabled(true);
     }
 
     @Override
@@ -460,10 +491,11 @@ public class MainFrame extends JFrame implements KeyListener {
         splitPane1.setLeftComponent(panel13);
         final JScrollPane scrollPane3 = new JScrollPane();
         panel13.add(scrollPane3, BorderLayout.CENTER);
-        final JList list2 = new JList();
-        scrollPane3.setViewportView(list2);
+        listForecastH = new JList();
+        scrollPane3.setViewportView(listForecastH);
         btnForecastH = new JButton();
-        btnForecastH.setText("Button");
+        btnForecastH.setEnabled(false);
+        btnForecastH.setText("Прогнозирование");
         panel13.add(btnForecastH, BorderLayout.SOUTH);
         final JPanel panel14 = new JPanel();
         panel14.setLayout(new BorderLayout(0, 0));
@@ -478,10 +510,11 @@ public class MainFrame extends JFrame implements KeyListener {
         splitPane2.setLeftComponent(panel15);
         final JScrollPane scrollPane4 = new JScrollPane();
         panel15.add(scrollPane4, BorderLayout.CENTER);
-        list1 = new JList();
-        scrollPane4.setViewportView(list1);
+        listForecastD = new JList();
+        scrollPane4.setViewportView(listForecastD);
         btnForecastD = new JButton();
-        btnForecastD.setText("Button");
+        btnForecastD.setEnabled(false);
+        btnForecastD.setText("Прогнозирование");
         panel15.add(btnForecastD, BorderLayout.SOUTH);
     }
 
