@@ -39,10 +39,13 @@ public class MainFrame extends JFrame implements KeyListener {
     private JButton btn_statistic_hours;
     private JProgressBar pb_calc_stat_hours;
     private JButton btn_forecast;
-    private JProgressBar pb_forecast;
     private JList listForecast;
-    private JPanel visualizationF;
+    private JPanel visualizationFH;
     private JList listForecastF;
+    private JPanel visualizationFD;
+    private JList list1;
+    private JButton btnForecastD;
+    private JButton btnForecastH;
 
     public MainFrame() {
         super("MainFrame");
@@ -137,11 +140,10 @@ public class MainFrame extends JFrame implements KeyListener {
                 Main.getInstance().startParserThread();
             }
         });
-        btn_forecast.addActionListener(new ActionListener() {
+        btnForecastH.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                pb_forecast.setVisible(true);
-                btn_forecast.setEnabled(false);
+                btnForecastH.setEnabled(false);
                 Main.getInstance().startForecast();
             }
         });
@@ -162,7 +164,7 @@ public class MainFrame extends JFrame implements KeyListener {
     public void startDownloading() {
         visualizationD.removeAll();
         visualizationH.removeAll();
-        visualizationF.removeAll();
+        visualizationFH.removeAll();
         listLink.setEnabled(false);
         progressBar.setVisible(true);
         dowloadLinkButton.setEnabled(false);
@@ -202,9 +204,8 @@ public class MainFrame extends JFrame implements KeyListener {
     }
 
     public void showGraphForForecast(String[][] days, Integer[][] dots, String[] day) {
-        pb_forecast.setVisible(false);
         btn_forecast.setVisible(false);
-        visualizationF.add(getChart2DDemoK(days, dots, day));
+        visualizationFH.add(getChart2DDemoK(days, dots, day));
     }
 
     public void showPanelReadFile() {
@@ -448,51 +449,40 @@ public class MainFrame extends JFrame implements KeyListener {
         panel10.add(visualizationD, BorderLayout.CENTER);
         final JPanel panel12 = new JPanel();
         panel12.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Прогнозирование", panel12);
+        tabbedPane1.addTab("Прогнозирование Hours", panel12);
+        final JSplitPane splitPane1 = new JSplitPane();
+        panel12.add(splitPane1, BorderLayout.CENTER);
+        visualizationFH = new JPanel();
+        visualizationFH.setLayout(new BorderLayout(0, 0));
+        splitPane1.setRightComponent(visualizationFH);
         final JPanel panel13 = new JPanel();
         panel13.setLayout(new BorderLayout(0, 0));
-        panel12.add(panel13, BorderLayout.NORTH);
-        btn_forecast = new JButton();
-        btn_forecast.setText("Прогноз");
-        panel13.add(btn_forecast, BorderLayout.CENTER);
-        pb_forecast = new JProgressBar();
-        panel13.add(pb_forecast, BorderLayout.SOUTH);
+        splitPane1.setLeftComponent(panel13);
+        final JScrollPane scrollPane3 = new JScrollPane();
+        panel13.add(scrollPane3, BorderLayout.CENTER);
+        final JList list2 = new JList();
+        scrollPane3.setViewportView(list2);
+        btnForecastH = new JButton();
+        btnForecastH.setText("Button");
+        panel13.add(btnForecastH, BorderLayout.SOUTH);
         final JPanel panel14 = new JPanel();
         panel14.setLayout(new BorderLayout(0, 0));
-        panel12.add(panel14, BorderLayout.CENTER);
-        final JSplitPane splitPane1 = new JSplitPane();
-        panel14.add(splitPane1, BorderLayout.CENTER);
-        visualizationF = new JPanel();
-        visualizationF.setLayout(new BorderLayout(0, 0));
-        splitPane1.setRightComponent(visualizationF);
-        final JScrollPane scrollPane3 = new JScrollPane();
-        splitPane1.setLeftComponent(scrollPane3);
+        tabbedPane1.addTab("Прогнозирование Days", panel14);
+        final JSplitPane splitPane2 = new JSplitPane();
+        panel14.add(splitPane2, BorderLayout.CENTER);
+        visualizationFD = new JPanel();
+        visualizationFD.setLayout(new BorderLayout(0, 0));
+        splitPane2.setRightComponent(visualizationFD);
         final JPanel panel15 = new JPanel();
         panel15.setLayout(new BorderLayout(0, 0));
-        scrollPane3.setViewportView(panel15);
+        splitPane2.setLeftComponent(panel15);
         final JScrollPane scrollPane4 = new JScrollPane();
-        scrollPane4.setAlignmentX(0.0f);
-        scrollPane4.setMinimumSize(new Dimension(0, 0));
-        scrollPane4.setPreferredSize(new Dimension(56, 128));
         panel15.add(scrollPane4, BorderLayout.CENTER);
-        listForecast = new JList();
-        listForecast.setAlignmentX(0.0f);
-        listForecast.setAlignmentY(0.0f);
-        listForecast.setMinimumSize(new Dimension(0, 0));
-        final DefaultListModel defaultListModel1 = new DefaultListModel();
-        listForecast.setModel(defaultListModel1);
-        listForecast.setPreferredSize(new Dimension(0, 0));
-        listForecast.setSelectionMode(0);
-        scrollPane4.setViewportView(listForecast);
-        final JScrollPane scrollPane5 = new JScrollPane();
-        scrollPane5.setPreferredSize(new Dimension(56, 128));
-        panel15.add(scrollPane5, BorderLayout.EAST);
-        listForecastF = new JList();
-        listForecastF.setAlignmentX(0.0f);
-        listForecastF.setAlignmentY(0.0f);
-        listForecastF.setMinimumSize(new Dimension(0, 0));
-        listForecastF.setPreferredSize(new Dimension(0, 0));
-        scrollPane5.setViewportView(listForecastF);
+        list1 = new JList();
+        scrollPane4.setViewportView(list1);
+        btnForecastD = new JButton();
+        btnForecastD.setText("Button");
+        panel15.add(btnForecastD, BorderLayout.SOUTH);
     }
 
     /**
