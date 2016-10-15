@@ -226,33 +226,75 @@
                     <border type="none"/>
                     <children/>
                   </grid>
-                  <grid id="214a8" layout-manager="BorderLayout" hgap="0" vgap="0">
+                  <splitpane id="74a94">
                     <constraints>
                       <splitpane position="left"/>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <orientation value="0"/>
+                    </properties>
                     <border type="none"/>
                     <children>
-                      <scrollpane id="53fbb">
-                        <constraints border-constraint="Center"/>
+                      <grid id="214a8" layout-manager="BorderLayout" hgap="0" vgap="0">
+                        <constraints>
+                          <splitpane position="left"/>
+                        </constraints>
+                        <properties>
+                          <minimumSize width="130" height="150"/>
+                        </properties>
+                        <border type="none"/>
+                        <children>
+                          <scrollpane id="53fbb">
+                            <constraints border-constraint="Center"/>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="45a66" class="javax.swing.JList" binding="listForecastH">
+                                <constraints/>
+                                <properties/>
+                              </component>
+                            </children>
+                          </scrollpane>
+                          <component id="dea11" class="javax.swing.JButton" binding="btnForecastH">
+                            <constraints border-constraint="South"/>
+                            <properties>
+                              <enabled value="false"/>
+                              <text value="Прогнозирование"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                      <grid id="65c37" layout-manager="BorderLayout" hgap="0" vgap="0">
+                        <constraints>
+                          <splitpane position="right"/>
+                        </constraints>
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="45a66" class="javax.swing.JList" binding="listForecastH">
-                            <constraints/>
+                          <scrollpane id="f2b4e">
+                            <constraints border-constraint="Center"/>
                             <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="c3dc9" class="javax.swing.JList" binding="listForecastCoefH">
+                                <constraints/>
+                                <properties>
+                                  <selectionMode value="0"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </scrollpane>
+                          <component id="1f2d" class="javax.swing.JButton" binding="btnForecastCoefH">
+                            <constraints border-constraint="South"/>
+                            <properties>
+                              <enabled value="false"/>
+                              <text value="Показать отдельный график"/>
+                            </properties>
                           </component>
                         </children>
-                      </scrollpane>
-                      <component id="dea11" class="javax.swing.JButton" binding="btnForecastH">
-                        <constraints border-constraint="South"/>
-                        <properties>
-                          <enabled value="false"/>
-                          <text value="Прогнозирование"/>
-                        </properties>
-                      </component>
+                      </grid>
                     </children>
-                  </grid>
+                  </splitpane>
                 </children>
               </splitpane>
             </children>
@@ -277,33 +319,73 @@
                     <border type="none"/>
                     <children/>
                   </grid>
-                  <grid id="49ab6" layout-manager="BorderLayout" hgap="0" vgap="0">
+                  <splitpane id="c84a4">
                     <constraints>
                       <splitpane position="left"/>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <orientation value="0"/>
+                    </properties>
                     <border type="none"/>
                     <children>
-                      <scrollpane id="f681">
-                        <constraints border-constraint="Center"/>
+                      <grid id="49ab6" layout-manager="BorderLayout" hgap="0" vgap="0">
+                        <constraints>
+                          <splitpane position="left"/>
+                        </constraints>
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="230fc" class="javax.swing.JList" binding="listForecastD">
-                            <constraints/>
+                          <scrollpane id="f681">
+                            <constraints border-constraint="Center"/>
                             <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="230fc" class="javax.swing.JList" binding="listForecastD">
+                                <constraints/>
+                                <properties/>
+                              </component>
+                            </children>
+                          </scrollpane>
+                          <component id="c1c2c" class="javax.swing.JButton" binding="btnForecastD">
+                            <constraints border-constraint="South"/>
+                            <properties>
+                              <enabled value="false"/>
+                              <text value="Прогнозирование"/>
+                            </properties>
                           </component>
                         </children>
-                      </scrollpane>
-                      <component id="c1c2c" class="javax.swing.JButton" binding="btnForecastD">
-                        <constraints border-constraint="South"/>
-                        <properties>
-                          <enabled value="false"/>
-                          <text value="Прогнозирование"/>
-                        </properties>
-                      </component>
+                      </grid>
+                      <grid id="e47da" layout-manager="BorderLayout" hgap="0" vgap="0">
+                        <constraints>
+                          <splitpane position="right"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <scrollpane id="c103f">
+                            <constraints border-constraint="Center"/>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="a939e" class="javax.swing.JList" binding="listForecastCoefD">
+                                <constraints/>
+                                <properties>
+                                  <selectionMode value="0"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </scrollpane>
+                          <component id="95d3c" class="javax.swing.JButton" binding="btnForecastCoefD">
+                            <constraints border-constraint="South"/>
+                            <properties>
+                              <enabled value="false"/>
+                              <text value="Показать отдельный график"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
                     </children>
-                  </grid>
+                  </splitpane>
                 </children>
               </splitpane>
             </children>

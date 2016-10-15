@@ -176,8 +176,13 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     public void startForecastH(int[] index) {
         forecast.startForH(index);
     }
+
     public void startForecastD(int[] index) {
         forecast.startForD(index);
+    }
+
+    public void showForecastGraphicFor(int index) {
+        forecast.showForecastGraphicFor(index);
     }
 
     @Override

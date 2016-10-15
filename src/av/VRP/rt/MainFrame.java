@@ -45,6 +45,10 @@ public class MainFrame extends JFrame implements KeyListener {
     private JButton btnForecastD;
     private JButton btnForecastH;
     private JList listForecastH;
+    private JList listForecastCoefH;
+    private JButton btnForecastCoefH;
+    private JList listForecastCoefD;
+    private JButton btnForecastCoefD;
 
     public MainFrame() {
         super("MainFrame");
@@ -133,18 +137,26 @@ public class MainFrame extends JFrame implements KeyListener {
         });
         listForecastH.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         listForecastD.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
         listForecastH.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 btnForecastH.setEnabled(true);
                 visualizationFH.removeAll();
+                btnForecastCoefH.setEnabled(false);
+
+                tabbedPane1.getRootPane().setDefaultButton(btnForecastH);
             }
         });
+
         listForecastD.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 btnForecastD.setEnabled(true);
                 visualizationFD.removeAll();
+                btnForecastCoefD.setEnabled(false);
+
+                tabbedPane1.getRootPane().setDefaultButton(btnForecastD);
             }
         });
 
@@ -157,6 +169,7 @@ public class MainFrame extends JFrame implements KeyListener {
                 Main.getInstance().startParserThread();
             }
         });
+
         btnForecastH.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -165,6 +178,9 @@ public class MainFrame extends JFrame implements KeyListener {
                 } else {
                     btnForecastH.setEnabled(false);
                     Main.getInstance().startForecastH(listForecastH.getSelectedIndices());
+
+                    btnForecastCoefH.setEnabled(true);
+                    tabbedPane1.getRootPane().setDefaultButton(btnForecastCoefH);
                 }
             }
         });
@@ -172,14 +188,34 @@ public class MainFrame extends JFrame implements KeyListener {
         btnForecastD.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (listForecastH.getSelectedIndices().length < 2) {
+                if (listForecastD.getSelectedIndices().length < 2) {
                     JOptionPane.showMessageDialog(MainFrame.this, Constant.MSG_MORE_ONE);
                 } else {
                     btnForecastD.setEnabled(false);
                     Main.getInstance().startForecastD(listForecastD.getSelectedIndices());//fixme for days
+
+                    btnForecastCoefD.setEnabled(true);
+                    tabbedPane1.getRootPane().setDefaultButton(btnForecastCoefD);
                 }
             }
         });
+
+        btnForecastCoefH.addActionListener(new ActionListener() {
+                                               @Override
+                                               public void actionPerformed(ActionEvent e) {
+                                                   visualizationFH.removeAll();
+                                                   Main.getInstance().showForecastGraphicFor(listForecastCoefH.getSelectedIndex());
+                                               }
+                                           }
+        );
+        btnForecastCoefD.addActionListener(new ActionListener() {
+                                               @Override
+                                               public void actionPerformed(ActionEvent e) {
+                                                   visualizationFD.removeAll();
+                                                   Main.getInstance().showForecastGraphicFor(listForecastCoefD.getSelectedIndex());
+                                               }
+                                           }
+        );
     }
 
     public List getLinkFromList() {
@@ -228,20 +264,24 @@ public class MainFrame extends JFrame implements KeyListener {
         pb_calc_stat_days.setVisible(false);
         btn_statistic_days.setVisible(false);
         visualizationD.add(getChart2DDemoK(days, dots, month));
+        this.repaint();
     }
 
     public void showGraphForHours(String[][] days, Integer[][] dots, String[] day) {
         pb_calc_stat_hours.setVisible(false);
         btn_statistic_hours.setVisible(false);
         visualizationH.add(getChart2DDemoK(days, dots, day));
+        this.repaint();
     }
 
     public void showGraphForForecastH(String[][] days, Integer[][] dots, String[] day) {
         visualizationFH.add(getChart2DDemoK(days, dots, day));
+        this.repaint();
     }
 
     public void showGraphForForecastD(String[][] days, Integer[][] dots, String[] day) {
         visualizationFD.add(getChart2DDemoK(days, dots, day));
+        this.repaint();
     }
 
     public void showPanelReadFile() {
@@ -354,10 +394,20 @@ public class MainFrame extends JFrame implements KeyListener {
     public void setListForecast(String[] titles) {
         listForecastH.setListData(titles);//fixme if null or 0
         listForecastD.setListData(titles);//fixme if null or 0
-        listForecastH.setSelectedIndex(0);
-        listForecastD.setSelectedIndex(0);
+        listForecastH.setSelectedIndices(new int[]{0, 1});
+        listForecastD.setSelectedIndices(new int[]{0, 1});
         btnForecastH.setEnabled(true);
         btnForecastD.setEnabled(true);
+    }
+
+    public void setListCoefForecastH(String[] titles) {
+        listForecastCoefH.setListData(titles);
+        listForecastCoefH.setSelectedIndex(0);
+    }
+
+    public void setListCoefForecastD(String[] titles) {
+        listForecastCoefD.setListData(titles);
+        listForecastCoefD.setSelectedIndex(0);
     }
 
     @Override
@@ -497,9 +547,13 @@ public class MainFrame extends JFrame implements KeyListener {
         visualizationFH = new JPanel();
         visualizationFH.setLayout(new BorderLayout(0, 0));
         splitPane1.setRightComponent(visualizationFH);
+        final JSplitPane splitPane2 = new JSplitPane();
+        splitPane2.setOrientation(0);
+        splitPane1.setLeftComponent(splitPane2);
         final JPanel panel13 = new JPanel();
         panel13.setLayout(new BorderLayout(0, 0));
-        splitPane1.setLeftComponent(panel13);
+        panel13.setMinimumSize(new Dimension(130, 150));
+        splitPane2.setLeftComponent(panel13);
         final JScrollPane scrollPane3 = new JScrollPane();
         panel13.add(scrollPane3, BorderLayout.CENTER);
         listForecastH = new JList();
@@ -510,23 +564,50 @@ public class MainFrame extends JFrame implements KeyListener {
         panel13.add(btnForecastH, BorderLayout.SOUTH);
         final JPanel panel14 = new JPanel();
         panel14.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Прогнозирование Days", panel14);
-        final JSplitPane splitPane2 = new JSplitPane();
-        panel14.add(splitPane2, BorderLayout.CENTER);
-        visualizationFD = new JPanel();
-        visualizationFD.setLayout(new BorderLayout(0, 0));
-        splitPane2.setRightComponent(visualizationFD);
+        splitPane2.setRightComponent(panel14);
+        final JScrollPane scrollPane4 = new JScrollPane();
+        panel14.add(scrollPane4, BorderLayout.CENTER);
+        listForecastCoefH = new JList();
+        listForecastCoefH.setSelectionMode(0);
+        scrollPane4.setViewportView(listForecastCoefH);
+        btnForecastCoefH = new JButton();
+        btnForecastCoefH.setEnabled(false);
+        btnForecastCoefH.setText("Показать отдельный график");
+        panel14.add(btnForecastCoefH, BorderLayout.SOUTH);
         final JPanel panel15 = new JPanel();
         panel15.setLayout(new BorderLayout(0, 0));
-        splitPane2.setLeftComponent(panel15);
-        final JScrollPane scrollPane4 = new JScrollPane();
-        panel15.add(scrollPane4, BorderLayout.CENTER);
+        tabbedPane1.addTab("Прогнозирование Days", panel15);
+        final JSplitPane splitPane3 = new JSplitPane();
+        panel15.add(splitPane3, BorderLayout.CENTER);
+        visualizationFD = new JPanel();
+        visualizationFD.setLayout(new BorderLayout(0, 0));
+        splitPane3.setRightComponent(visualizationFD);
+        final JSplitPane splitPane4 = new JSplitPane();
+        splitPane4.setOrientation(0);
+        splitPane3.setLeftComponent(splitPane4);
+        final JPanel panel16 = new JPanel();
+        panel16.setLayout(new BorderLayout(0, 0));
+        splitPane4.setLeftComponent(panel16);
+        final JScrollPane scrollPane5 = new JScrollPane();
+        panel16.add(scrollPane5, BorderLayout.CENTER);
         listForecastD = new JList();
-        scrollPane4.setViewportView(listForecastD);
+        scrollPane5.setViewportView(listForecastD);
         btnForecastD = new JButton();
         btnForecastD.setEnabled(false);
         btnForecastD.setText("Прогнозирование");
-        panel15.add(btnForecastD, BorderLayout.SOUTH);
+        panel16.add(btnForecastD, BorderLayout.SOUTH);
+        final JPanel panel17 = new JPanel();
+        panel17.setLayout(new BorderLayout(0, 0));
+        splitPane4.setRightComponent(panel17);
+        final JScrollPane scrollPane6 = new JScrollPane();
+        panel17.add(scrollPane6, BorderLayout.CENTER);
+        listForecastCoefD = new JList();
+        listForecastCoefD.setSelectionMode(0);
+        scrollPane6.setViewportView(listForecastCoefD);
+        btnForecastCoefD = new JButton();
+        btnForecastCoefD.setEnabled(false);
+        btnForecastCoefD.setText("Показать отдельный график");
+        panel17.add(btnForecastCoefD, BorderLayout.SOUTH);
     }
 
     /**

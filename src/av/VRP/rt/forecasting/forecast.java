@@ -2,7 +2,12 @@ package av.VRP.rt.forecasting;
 
 import av.VRP.rt.MainFrame;
 import av.VRP.rt.Utils.Log;
+import av.VRP.rt.Utils.Utils;
 import av.VRP.rt.substance.Trips;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Artem on 03.10.2016.
@@ -11,11 +16,14 @@ public class Forecast {
     private Integer[] count;
     private Integer[][] oldData;
 
-       private Integer[] countSecond;
-    private Integer[] countForecast;//float
-    private Integer[][] countForecastA;//float
+    private Integer[] countSecond;
+
+    private List<List<Integer>> countForecastA;//float
+    private Integer[] real;
     //   private Integer[] countForecast5;//float
+
     private Float alpha, delta, gamma; // 0..1
+    private List<Float> arrAlpha, arrDelta, arrGamma; // 0..1
 
     private byte index = 0;
 
@@ -31,10 +39,6 @@ public class Forecast {
 
     public void setTrips(Trips trips) {
         this.trips = trips;
-    }
-
-    public void setCount(Integer[] count) {
-        this.count = count;
     }
 
     public void setDates(String[] dates) {
@@ -55,13 +59,12 @@ public class Forecast {
             oldData[j++] = trips.getCountTripsForHour()[i];
         }
         count = oldData[j - 1];//check ?
+        real = oldData[j - 1];
         // countSecond = trips.getCountTripsForHour()[1];
 
         setDates(trips.getActiveHoursStr()[index[0]]);
 
-
-        countForecast = new Integer[count.length];
-        countForecastA = new Integer[128][count.length];
+        countForecastA = new ArrayList<>();
         //  countForecast5 = new Integer[count.length];
 
         startEXPma();
@@ -70,101 +73,65 @@ public class Forecast {
         Log.p("end  forecast ForH");
         showGraphicForH();
         Log.p("end graphic forecast ForH");
-        mainFrame.repaint();
-        mainFrame.validate();
     }
 
     private int getMeanOldData(int i) {
-        Integer summ = 0;
+        Integer sum = 0;
         for (Integer[] el : oldData) {
-            summ += el[i];
+            sum += el[i];
         }
-        return summ;
+        return sum;
     }
 
     private void startEXPma() {
-
-        for (int i = 0; i <= count.length - 12; i++) {
-            countForecast[i] = count[i];
-        }
         alpha = gamma = delta = 0.1f;
 
-        int j = 0;
+        arrAlpha = new ArrayList<>();
+        arrGamma = new ArrayList<>();
+        arrDelta = new ArrayList<>();
 
-        for (alpha = 0.5f; alpha < 1.5; alpha += 0.3f) {
-            for (delta = 0.5f; delta < 1.5; delta += 0.3f) {
-                for (gamma = 0.5f; gamma < 1.5; gamma += 0.3f) {
+        for (alpha = 0.5f; alpha < 1.4; alpha += 0.3f) {
+            for (delta = 0.5f; delta < 1.4; delta += 0.3f) {
+                for (gamma = 0.5f; gamma < 1.4; gamma += 0.3f) {
+                    arrAlpha.add(alpha);
+                    arrGamma.add(gamma);
+                    arrDelta.add(delta);
+                    List<Integer> tmp = new ArrayList<>();
+                    Integer pred = 0;
 
                     for (int i = 0; i < count.length - 12; i++) {
-                        countForecastA[j][i] = count[i];
+                        tmp.add(count[i]);
+                        pred = count[i];
                     }
 
                     for (int i = count.length - 12; i < count.length; i++) {
-                        countForecastA[j][i] = Math.round(delta *
-                                (gamma * (alpha * getMeanOldData(i) + (1 - alpha) * countForecastA[j][i - 1]) +
+                        tmp.add(Math.round(delta *
+                                (gamma * (alpha * getMeanOldData(i) + (1 - alpha) * pred) +
                                         (1 - gamma) * count[i - 2] +
-                                        (1 - delta) * count[i - 12]));
+                                        (1 - delta) * count[i - 12])));
+                        pred = tmp.get(tmp.size() - 1);
                     }
-                    j++;
+                    countForecastA.add(tmp);
                 }
             }
         }
-    }
 
-    private void startMA2() {
-        countForecast[0] = count[0];
-
-
-        for (int i = 1; i < count.length; i++) {
-            countForecast[i] = (count[i] + count[i - 1]) / 2;
-        }
-        for (int i = 2; i < count.length; i++) {
-            // countForecast3[i] = (count[i] + count[i - 1] + count[i - 2]) / 3;
-        }
+        mainFrame.setListCoefForecastH(arrCoefToArrStr());
     }
 
     private void showGraphicForH() {
-        String[][] ds = new String[][]{dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates,
-                dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates,
-                dates, dates};
-        //   ds[2] = dates;
+        String[][] ds = new String[28][];
+        Arrays.fill(ds, dates);
 
         Integer[][] counts = new Integer[28][];
+        int j = 1;
         counts[0] = count;
-        counts[1] = countForecastA[0];
-        counts[2] = countForecastA[1];
-        counts[3] = countForecastA[2];
-        counts[4] = countForecastA[3];
-        counts[5] = countForecastA[4];
-        counts[6] = countForecastA[5];
-        counts[7] = countForecastA[6];
-        counts[8] = countForecastA[7];
-        counts[9] = countForecastA[8];
-        counts[10] = countForecastA[9];
-        counts[11] = countForecastA[10];
-        counts[12] = countForecastA[11];
-        counts[13] = countForecastA[12];
-        counts[14] = countForecastA[13];
-        counts[15] = countForecastA[14];
-        counts[16] = countForecastA[15];
-        counts[17] = countForecastA[16];
-        counts[18] = countForecastA[17];
-        counts[19] = countForecastA[18];
-        counts[20] = countForecastA[19];
-        counts[21] = countForecastA[20];
-        counts[22] = countForecastA[21];
-        counts[23] = countForecastA[22];
-        counts[24] = countForecastA[23];
-        counts[25] = countForecastA[24];
-        counts[26] = countForecastA[25];
-        counts[27] = countForecastA[26];
+        for (List<Integer> tmp : countForecastA) {
+            counts[j++] = tmp.toArray(new Integer[tmp.size()]);
+        }
         //  counts[2] = countForecast3;
-        String[] months = new String[]{"ForecastEXp1", "ForecastEXp1", "ForecastEXp2", "ForecastEXp3", "ForecastEXp4", "ForecastEXp5",
-                "ForecastEXp6", "ForecastEXp7", "ForecastEXp8", "ForecastEXp", "ForecastEXp10"
-                , "ForecastEXp1", "ForecastEXp2", "ForecastEXp3", "ForecastEXp4", "ForecastEXp5",
-                "ForecastEXp6", "ForecastEXp7", "ForecastEXp8", "ForecastEXp", "ForecastEXp10"
-                , "ForecastEXp1", "ForecastEXp2", "ForecastEXp3", "ForecastEXp4", "ForecastEXp5",
-                "ForecastEXp6", "ForecastEXp6"};
+        String[] months = new String[28];
+        Arrays.fill(months, "Forecast");
 
         mainFrame.showGraphForForecastH(ds, counts, months);
     }
@@ -183,9 +150,6 @@ public class Forecast {
         count = oldData[j - 1];//check ?
         // countSecond = trips.getCountTripsForHour()[1];
 
-        countForecast = new Integer[count.length];
-        countForecastA = new Integer[128][count.length];
-        //  countForecast5 = new Integer[count.length];
 
         startEXPma();
         // startMA2();
@@ -193,53 +157,46 @@ public class Forecast {
         Log.p("end  forecast ForD");
         showGraphicForD();
         Log.p("end graphic forecast ForD");
-        mainFrame.repaint();
-        mainFrame.validate();
     }
 
     private void showGraphicForD() {
-        String[][] ds = new String[][]{dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates,
-                dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates, dates,
-                dates, dates};
+        String[][] ds = new String[28][];
+        Arrays.fill(ds, dates);
         //   ds[2] = dates;
 
         Integer[][] counts = new Integer[28][];
+        int j = 1;
         counts[0] = count;
-        counts[1] = countForecastA[0];
-        counts[2] = countForecastA[1];
-        counts[3] = countForecastA[2];
-        counts[4] = countForecastA[3];
-        counts[5] = countForecastA[4];
-        counts[6] = countForecastA[5];
-        counts[7] = countForecastA[6];
-        counts[8] = countForecastA[7];
-        counts[9] = countForecastA[8];
-        counts[10] = countForecastA[9];
-        counts[11] = countForecastA[10];
-        counts[12] = countForecastA[11];
-        counts[13] = countForecastA[12];
-        counts[14] = countForecastA[13];
-        counts[15] = countForecastA[14];
-        counts[16] = countForecastA[15];
-        counts[17] = countForecastA[16];
-        counts[18] = countForecastA[17];
-        counts[19] = countForecastA[18];
-        counts[20] = countForecastA[19];
-        counts[21] = countForecastA[20];
-        counts[22] = countForecastA[21];
-        counts[23] = countForecastA[22];
-        counts[24] = countForecastA[23];
-        counts[25] = countForecastA[24];
-        counts[26] = countForecastA[25];
-        counts[27] = countForecastA[26];
+        for (List<Integer> tmp : countForecastA) {
+            counts[j++] = tmp.toArray(new Integer[tmp.size()]);
+        }
         //  counts[2] = countForecast3;
-        String[] months = new String[]{"ForecastEXp1", "ForecastEXp1", "ForecastEXp2", "ForecastEXp3", "ForecastEXp4", "ForecastEXp5",
-                "ForecastEXp6", "ForecastEXp7", "ForecastEXp8", "ForecastEXp", "ForecastEXp10"
-                , "ForecastEXp1", "ForecastEXp2", "ForecastEXp3", "ForecastEXp4", "ForecastEXp5",
-                "ForecastEXp6", "ForecastEXp7", "ForecastEXp8", "ForecastEXp", "ForecastEXp10"
-                , "ForecastEXp1", "ForecastEXp2", "ForecastEXp3", "ForecastEXp4", "ForecastEXp5",
-                "ForecastEXp6", "ForecastEXp6"};
-
+        String[] months = new String[28];
+        Arrays.fill(months, "Forecast");
         mainFrame.showGraphForForecastD(ds, counts, months);
+    }
+
+    public String[] arrCoefToArrStr() {
+        StringBuilder sb = new StringBuilder("");
+        for (int i = 0; i < arrAlpha.size(); i++) {
+            sb.append("a: ");
+            sb.append(arrAlpha.get(i).floatValue());
+            sb.append(", d: ");
+            sb.append(arrDelta.get(i).floatValue());
+            sb.append(", g: ");
+            sb.append(arrGamma.get(i).floatValue());
+            sb.append("\n");
+        }
+        return Utils.strToArray(sb.toString(), "\n");
+    }
+
+    public void showForecastGraphicFor(int index) {
+        String[][] ds = new String[][]{dates, dates};
+        Integer[][] counts = new Integer[2][];
+        counts[0] = real;
+        List<Integer> tmp = countForecastA.get(index);
+        counts[1] = tmp.toArray(new Integer[tmp.size()]);
+        String[] months = new String[]{"Real", "ForecastEXp"};
+        mainFrame.showGraphForForecastH(ds, counts, months);
     }
 }
