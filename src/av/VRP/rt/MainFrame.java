@@ -204,7 +204,7 @@ public class MainFrame extends JFrame implements KeyListener {
                                                @Override
                                                public void actionPerformed(ActionEvent e) {
                                                    visualizationFH.removeAll();
-                                                   Main.getInstance().showForecastGraphicFor(listForecastCoefH.getSelectedIndex());
+                                                   Main.getInstance().showForecastGraphicFor(listForecastCoefH.getSelectedIndex(), true);
                                                }
                                            }
         );
@@ -212,7 +212,7 @@ public class MainFrame extends JFrame implements KeyListener {
                                                @Override
                                                public void actionPerformed(ActionEvent e) {
                                                    visualizationFD.removeAll();
-                                                   Main.getInstance().showForecastGraphicFor(listForecastCoefD.getSelectedIndex());
+                                                   Main.getInstance().showForecastGraphicFor(listForecastCoefD.getSelectedIndex(), false);
                                                }
                                            }
         );
@@ -224,7 +224,7 @@ public class MainFrame extends JFrame implements KeyListener {
 
     public void setListData(String[] listData) {
         listLink.setListData(listData);
-        listLink.setSelectedIndex(6);//fixme
+        listLink.setSelectedIndices(new int[]{6, 7});
         dowloadLinksButton.setVisible(false);
 
         tabbedPane1.getRootPane().setDefaultButton(dowloadLinkButton);

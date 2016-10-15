@@ -181,8 +181,8 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         forecast.startForD(index);
     }
 
-    public void showForecastGraphicFor(int index) {
-        forecast.showForecastGraphicFor(index);
+    public void showForecastGraphicFor(int index, boolean forH) {
+        forecast.showForecastGraphicFor(index, forH);
     }
 
     @Override
