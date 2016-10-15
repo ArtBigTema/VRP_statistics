@@ -9,7 +9,9 @@ import av.VRP.rt.substance.Trips;
  */
 public class Forecast {
     private Integer[] count;
-    private Integer[] countSecond;
+    private Integer[][] oldData;
+
+       private Integer[] countSecond;
     private Integer[] countForecast;//float
     private Integer[][] countForecastA;//float
     //   private Integer[] countForecast5;//float
@@ -43,14 +45,19 @@ public class Forecast {
         mainFrame.setListForecast(trips.getTitles());
     }
 
-    public void startForH(int index) {
+    public void startForH(int[] index) {//индексы выборки
         Log.p("start forecast ForH");
 
         //setCount(trips.getCountTripsForHour()[index]);
-        count = trips.getCountTripsForHour()[0];
-        countSecond = trips.getCountTripsForHour()[1];
+        oldData = new Integer[index.length][];
+        int j = 0;
+        for (int i : index) {
+            oldData[j++] = trips.getCountTripsForHour()[i];
+        }
+        count = oldData[j - 1];//check ?
+        // countSecond = trips.getCountTripsForHour()[1];
 
-        setDates(trips.getActiveHoursStr()[index]);
+        setDates(trips.getActiveHoursStr()[index[0]]);
 
 
         countForecast = new Integer[count.length];
@@ -65,6 +72,14 @@ public class Forecast {
         Log.p("end graphic forecast ForH");
         mainFrame.repaint();
         mainFrame.validate();
+    }
+
+    private int getMeanOldData(int i) {
+        Integer summ = 0;
+        for (Integer[] el : oldData) {
+            summ += el[i];
+        }
+        return summ;
     }
 
     private void startEXPma() {
@@ -86,7 +101,7 @@ public class Forecast {
 
                     for (int i = count.length - 12; i < count.length; i++) {
                         countForecastA[j][i] = Math.round(delta *
-                                (gamma * (alpha * countSecond[i] + (1 - alpha) * countForecastA[j][i - 1]) +
+                                (gamma * (alpha * getMeanOldData(i) + (1 - alpha) * countForecastA[j][i - 1]) +
                                         (1 - gamma) * count[i - 2] +
                                         (1 - delta) * count[i - 12]));
                     }
@@ -154,11 +169,19 @@ public class Forecast {
         mainFrame.showGraphForForecastH(ds, counts, months);
     }
 
-    public void startForD(int index) {
+    public void startForD(int[] index) {
         Log.p("start forecast ForD");
-        setCount(trips.getCountTripsForDay()[index]);
-        setDates(trips.getActiveDaysStr()[index]);
-
+        //   setCount(trips.getCountTripsForDay()[index]);
+        setDates(trips.getActiveDaysStr()[0]);
+        count = trips.getCountTripsForDay()[0];
+        countSecond = count;
+        oldData = new Integer[index.length][];
+        int j = 0;
+        for (int i : index) {
+            oldData[j++] = trips.getCountTripsForHour()[i];
+        }
+        count = oldData[j - 1];//check ?
+        // countSecond = trips.getCountTripsForHour()[1];
 
         countForecast = new Integer[count.length];
         countForecastA = new Integer[128][count.length];

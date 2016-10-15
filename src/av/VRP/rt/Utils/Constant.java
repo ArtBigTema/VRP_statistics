@@ -24,6 +24,8 @@ public class Constant {
     public static final String TITLE_E_LAT = "End Latitude";
     public static final String TITLE_E_LON = "End Longitude";
 
+    public static final String MSG_MORE_ONE = "Выберите более одного элемента";
+
     public static final String[] TABLE_TITLES_FOR_GY = new String[]{
             TITLE_S_DT, TITLE_S_LAT, TITLE_S_LON, TITLE_E_DT, TITLE_E_LAT, TITLE_E_LON};
 

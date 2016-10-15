@@ -1,5 +1,6 @@
 package av.VRP.rt;
 
+import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Utils;
 
 import net.sourceforge.chart2d.*;
@@ -130,8 +131,8 @@ public class MainFrame extends JFrame implements KeyListener {
                 dowloadLinkButton.setEnabled(true);
             }
         });
-        listForecastH.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listForecastD.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listForecastH.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listForecastD.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         listForecastH.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -159,16 +160,24 @@ public class MainFrame extends JFrame implements KeyListener {
         btnForecastH.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnForecastH.setEnabled(false);
-                Main.getInstance().startForecastH(listForecastH.getSelectedIndex());
+                if (listForecastH.getSelectedIndices().length < 2) {
+                    JOptionPane.showMessageDialog(MainFrame.this, Constant.MSG_MORE_ONE);
+                } else {
+                    btnForecastH.setEnabled(false);
+                    Main.getInstance().startForecastH(listForecastH.getSelectedIndices());
+                }
             }
         });
 
         btnForecastD.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnForecastD.setEnabled(false);
-                Main.getInstance().startForecastD(listForecastD.getSelectedIndex());//fixme for days
+                if (listForecastH.getSelectedIndices().length < 2) {
+                    JOptionPane.showMessageDialog(MainFrame.this, Constant.MSG_MORE_ONE);
+                } else {
+                    btnForecastD.setEnabled(false);
+                    Main.getInstance().startForecastD(listForecastD.getSelectedIndices());//fixme for days
+                }
             }
         });
     }
