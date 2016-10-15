@@ -80,7 +80,7 @@ public class Forecast {
         for (Integer[] el : oldData) {
             sum += el[i];
         }
-        return sum;
+        return sum / oldData.length;
     }
 
     private void startEXPma() {
