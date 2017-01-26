@@ -180,11 +180,11 @@ public class Forecast {
     public String[] arrCoefToArrStr() {
         StringBuilder sb = new StringBuilder("");
         for (int i = 0; i < arrAlpha.size(); i++) {
-            sb.append("a: ");
+            sb.append("α: ");
             sb.append(arrAlpha.get(i).toString());
-            sb.append(", d: ");
+            sb.append(", δ: ");
             sb.append(arrDelta.get(i).toString());
-            sb.append(", g: ");
+            sb.append(", γ: ");
             sb.append(arrGamma.get(i).toString());
             sb.append("\n");
         }
@@ -193,11 +193,11 @@ public class Forecast {
 
     public String getLineCoef(int index) {
         StringBuilder sb = new StringBuilder("");
-        sb.append("a: ");
+        sb.append("α: ");
         sb.append(arrAlpha.get(index).toString());
-        sb.append(", d: ");
+        sb.append(", δ: ");
         sb.append(arrDelta.get(index).toString());
-        sb.append(", g: ");
+        sb.append(", γ: ");
         sb.append(arrGamma.get(index).toString());
 
         return sb.toString();
