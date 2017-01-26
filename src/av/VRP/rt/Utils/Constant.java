@@ -34,7 +34,9 @@ public class Constant {
     public static final String YELLOW = "yellow";
 
     public static final String DIR = "Files";
+    public static final String DIR_FOR_SCALA = "FilesScala";
     public static final String FILE = "file";
     public static final String FILE_FORMAT = ".txt";
+    public static final String FILE_FORMAT_FOR_SCALA = ".tsv";
     public static final String FILE_ENCODING = "UTF-8";
 }

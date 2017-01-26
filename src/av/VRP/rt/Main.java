@@ -185,6 +185,11 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         forecast.showForecastGraphicFor(index, forH);
     }
 
+    public void export() {
+        Exporter.init(trips.getTitles()[0]);
+        Exporter.export(trips.exportDataForDay());
+    }
+
     @Override
     public void onSuccess(int count) {
         size += count;

@@ -49,6 +49,7 @@ public class MainFrame extends JFrame implements KeyListener {
     private JButton btnForecastCoefH;
     private JList listForecastCoefD;
     private JButton btnForecastCoefD;
+    private JButton exportButton;
 
     public MainFrame() {
         super("MainFrame");
@@ -104,6 +105,12 @@ public class MainFrame extends JFrame implements KeyListener {
             }
         });
 
+        exportButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Main.getInstance().export();
+            }
+        });
         dowloadLinkButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -238,6 +245,9 @@ public class MainFrame extends JFrame implements KeyListener {
         progressBar.setVisible(true);
         dowloadLinkButton.setEnabled(false);
         btn_statistic_days.setVisible(false);
+
+        exportButton.setVisible(false);
+        exportButton.setEnabled(false);
     }
 
     public void endDownloading(boolean isSucces) {
@@ -258,6 +268,9 @@ public class MainFrame extends JFrame implements KeyListener {
         btn_statistic_days.setVisible(true);
         btn_statistic_hours.setVisible(true);
         pb_read_file.setVisible(false);
+
+        exportButton.setVisible(true);
+        exportButton.setEnabled(true);
     }
 
     public void showGraphForDays(String[][] days, Integer[][] dots, String[] month) {

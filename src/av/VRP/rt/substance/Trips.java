@@ -1,9 +1,10 @@
 package av.VRP.rt.substance;
 
-import av.VRP.rt.Utils.*;
-
+import av.VRP.rt.Utils.Constant;
+import av.VRP.rt.Utils.Log;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.*;
 
@@ -17,10 +18,15 @@ public class Trips {
     private Map<String, Integer> mapTripsForHour;
     private List<String> titles;
 
+    private Map<String, Integer> mapTripsForDaySingle;
+    private Map<String, Integer> mapTripsForHourSingle;
+
     public Trips() {
         trips = Collections.synchronizedList(new ArrayList<Trip>());
         mapTripsForDay = Collections.synchronizedMap(new TreeMap<String, Integer>());
         mapTripsForHour = Collections.synchronizedMap(new TreeMap<String, Integer>());
+        mapTripsForDaySingle = Collections.synchronizedMap(new TreeMap<String, Integer>());
+        mapTripsForHourSingle = Collections.synchronizedMap(new TreeMap<String, Integer>());
         titles = Collections.synchronizedList(new ArrayList<String>());
     }
 
@@ -47,6 +53,8 @@ public class Trips {
     }
 
     public void add(String who, Trip t) {
+        addSingleData(who, t);
+
         String key = who.replace(Constant.FILE_FORMAT, "&") + t.getDateStr();
         addTitle(who.replace(Constant.FILE_FORMAT, "&") + t.getMonthYear());//FIXME move to ...
 
@@ -62,6 +70,16 @@ public class Trips {
             mapTripsForHour.put(key, mapTripsForHour.get(key) + 1);
         } else {
             mapTripsForHour.put(key, 1);
+        }
+    }
+
+    private void addSingleData(String who, Trip t) {
+        String key = t.getDateStr();
+
+        if (mapTripsForDaySingle.get(key) != null) {
+            mapTripsForDaySingle.put(key, mapTripsForDaySingle.get(key) + 1);
+        } else {
+            mapTripsForDaySingle.put(key, 1);
         }
     }
 
@@ -232,6 +250,43 @@ public class Trips {
         for (Trip trip : trips) {
             result[i++] = trip.toTableVector();
         }
+        return result;
+    }
+
+    public String[] exportDataForDay() {
+
+        Map.Entry<String, Integer> entry = mapTripsForDaySingle.entrySet().iterator().next();
+        DateTimeFormatter dt = DateTimeFormat.forPattern("dd.MM.yyyy");
+        DateTime dateTime = dt.parseDateTime(entry.getKey());
+
+        String[] result = new String[dateTime.dayOfMonth().getMaximumValue()];
+        StringBuilder sb = new StringBuilder();
+
+        // int i = 0;
+
+        //  sb.append("Date" + "\t" + "Time" + "\t" + "value" + "\t" + "key");
+        //  result[i] = sb.toString();
+        DateTimeFormatter dtout = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+
+        for (int i = 1; i <= dateTime.dayOfMonth().getMaximumValue(); i++) {
+            DateTime datet = dateTime.withDayOfMonth(i);
+            String key = datet.toString(dtout);
+            String pkey = datet.toString(dt);
+            Integer value = 0;
+            if (mapTripsForDaySingle.containsKey(pkey)) {
+                value = mapTripsForDaySingle.get(pkey);
+            }
+
+            sb = new StringBuilder();
+            sb.append(titles.get(0));
+            sb.append('\t');
+            sb.append(key);
+            sb.append('\t');
+            sb.append(value + ".0");
+
+            result[i - 1] = sb.toString();
+        }
+
         return result;
     }
 }
