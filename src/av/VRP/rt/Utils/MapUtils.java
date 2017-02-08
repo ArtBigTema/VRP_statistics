@@ -4,6 +4,8 @@ import ch.hsr.geohash.GeoHash;
 import com.teamdev.jxmaps.LatLng;
 import com.teamdev.jxmaps.LatLngBounds;
 
+import java.io.File;
+
 /**
  * Created by Artem on 08.02.2017.
  */
@@ -16,6 +18,14 @@ public class MapUtils {
 
     public static String getHash(double lat, double lng) {
         return GeoHash.geoHashStringWithCharacterPrecision(lat, lng, Constant.CLUSTERS);
+    }
+
+    public static File getIcon(int count) {
+        File file = new File("icons/number_" + count+".png");
+        if (file == null || !file.exists()) {
+            file = new File("icons/number_0.png");
+        }
+        return file;
     }
 
 
@@ -132,7 +142,7 @@ public class MapUtils {
      * @return A string denoting the quadkey of the tile.
      */
     public static String lonLatToQuadKey(double lon, double lat, int zoomLevel) {
-        LatLng latLng = lonLatToPixelXY(lon, lat, zoomLevel,null);
+        LatLng latLng = lonLatToPixelXY(lon, lat, zoomLevel, null);
         int[] pixelXY = {(int) latLng.getLat(), (int) latLng.getLng()};
         int[] tileXY = pixelXYToTileXY(pixelXY[0], pixelXY[1]);
 

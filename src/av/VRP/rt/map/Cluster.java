@@ -2,6 +2,7 @@ package av.VRP.rt.map;
 
 import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.substance.Point;
+import av.VRP.rt.substance.PointWithMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by Artem on 08.02.2017.
  */
 public class Cluster {
-    private List<Point> clusters;
+    private List<PointWithMessage> clusters;
     private int count;
 
     public Cluster() {
@@ -19,15 +20,16 @@ public class Cluster {
     }
 
     public void add(Point point) {
-        for (Point p : clusters) {
+        for (PointWithMessage p : clusters) {
             if (p.getHash().equals(point.getHash())) {
+                p.incClust();
                 return;
             }
         }
-        clusters.add(point);
+        clusters.add(new PointWithMessage(point));
     }
 
-    public List<Point> getClusters() {
+    public List<PointWithMessage> getClusters() {
         return clusters;
     }
 }

@@ -291,7 +291,7 @@ public class Trips {
         return result;
     }
 
-    public List getAll() {
+    public List<Trip> getAll() {
         return trips;
     }
 

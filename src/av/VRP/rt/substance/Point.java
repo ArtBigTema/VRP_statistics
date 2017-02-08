@@ -2,6 +2,7 @@ package av.VRP.rt.substance;
 
 import av.VRP.rt.Utils.MapUtils;
 import av.VRP.rt.Utils.Utils;
+import com.teamdev.jxmaps.LatLng;
 
 /**
  * Created by Artem on 09.04.2016.
@@ -47,6 +48,9 @@ public class Point {
         return new Point(elements[1], elements[2]);
     }
 
+    public LatLng toLatLng() {
+        return new LatLng(lat, lng);
+    }
 
     public Double getLat() {
         return lat;

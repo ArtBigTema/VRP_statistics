@@ -134,7 +134,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
         frame.setListData(rows);
 
-        if(modeMap){
+        if (modeMap) {
             frame.clickDownloadLink();
         }
     }
@@ -214,7 +214,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             frame.setTableModel(false);//обновить таблицу
             frame.endDownloading(true);
 
-            if(modeMap){
+            if (modeMap) {
                 frame.clickReadFile();
             }
         }
@@ -244,7 +244,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     @Override
     public void generated(String s, String ss) {
-        if(!modeMap) {
+        if (!modeMap) {
             trips.add(s, ss);
         }
 
@@ -272,20 +272,32 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             Log.p("Trips mapSizeForHour = ", trips.mapSizeForHour());
 
 
-
-            if(!modeMap) {
+            if (!modeMap) {
                 frame.setTableData(trips.toTable());
                 agregateForecast();//fixme
             }
 
-            if(modeMap){
+            if (modeMap) {
                 frame.showMap();
             }
         }
     }
 
+    private boolean isClicked;
+
     public void showPoints(MapExample map) {
-        map.constructCluster(trips);
-        map.showAllPoints(trips);
+        map.clear();
+
+        if (!isClicked) {
+            isClicked = true;
+            map.constructCluster(trips);
+        } else {
+            isClicked = false;
+            map.showAllPoints(trips);
+        }
+    }
+
+    public void zoom(double zoom) {
+        frame.setZoom(zoom);
     }
 }

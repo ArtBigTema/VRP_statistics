@@ -1,12 +1,16 @@
 package av.VRP.rt.map;
 
+import av.VRP.rt.Main;
+import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.MapUtils;
+import av.VRP.rt.substance.PointWithMessage;
 import av.VRP.rt.substance.Trip;
 import av.VRP.rt.substance.Trips;
 import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.swing.MapView;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -39,6 +43,13 @@ public class MapExample extends MapView {
                     map.setCenter(new LatLng(41.3850639, 2.1734034999999494));
                     // Setting initial zoom value
                     map.setZoom(12.0);
+
+                    map.addEventListener("zoom_changed", new MapEvent() {
+                        @Override
+                        public void onEvent() {
+                            Main.getInstance().zoom(map.getZoom());
+                        }
+                    });
                 }
             }
         });
@@ -54,13 +65,51 @@ public class MapExample extends MapView {
         for (Trip point : points) {
             cluster.add(point.getStartPoint());
 
-            if (i++ > 10) {
+            if (i++ > Constant.ITER) {
                 Log.e("cluster count: ", cluster.getClusters());
                 break;
             }
         }
 
         Log.p("end constructCluster");
+
+        showCluster(points.get(0).getLatLngStart());
+    }
+
+    private void showCluster(LatLng center) {
+        Map map = getMap();
+
+        map.setCenter(center);
+
+        for (PointWithMessage point : cluster.getClusters()) {
+            Marker marker = new Marker(map);
+
+            Icon icon = new Icon();
+            File file = MapUtils.getIcon(point.getClust());
+            icon.loadFromFile(file);
+            marker.setIcon(icon);
+
+            marker.setClickable(true);
+            marker.setPosition(point.toLatLng());
+            // marker.set
+            marker.addEventListener("click", new MapMouseEvent() {
+                @Override
+                public void onEvent(MouseEvent mouseEvent) {
+                    Log.p("marker clicked: ", MapUtils.getHash(marker.getPosition()));
+
+                    if (infoWindow != null) {
+                        infoWindow.close();
+                        infoWindow = null;
+                        marker.remove();
+                    } else {
+                        infoWindow = new InfoWindow(getMap());
+                        infoWindow.setContent(point.getMsg());
+                        infoWindow.open(getMap(), marker);
+                    }
+                    // showBounds();
+                }
+            });
+        }
     }
 
     public void showAllPoints(Trips trips) {
@@ -83,21 +132,22 @@ public class MapExample extends MapView {
                 @Override
                 public void onEvent(MouseEvent mouseEvent) {
                     Log.p("marker clicked: ", point.getStr());
+                    Log.p("marker clicked: ", MapUtils.getHash(point.getLatLngStart()));
 
                     if (infoWindow != null) {
                         infoWindow.close();
-
+                        infoWindow = null;
+                        marker.remove();
+                    } else {
+                        infoWindow = new InfoWindow(getMap());
+                        infoWindow.setContent(MapUtils.getHash(point.getLatLngStart()));
+                        infoWindow.open(getMap(), marker);
                     }
-
-                    infoWindow = new InfoWindow(getMap());
-                    infoWindow.setContent(MapUtils.getHash(point.getLatLngStart()));
-                    infoWindow.open(getMap(), marker);
-
                     // showBounds();
                 }
             });
 
-            if (i++ > 100) {
+            if (i++ > Constant.ITER) {
                 break;
             }
         }
@@ -119,5 +169,10 @@ public class MapExample extends MapView {
 
     public void setZoom(int zoom) {
         getMap().setZoom(zoom);
+    }
+
+    public void clear() {
+        //final Map map = getMap();
+
     }
 }
