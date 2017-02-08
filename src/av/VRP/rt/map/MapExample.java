@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class MapExample extends MapView {
     private InfoWindow infoWindow;
+    private Cluster cluster;
 
     public MapExample() {
 
@@ -43,8 +44,27 @@ public class MapExample extends MapView {
         });
     }
 
-    public void showPoints(Trips trips) {
-        Log.p("start showPoints");
+    public void constructCluster(Trips trips) {
+        Log.p("start constructCluster");
+
+        List<Trip> points = trips.getAll();
+        cluster = new Cluster();
+
+        int i = 0;
+        for (Trip point : points) {
+            cluster.add(point.getStartPoint());
+
+            if (i++ > 10) {
+                Log.e("cluster count: ", cluster.getClusters());
+                break;
+            }
+        }
+
+        Log.p("end constructCluster");
+    }
+
+    public void showAllPoints(Trips trips) {
+        Log.p("start showAllPoints");
         List<Trip> points = trips.getAll();
 
         Map map = getMap();
@@ -56,27 +76,24 @@ public class MapExample extends MapView {
             Marker marker = new Marker(map);
             marker.setPosition(point.getLatLngStart());
             marker.setClickable(true);
-            //
+
             //  marker.setIcon("https://habrahabr.ru/images/favicons/apple-touch-icon-57x57.png");
 
             marker.addEventListener("click", new MapMouseEvent() {
                 @Override
                 public void onEvent(MouseEvent mouseEvent) {
-                    Log.p("marker clicked", point.getStr());
+                    Log.p("marker clicked: ", point.getStr());
 
                     if (infoWindow != null) {
                         infoWindow.close();
-                        Log.p("quadkey", MapUtils.lonLatToPixelXY(
-                                point.getLatLngStart().getLat(),
-                                point.getLatLngStart().getLng(),
-                                map.getZoom(), map.getBounds()));
+
                     }
 
                     infoWindow = new InfoWindow(getMap());
-                    infoWindow.setContent(point.getStr());
+                    infoWindow.setContent(MapUtils.getHash(point.getLatLngStart()));
                     infoWindow.open(getMap(), marker);
 
-                    showBounds();
+                    // showBounds();
                 }
             });
 
@@ -84,7 +101,7 @@ public class MapExample extends MapView {
                 break;
             }
         }
-        Log.p("end showPoints");
+        Log.p("end showAllPoints");
     }
 
     private void showBounds() {

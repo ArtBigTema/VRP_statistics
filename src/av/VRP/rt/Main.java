@@ -244,7 +244,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     @Override
     public void generated(String s, String ss) {
-        trips.add(s, ss);
+        if(!modeMap) {
+            trips.add(s, ss);
+        }
+
         if (++i > size) {
             i = 0;
             trips.add(ss);
@@ -268,9 +271,12 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             Log.p("Trips mapSizeForDay = ", trips.mapSizeForDay());
             Log.p("Trips mapSizeForHour = ", trips.mapSizeForHour());
 
-            frame.setTableData(trips.toTable());
 
-            agregateForecast();//fixme
+
+            if(!modeMap) {
+                frame.setTableData(trips.toTable());
+                agregateForecast();//fixme
+            }
 
             if(modeMap){
                 frame.showMap();
@@ -279,6 +285,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     public void showPoints(MapExample map) {
-        map.showPoints(trips);
+        map.constructCluster(trips);
+        map.showAllPoints(trips);
     }
 }

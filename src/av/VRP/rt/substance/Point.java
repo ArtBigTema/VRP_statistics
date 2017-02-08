@@ -1,5 +1,6 @@
 package av.VRP.rt.substance;
 
+import av.VRP.rt.Utils.MapUtils;
 import av.VRP.rt.Utils.Utils;
 
 /**
@@ -9,6 +10,7 @@ import av.VRP.rt.Utils.Utils;
 public class Point {
     private double lat = 0d;
     private double lng = 0d;
+    private String hash;
 
     public boolean isStartPoint = true; //FIXME
 
@@ -19,18 +21,24 @@ public class Point {
     public Point(double la, double ln) {
         lat = la;
         lng = ln;
+
+        hash = MapUtils.getHash(lat, lng);
     }
 
     public Point(int la, int ln) {
         x = la;
         y = ln;
+
+        hash = MapUtils.getHash(lat, lng);
     }
 
     public Point(String la, String ln) {
-       // lat = Double.parseDouble(la);
-       // lng = Double.parseDouble(ln);
+        // lat = Double.parseDouble(la);
+        // lng = Double.parseDouble(ln);
         lat = Double.parseDouble(ln);
         lng = Double.parseDouble(la);
+
+        hash = MapUtils.getHash(lat, lng);
     }
 
     public static Point construct(String s) {
@@ -46,6 +54,10 @@ public class Point {
 
     public Double getLng() {
         return lng;
+    }
+
+    public String getHash() {
+        return hash;
     }
 
     public String getStrLatLng() {

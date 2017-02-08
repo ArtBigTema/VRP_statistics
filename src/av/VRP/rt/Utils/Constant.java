@@ -41,4 +41,6 @@ public class Constant {
     public static final String FILE_FORMAT = ".txt";
     public static final String FILE_FORMAT_FOR_SCALA = ".tsv";
     public static final String FILE_ENCODING = "UTF-8";
+
+    public static final int CLUSTERS = 4;
 }

@@ -22,6 +22,10 @@ public class Log {//FIXME log to file
         System.err.println(s.toString());
     }
 
+    public static void e(Object s, Object ss) {
+        System.err.println(s.toString() + ss.toString());
+    }
+
     public static void d(Object s) {
         e(s.toString());
     }
@@ -31,8 +35,8 @@ public class Log {//FIXME log to file
     }
 
     public static void p(Object s, int[] ss) {
-        p(s.toString());
-        for(Object object:ss){
+        System.out.print(s.toString() + ':');
+        for (Object object : ss) {
             System.out.print(object.toString());
             System.out.print('\t');
         }
