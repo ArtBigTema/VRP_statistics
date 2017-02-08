@@ -2,6 +2,7 @@ package av.VRP.rt.substance;
 
 import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Log;
+import com.teamdev.jxmaps.LatLng;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -288,5 +289,17 @@ public class Trips {
         }
 
         return result;
+    }
+
+    public List getAll() {
+        return trips;
+    }
+
+    public List<LatLng> getPoints() {
+        List<LatLng> points = new ArrayList<>();
+        for(Trip t:trips){
+            points.add(t.getLatLngStart());
+        }
+        return points;
     }
 }

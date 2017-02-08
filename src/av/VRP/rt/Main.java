@@ -3,8 +3,9 @@ package av.VRP.rt;
 import av.VRP.rt.Utils.*;
 import av.VRP.rt.forecasting.Forecast;
 import av.VRP.rt.listener.FileWriterListener;
-import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.listener.VRPgeneratorListener;
+import av.VRP.rt.map.MapExample;
+import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.parser.ThreadWriter;
 import av.VRP.rt.substance.Trips;
 
@@ -33,7 +34,9 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     private Forecast forecast;
 
-    public static void main(String[] args) {
+    private boolean modeMap;
+
+    public static void main(String[] args) throws Exception {
         getInstance();
     }
 
@@ -46,6 +49,8 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     }
 
     private Main() {
+        modeMap = true;
+
         frame = new MainFrame();
         trips = new Trips();
 
@@ -128,6 +133,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         String[] rows = Utils.strToArray(rowUber + "\n" + rowGreenYellow, "\n");
 
         frame.setListData(rows);
+
+        if(modeMap){
+            frame.clickDownloadLink();
+        }
     }
 
     public void aggregateLink(List<String> list) {
@@ -204,6 +213,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             frame.showPanelReadFile();
             frame.setTableModel(false);//обновить таблицу
             frame.endDownloading(true);
+
+            if(modeMap){
+                frame.clickReadFile();
+            }
         }
     }
 
@@ -258,6 +271,14 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             frame.setTableData(trips.toTable());
 
             agregateForecast();//fixme
+
+            if(modeMap){
+                frame.showMap();
+            }
         }
+    }
+
+    public void showPoints(MapExample map) {
+        map.showPoints(trips);
     }
 }

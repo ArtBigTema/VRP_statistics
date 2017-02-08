@@ -5,6 +5,8 @@ package av.VRP.rt.Utils;
  */
 public class Constant {
 
+    public static final String KEY = "AIzaSyAOFN5rfvcfxbpYQJ2orX1kYwBxTnOP4w8";
+
     public static final String URL_ALL_GREEN_AND_YELLOW = "https://raw.githubusercontent.com/ArtBigTema/VRP_statistics/master/resources/nyc-taxi-data_green_and_yellow.txt";
     public static final String URL_ALL_UBER = "https://raw.githubusercontent.com/ArtBigTema/VRP_statistics/master/resources/nyc-taxi-data_uber.txt";
 

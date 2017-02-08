@@ -27,8 +27,10 @@ public class Point {
     }
 
     public Point(String la, String ln) {
-        lat = Double.parseDouble(la);
-        lng = Double.parseDouble(ln);
+       // lat = Double.parseDouble(la);
+       // lng = Double.parseDouble(ln);
+        lat = Double.parseDouble(ln);
+        lng = Double.parseDouble(la);
     }
 
     public static Point construct(String s) {

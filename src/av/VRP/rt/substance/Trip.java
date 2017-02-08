@@ -3,6 +3,7 @@ package av.VRP.rt.substance;
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
 
+import com.teamdev.jxmaps.LatLng;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 
@@ -91,6 +92,14 @@ public class Trip implements Comparable<Trip> {
         return getStartPoint().getDateTime().toString("MM.yyyy");//FIXME const
     }
 
+    public String getStr() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(startPoint.getStrLatLng());
+        sb.append('\t');
+        sb.append(startPoint.getDateTime().toString());
+        return startPoint.getDateStr();
+    }
+
     @Override
     public String toString() {
         return "Trip{" +
@@ -102,5 +111,9 @@ public class Trip implements Comparable<Trip> {
     @Override
     public int compareTo(Trip o) {
         return DateTimeComparator.getDateOnlyInstance().compare(this.getStartPoint().getDateTime(), o.getStartPoint().getDateTime());//FIXME if null
+    }
+
+    public LatLng getLatLngStart() {
+        return new LatLng(startPoint.getLat(), startPoint.getLng());
     }
 }

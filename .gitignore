@@ -41,3 +41,5 @@ build/
 build.properties
 junit*.properties
 Files/
+FilesScala/
+libs/
