@@ -29,4 +29,13 @@ public class Log {//FIXME log to file
     public static void d(Object s, Object ss) {
         d(s.toString() + " " + ss.toString());
     }
+
+    public static void p(Object s, int[] ss) {
+        p(s.toString());
+        for(Object object:ss){
+            System.out.print(object.toString());
+            System.out.print('\t');
+        }
+        p("");
+    }
 }

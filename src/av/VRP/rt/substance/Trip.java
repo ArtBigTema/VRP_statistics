@@ -97,7 +97,7 @@ public class Trip implements Comparable<Trip> {
         sb.append(startPoint.getStrLatLng());
         sb.append('\t');
         sb.append(startPoint.getDateTime().toString());
-        return startPoint.getDateStr();
+        return sb.toString();
     }
 
     @Override

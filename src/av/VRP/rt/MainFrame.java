@@ -488,6 +488,10 @@ public class MainFrame extends JFrame implements KeyListener {
 
     public void showMap() {
         tabbedPane1.setSelectedIndex(6);
+        showPoints();
+    }
+    public void showPoints() {
+        showPointsButton.doClick();
     }
 
 

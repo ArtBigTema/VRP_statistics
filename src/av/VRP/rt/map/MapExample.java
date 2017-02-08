@@ -1,6 +1,7 @@
 package av.VRP.rt.map;
 
 import av.VRP.rt.Utils.Log;
+import av.VRP.rt.Utils.MapUtils;
 import av.VRP.rt.substance.Trip;
 import av.VRP.rt.substance.Trips;
 import com.teamdev.jxmaps.*;
@@ -55,20 +56,27 @@ public class MapExample extends MapView {
             Marker marker = new Marker(map);
             marker.setPosition(point.getLatLngStart());
             marker.setClickable(true);
-          //  marker.setIcon("https://habrahabr.ru/images/favicons/apple-touch-icon-57x57.png");
+            //
+            //  marker.setIcon("https://habrahabr.ru/images/favicons/apple-touch-icon-57x57.png");
 
             marker.addEventListener("click", new MapMouseEvent() {
                 @Override
                 public void onEvent(MouseEvent mouseEvent) {
-                    Log.p("marker clicked", point.getTimeStr());
+                    Log.p("marker clicked", point.getStr());
 
                     if (infoWindow != null) {
                         infoWindow.close();
+                        Log.p("quadkey", MapUtils.lonLatToPixelXY(
+                                point.getLatLngStart().getLat(),
+                                point.getLatLngStart().getLng(),
+                                map.getZoom(), map.getBounds()));
                     }
 
                     infoWindow = new InfoWindow(getMap());
                     infoWindow.setContent(point.getStr());
                     infoWindow.open(getMap(), marker);
+
+                    showBounds();
                 }
             });
 
@@ -77,6 +85,19 @@ public class MapExample extends MapView {
             }
         }
         Log.p("end showPoints");
+    }
+
+    private void showBounds() {
+        Marker marker = new Marker(getMap());
+        LatLngBounds bounds = getMap().getBounds();
+        marker.setPosition(bounds.getNorthEast());
+        marker.setIcon("https://habrahabr.ru/images/favicons/apple-touch-icon-57x57.png");
+
+        Marker marker1 = new Marker(getMap());
+        marker1.setPosition(bounds.getSouthWest());
+        marker1.setIcon("https://fossies.org/warix/comments.gif");
+
+
     }
 
     public void setZoom(int zoom) {
