@@ -93,6 +93,16 @@ public class MapExample extends MapView {
         marker.setIcon(icon);
         marker.setTitle(file.getName());
 
+        marker.addEventListener("click", new MapMouseEvent() {
+            @Override
+            public void onEvent(MouseEvent mouseEvent) {
+                InfoWindow infoWindow = new InfoWindow(getMap());
+                infoWindow.setContent(marker.getTitle());
+                infoWindow.open(getMap(), marker);
+                // showBounds();
+            }
+        });
+
         marker.setClickable(true);
         marker.setPosition(vehicle.getCurrPoint().toLatLng());
 
@@ -235,7 +245,8 @@ public class MapExample extends MapView {
         }
         infoWindowTaxi = new InfoWindow(getMap());
         infoWindowTaxi.setContent("#" + (index + 1) + " Ближайшее" + marker.getTitle());
-        infoWindowTaxi.open(getMap(), marker);
+       // infoWindowTaxi.open(getMap(), marker);
+
         Log.p(marker.getPosition(), index);
     }
 
@@ -254,17 +265,17 @@ public class MapExample extends MapView {
 
         infoWindowClientStart = new InfoWindow(getMap());
         infoWindowClientEnd = new InfoWindow(getMap());
-        
+
         if (find) {
-            infoWindowClientStart.setContent('#' + indexPassage + " Нашлась: " + (indexVehicle + 1));
+            infoWindowClientStart.setContent("#" + indexPassage + " Нашлась такси: " + (indexVehicle + 1));
             infoWindowClientEnd.setContent("Едем сюда");
         } else {
             infoWindowClientStart.setContent("Не найдено");
             infoWindowClientEnd.setContent("Хотим сюда");
         }
 
-        infoWindowClientStart.open(getMap(), marker);
-        infoWindowClientEnd.open(getMap(), markerEnd);
+     //   infoWindowClientStart.open(getMap(), marker);
+     //   infoWindowClientEnd.open(getMap(), markerEnd);
     }
 
     public void showPasseger(Integer i) {
@@ -288,5 +299,17 @@ public class MapExample extends MapView {
 
     public void moveVehicle(int i, Point currPoint) {
         vehicleMarkers.get(i).setPosition(currPoint.toLatLng());
+    }
+
+    public void removeClientMarkers(int indexOfTrip) {
+        passageMarkersStart.get(indexOfTrip).setVisible(false);
+        passageMarkersEnd.get(indexOfTrip).setVisible(false);
+    }
+
+    public void showMessVehicleComplete(int i) {
+        Marker marker = vehicleMarkers.get(i);
+        InfoWindow infoWindow = new InfoWindow(getMap());
+        infoWindow.setContent("Completed");
+     //   infoWindow.open(getMap(), marker);
     }
 }

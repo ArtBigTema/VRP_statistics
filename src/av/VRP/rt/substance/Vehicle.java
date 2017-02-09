@@ -24,6 +24,7 @@ public class Vehicle {
 
     private int stepsLat = 0;
     private int stepsLng = 0;
+    private int indexOfTrip = -1;
 
     public Vehicle() {
         // title = "Taxi" + System.nanoTime();
@@ -42,8 +43,9 @@ public class Vehicle {
         return fileIcon;
     }
 
-    public void setTrip(Trip trip) {
+    public void setTrip(Trip trip, int index) {
         setBusy(true);
+        indexOfTrip = index;
 
         startPoint = trip.getStartPoint();
         endPoint = trip.getEndPoint();
@@ -70,11 +72,11 @@ public class Vehicle {
         isBusy = busy;
     }
 
-    public boolean containOrder() {
-        return startPoint != null;
-    }
-
     public boolean move() {
+        if (Math.abs(currPoint.getLat()) < 0.1 || Math.abs(currPoint.getLng()) < 0.1) {
+            Log.e("errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrooooooooooooooooooooorr");
+        }
+
         if (isBusy) {
             if (!withClient) {
                 return moveToClient();
@@ -91,15 +93,13 @@ public class Vehicle {
         Log.p("moveToClient", currPoint.toLatLng(), startPoint.toLatLng());
 
         if (MapUtils.getDistance(currPoint, startPoint) < Constant.PRECISION) {
-            Log.e("arrived");
-            withClient = true; // arrived to client
-            calculateSteps(currPoint.toLatLng(), endPoint.toLatLng());
+            Log.e("arrived to client with getDistance");
+            arrivedToPointStart();
             return false;
         }
         if (stepsLat == 0 && stepsLng == 0) {
-            Log.e("moveToClient","arrived");
-            withClient = true; // arrived to client
-            calculateSteps(currPoint.toLatLng(), endPoint.toLatLng());
+            Log.e("arrived to client with 00");
+            arrivedToPointStart();
             return false;
         }
 
@@ -117,20 +117,15 @@ public class Vehicle {
         Log.p();
         Log.p("moveToEndPoint", currPoint.toLatLng(), endPoint.toLatLng());
 
-        if(currPoint.getLat()<0.1){
-            Log.p();
-        }
-
         if (MapUtils.getDistance(currPoint, endPoint) < Constant.PRECISION) {
-            withClient = false; // arrived to client end
-            isBusy = false;
+            Log.e("arrived moveToEndPoint with distance");
+            arrivedToPointEnd();
             // TODO move to cluster
             return false;
         }
         if (stepsLat == 0 && stepsLng == 0) {
-            Log.e("moveToEndPoint","arrived");
-            withClient = false; // arrived to client end
-            isBusy = false;
+            Log.e("arrived moveToEndPoint with 00");
+            arrivedToPointEnd();
             return false;
         }
 
@@ -144,12 +139,37 @@ public class Vehicle {
         return true;
     }
 
+    private void arrivedToPointEnd() {
+        withClient = false; // arrived to client end
+        isBusy = false;
+        startPoint = null;
+        endPoint = null;
+    }
+
+    private void arrivedToPointStart() {
+        isBusy = true;
+        withClient = true; // arrived to client
+        calculateSteps(currPoint.toLatLng(), endPoint.toLatLng());
+    }
+
     private void calculateSteps(LatLng start, LatLng end) {
         double lat = start.getLat() - end.getLat();
         double lng = start.getLng() - end.getLng();
 
         stepsLat = (int) Math.round(lat / Constant.STEP);
         stepsLng = (int) Math.round(lng / Constant.STEP);
+    }
+
+    public boolean containEndPoint() {
+        return indexOfTrip > 0 && !isBusy;
+    }
+
+    public int getIndexOfTrip() {
+        return indexOfTrip;
+    }
+
+    public void resetTrip() {
+        indexOfTrip = -1;
     }
 
     @Override

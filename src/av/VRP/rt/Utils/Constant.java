@@ -49,4 +49,5 @@ public class Constant {
 
     public static final double STEP = 0.0001;
     public static final double PRECISION = 0.001;
+    public static final double NEARBY = 0.001;
 }

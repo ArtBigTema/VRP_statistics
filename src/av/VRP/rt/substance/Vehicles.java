@@ -63,7 +63,7 @@ public class Vehicles {
     }
 
     public void transfer(int index, Trip trip) {
-        vehicles.get(index).setTrip(trip);
+        vehicles.get(index).setTrip(trip, index);
     }
 
     public Vehicle get(int index) {

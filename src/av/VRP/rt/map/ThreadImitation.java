@@ -20,7 +20,7 @@ public class ThreadImitation extends Thread implements Runnable {
     private MapExample map;
 
     private Timer timer;
-    private int DELAY = 1000, PERIOD = 1000;
+    private int DELAY = 1000, PERIOD = 100;
     private int max = 200;
     private DateTime now;
 
@@ -85,11 +85,23 @@ public class ThreadImitation extends Thread implements Runnable {
             for (int i = 0; i < vehicles.getVehicles().size(); i++) {
                 Vehicle vehicle = vehicles.get(i);
 
-                if (vehicle.containOrder()) {
+                if (vehicle.isBusy()) {
                     boolean moving = vehicle.move();
 
                     if (moving) {
                         map.moveVehicle(i, vehicle.getCurrPoint());
+                    } else {
+                        if (vehicle.containEndPoint()) {
+                            map.removeClientMarkers(vehicle.getIndexOfTrip());
+                            map.showMessVehicleComplete(i);
+                            vehicle.resetTrip();
+                        }
+                    }
+                }else{
+                    if (vehicle.containEndPoint()) {
+                        map.removeClientMarkers(vehicle.getIndexOfTrip());
+                        map.showMessVehicleComplete(i);
+                        vehicle.resetTrip();
                     }
                 }
             }
