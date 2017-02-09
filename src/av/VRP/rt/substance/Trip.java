@@ -132,4 +132,11 @@ public class Trip implements Comparable<Trip> {
     public boolean isCompleted() {
         return completed;
     }
+
+    public LatLng getLatLngEnd() {
+        if (endPoint == null) {
+            endPoint = new PointWithTime(Point.nearby(startPoint));//generate nearby
+        }
+        return new LatLng(endPoint.getLat(), endPoint.getLng());
+    }
 }

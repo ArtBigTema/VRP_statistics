@@ -1,7 +1,7 @@
 package av.VRP.rt.substance;
 
-import av.VRP.rt.map.MapUtils;
 import av.VRP.rt.Utils.Utils;
+import av.VRP.rt.map.MapUtils;
 import com.teamdev.jxmaps.LatLng;
 
 /**
@@ -78,5 +78,26 @@ public class Point {
                 "lat=" + lat +
                 ", lng=" + lng +
                 '}';
+    }
+
+    public static Point nearby(PointWithTime startPoint) {
+        Point point = new Point(
+                startPoint.getLat() - 0.01, startPoint.getLng() - 0.01);
+        return point;
+    }
+
+    public void plusLat(double step) {
+        lat += step;
+    }
+
+    public void plusLng(double step) {
+        lng += step;
+    }
+    public void minusLat(double step) {
+        lat = step;
+    }
+
+    public void  minusLng(double step) {
+        lng -= step;
     }
 }

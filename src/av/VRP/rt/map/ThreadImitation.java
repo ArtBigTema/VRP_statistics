@@ -20,10 +20,9 @@ public class ThreadImitation extends Thread implements Runnable {
     private MapExample map;
 
     private Timer timer;
-    private int DELAY = 10000, START = 1000;
+    private int DELAY = 1000, PERIOD = 1000;
+    private int max = 200;
     private DateTime now;
-
-    private Trip trip;
 
     public ThreadImitation(MapExample mapExample) {
         map = mapExample;
@@ -45,71 +44,79 @@ public class ThreadImitation extends Thread implements Runnable {
 
     @Override
     public void run() {
+        max = trips.getSubAll().size();
         now = vehicles.getInitDateTime();
 
-        showVehicleOnMap();
         showPassegerOnMap();
+        showVehicleOnMap();
 
         startTimer();
     }
 
-    int max = 20;
-
-    int k = 0;
-
-    public void startTimer() {
-        //  showNearestTime();
+    private void startTimer() {
+        Log.p();
         Log.e("startTimer");
 
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
 
                 new Thread(() -> {
+                    moveVehicles();
 
-                    map.show(trips.get(k).getLatLngStart(), k);
-                    k++;
-
-                 /*   Log.p("-------------------");
+                    Log.p("-------------------");
                     Log.p("inc time");
                     now = now.plusMinutes(1);
                     Log.p("now: " + now.toString());
 
                     findNearestCar(trips.get(now));//get same time
-*/
+
                     if (max-- < 0) {
                         stopTimer();
                     }
                 }).run();
             }
-        }, DELAY, START);
+        }, DELAY, PERIOD);
     }
 
-    private void findNearestCar(List<Integer> trip) {
-        if (trip.size() < 1) {
+    private void moveVehicles() {
+        Log.p("-------------------");
+        Log.p("start moveVehicles");
+        new Thread(() -> {
+            for (int i = 0; i < vehicles.getVehicles().size(); i++) {
+                Vehicle vehicle = vehicles.get(i);
+
+                if (vehicle.containOrder()) {
+                    boolean moving = vehicle.move();
+
+                    if (moving) {
+                        map.moveVehicle(i, vehicle.getCurrPoint());
+                    }
+                }
+            }
+            Log.p("end moveVehicles");
+        }).run();
+    }
+
+    private void findNearestCar(List<Integer> list) {
+        if (list.size() < 1) {
             Log.p("Client not found");
         }
-        for (Integer i : trip) {
+
+        for (Integer i : list) {
             map.showPasseger(i);
 
             int index = vehicles.findNearestCar(trips.get(i).getStartPoint());
 
+            Trip trip = trips.get(i);
             if (index < 0) {
-                Log.p("Vehicle not found for passage: " + trips.get(i));
-                trips.get(i).incTime();
-                map.togglePasseger(false, i, vehicles.get(index).getCurrPoint().toLatLng());
+                trip.incTime();
+                map.togglePasseger(false, i, index);
             } else {
-                vehicles.transfer(index);
-                trips.get(i).completed();
+                vehicles.transfer(index, trip);
+                trip.completed();
 
-                Log.e("start");
-                Log.p("found nearest vehicle: " + index);
-                Log.e(vehicles.get(index).getCurrPoint(), index);
                 map.toggleVehicle(index);
-
-                Log.e("----------------");
-                Log.e(trips.get(i).getStartPoint(), i);
-                map.togglePasseger(true, i, trips.get(i).getStartPoint().toLatLng());
-                Log.e("end");
+                map.togglePasseger(true, i, index);
             }
         }
     }
@@ -117,14 +124,6 @@ public class ThreadImitation extends Thread implements Runnable {
     public void stopTimer() {
         Log.e("stopTimer");
         timer.cancel();
-    }
-
-    private void showPassegerOnMap() {
-        map.showAllPoints(trips, false);
-    }
-
-    private void showNearestTime() {
-        map.showPoints(trips.getSubAll().subList(0, 5));
     }
 
     private void showVehicleOnMap() {
@@ -138,5 +137,9 @@ public class ThreadImitation extends Thread implements Runnable {
             }
         }
         // map.showVehicles(vehicles);
+    }
+
+    private void showPassegerOnMap() {
+        map.showAllPoints(trips, false);
     }
 }

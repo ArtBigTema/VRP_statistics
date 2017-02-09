@@ -2,6 +2,7 @@ package av.VRP.rt.map;
 
 import av.VRP.rt.Main;
 import av.VRP.rt.Utils.Log;
+import av.VRP.rt.substance.Point;
 import av.VRP.rt.substance.*;
 import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.swing.MapView;
@@ -14,18 +15,23 @@ import java.util.List;
  * Created by Artem on 07.02.2017.
  */
 public class MapExample extends MapView {
-    private InfoWindow infoWindow;
+    private InfoWindow infoWindowTaxi;
+    private InfoWindow infoWindowClientStart;
+    private InfoWindow infoWindowClientEnd;
+
     private Cluster cluster;
 
     private List<Marker> clusterMarkers;
-    private List<Marker> passageMarkers;
+    private List<Marker> passageMarkersStart;
+    private List<Marker> passageMarkersEnd;
     private List<Marker> vehicleMarkers;
 
 
     public MapExample() {
         vehicleMarkers = new ArrayList<>();
         clusterMarkers = new ArrayList<>();
-        passageMarkers = new ArrayList<>();
+        passageMarkersStart = new ArrayList<>();
+        passageMarkersEnd = new ArrayList<>();
 
         setOnMapReadyHandler(new MapReadyHandler() {
             @Override
@@ -47,7 +53,7 @@ public class MapExample extends MapView {
                     // Setting the map center
                     map.setCenter(new LatLng(41.3850639, 2.1734034999999494));
                     // Setting initial zoom value
-                    map.setZoom(12.0);
+                    map.setZoom(13.0);
 
                     map.addEventListener("zoom_changed", new MapEvent() {
                         @Override
@@ -85,11 +91,12 @@ public class MapExample extends MapView {
         File file = MapUtils.getVehicleIcon(vehicle.getFileIcon());
         icon.loadFromFile(file);
         marker.setIcon(icon);
+        marker.setTitle(file.getName());
 
         marker.setClickable(true);
         marker.setPosition(vehicle.getCurrPoint().toLatLng());
 
-        marker.setVisible(false);
+        marker.setVisible(true);
 
         vehicleMarkers.add(marker);
     }
@@ -175,7 +182,18 @@ public class MapExample extends MapView {
                 }
             });
             marker.setVisible(visible);
-            passageMarkers.add(marker);
+            passageMarkersStart.add(marker);
+
+            Marker markerEnd = new Marker(map);
+            markerEnd.setPosition(point.getLatLngEnd());
+            markerEnd.setVisible(visible);
+
+            Icon icon = new Icon();
+            File file = MapUtils.getIconFu();
+            icon.loadFromFile(file);
+            markerEnd.setIcon(icon);
+
+            passageMarkersEnd.add(markerEnd);
         }
 
         Log.p("end showAllPoints");
@@ -190,10 +208,10 @@ public class MapExample extends MapView {
             clusterMarker.remove();
         }
         clusterMarkers.clear();
-        for (Marker passageMarker : passageMarkers) {
+        for (Marker passageMarker : passageMarkersStart) {
             passageMarker.remove();
         }
-        passageMarkers.clear();
+        passageMarkersStart.clear();
     }
 
     public void clearAll() {
@@ -201,6 +219,10 @@ public class MapExample extends MapView {
         for (Marker vehicleMarker : vehicleMarkers) {
             vehicleMarker.remove();
         }
+        for (Marker vehicleMarker : passageMarkersEnd) {
+            vehicleMarker.remove();
+        }
+        passageMarkersEnd.clear();
         vehicleMarkers.clear();
     }
 
@@ -208,31 +230,46 @@ public class MapExample extends MapView {
         Marker marker = vehicleMarkers.get(index);
         marker.setVisible(true);
 
-        InfoWindow infoWindow = new InfoWindow(getMap());
-        infoWindow.setContent("#" + (index + 1) + " Ближайшее" + marker.getPosition());
-        infoWindow.open(getMap(), marker);
+        if (infoWindowTaxi != null) {
+            infoWindowTaxi.close();
+        }
+        infoWindowTaxi = new InfoWindow(getMap());
+        infoWindowTaxi.setContent("#" + (index + 1) + " Ближайшее" + marker.getTitle());
+        infoWindowTaxi.open(getMap(), marker);
         Log.p(marker.getPosition(), index);
     }
 
-    public void togglePasseger(boolean find, int indexPassage, LatLng indexVehicle) {
-        Marker marker = passageMarkers.get(indexPassage);
+    public void togglePasseger(boolean find, int indexPassage, int indexVehicle) {
+        Marker marker = passageMarkersStart.get(indexPassage);
+        Marker markerEnd = passageMarkersEnd.get(indexPassage);
         // marker.remove();
         Log.p(marker.getPosition(), indexPassage);
 
-        Marker m = new Marker(getMap());
-        m.setPosition(indexVehicle);
-
-        InfoWindow infoWindow = new InfoWindow(getMap());
-        if (find) {
-            infoWindow.setContent('#' + indexVehicle.toString() + " Нашлась: ");// + vehicleMarkers.get(indexVehicle).getTitle());
-        } else {
-            infoWindow.setContent("Не найдено");
+        if (infoWindowClientStart != null) {
+            infoWindowClientStart.close();
         }
-        infoWindow.open(getMap(), m);
+        if (infoWindowClientEnd != null) {
+            infoWindowClientEnd.close();
+        }
+
+        infoWindowClientStart = new InfoWindow(getMap());
+        infoWindowClientEnd = new InfoWindow(getMap());
+        
+        if (find) {
+            infoWindowClientStart.setContent('#' + indexPassage + " Нашлась: " + (indexVehicle + 1));
+            infoWindowClientEnd.setContent("Едем сюда");
+        } else {
+            infoWindowClientStart.setContent("Не найдено");
+            infoWindowClientEnd.setContent("Хотим сюда");
+        }
+
+        infoWindowClientStart.open(getMap(), marker);
+        infoWindowClientEnd.open(getMap(), markerEnd);
     }
 
     public void showPasseger(Integer i) {
-        passageMarkers.get(i).setVisible(true);
+        passageMarkersStart.get(i).setVisible(true);
+        passageMarkersEnd.get(i).setVisible(true);
     }
 
     public void showPoints(List<Trip> trips) {
@@ -249,25 +286,7 @@ public class MapExample extends MapView {
         }
     }
 
-    public void show(LatLng p, int i) {
-        showPoint(p, "Trip start");
-        showPoint(passageMarkers.get(i).getPosition(), "ald map");
-    }
-
-    public void showPoint(LatLng p, String i) {
-        Map map = getMap();
-
-        Marker marker = new Marker(map);
-        marker.setPosition(p);
-        marker.setVisible(true);
-
-        Icon icon = new Icon();
-        File file = MapUtils.getIconFu();
-        icon.loadFromFile(file);
-        marker.setIcon(icon);
-
-        InfoWindow infoWindow = new InfoWindow(getMap());
-        infoWindow.setContent(i);
-        infoWindow.open(getMap(), marker);
+    public void moveVehicle(int i, Point currPoint) {
+        vehicleMarkers.get(i).setPosition(currPoint.toLatLng());
     }
 }

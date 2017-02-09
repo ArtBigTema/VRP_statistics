@@ -310,7 +310,7 @@ public class Trips {
     }
 
     public Trip get(int i) {
-        return trips.get(0);
+        return trips.get(i);
     }
 
     public List<Integer> get(DateTime now) {

@@ -27,6 +27,7 @@ public class Vehicles {
         for (int i = 0; i < vehicles.size(); i++) {
             vehicles.get(i).setCurrPoint(list.get(i));
             vehicles.get(i).setFileIcon("vi/" + (i + 1) + ".png");
+            vehicles.get(i).initTime(initDateTime);
         }
     }
 
@@ -61,8 +62,8 @@ public class Vehicles {
         return index;
     }
 
-    public void transfer(int index) {
-        vehicles.get(index).setBusy(true);
+    public void transfer(int index, Trip trip) {
+        vehicles.get(index).setTrip(trip);
     }
 
     public Vehicle get(int index) {

@@ -283,8 +283,8 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             }
 
             if (modeMap) {
-                vehicles.initDepo(trips.getPoints().subList(0, Constant.VEHICLES));//FIXME
                 vehicles.setInitDateTime(trips.getFirstPoint());
+                vehicles.initDepo(trips.getPoints().subList(0, Constant.VEHICLES));//FIXME
                 frame.showMap();
             }
         }
@@ -297,10 +297,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
         if (!isClicked) {
             isClicked = true;
-          //  map.constructCluster(trips, vehicles);
+            map.constructCluster(trips, vehicles);
         } else {
             isClicked = false;
-         //   map.showAllPoints(trips);
+            map.showAllPoints(trips);
         }
     }
 
