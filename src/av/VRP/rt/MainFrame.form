@@ -423,7 +423,17 @@
                   <name value="maps"/>
                 </properties>
                 <border type="none"/>
-                <children/>
+                <children>
+                  <component id="d20da" class="javax.swing.JButton" binding="startImitationButton" default-binding="true">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <maximumSize width="105" height="12"/>
+                      <minimumSize width="105" height="12"/>
+                      <preferredSize width="105" height="22"/>
+                      <text value="Start Imitation"/>
+                    </properties>
+                  </component>
+                </children>
               </grid>
               <component id="5e529" class="javax.swing.JSlider" binding="slider_zoom">
                 <constraints>

@@ -22,6 +22,11 @@ public class Log {//FIXME log to file
         System.err.println(s.toString());
     }
 
+    public static void e(Exception e) {
+        // e.printStackTrace();
+        e(e.toString());
+    }
+
     public static void e(Object s, Object ss) {
         System.err.println(s.toString() + ss.toString());
     }

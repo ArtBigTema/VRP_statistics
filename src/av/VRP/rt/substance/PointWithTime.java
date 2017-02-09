@@ -2,7 +2,6 @@ package av.VRP.rt.substance;
 
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.joda.time.format.DateTimeFormat;
@@ -21,6 +20,7 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
 
     private DateTime _dateTime;
     private Date _date;//FIXME rename
+    private int waiting;
 
     private DateTimeFormatter fmt_1 = DateTimeFormat.forPattern("M/dd/yyyy HH:mm:ss");
     private SimpleDateFormat sdf_1 = new SimpleDateFormat("M/dd/yyyy hh:mm:ss");
@@ -39,6 +39,11 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     public PointWithTime(String la, String ln, String dt) {
         super(la, ln);
         setDateTime(dt);
+    }
+
+    public PointWithTime(Point currPoint) {
+        super(currPoint.getLat(), currPoint.getLng());
+        _dateTime = DateTime.now(); // fixme
     }
 
     public static PointWithTime construct(String s) {
@@ -105,5 +110,13 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     @Override
     public int compareTo(PointWithTime o) {
         return DateTimeComparator.getDateOnlyInstance().compare(this._dateTime, o._dateTime);//FIXME if null
+    }
+
+    public void incTime() {
+        waiting++;
+    }
+
+    public DateTime getTimeForIm() {
+        return _dateTime.plusMinutes(waiting);
     }
 }

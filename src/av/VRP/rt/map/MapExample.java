@@ -1,16 +1,13 @@
 package av.VRP.rt.map;
 
 import av.VRP.rt.Main;
-import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Log;
-import av.VRP.rt.Utils.MapUtils;
-import av.VRP.rt.substance.PointWithMessage;
-import av.VRP.rt.substance.Trip;
-import av.VRP.rt.substance.Trips;
+import av.VRP.rt.substance.*;
 import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.swing.MapView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +17,15 @@ public class MapExample extends MapView {
     private InfoWindow infoWindow;
     private Cluster cluster;
 
+    private List<Marker> clusterMarkers;
+    private List<Marker> passageMarkers;
+    private List<Marker> vehicleMarkers;
+
+
     public MapExample() {
+        vehicleMarkers = new ArrayList<>();
+        clusterMarkers = new ArrayList<>();
+        passageMarkers = new ArrayList<>();
 
         setOnMapReadyHandler(new MapReadyHandler() {
             @Override
@@ -55,25 +60,54 @@ public class MapExample extends MapView {
         });
     }
 
-    public void constructCluster(Trips trips) {
+    public void constructCluster(Trips trips, Vehicles vehicles) {
         Log.p("start constructCluster");
 
-        List<Trip> points = trips.getAll();
+        List<Trip> points = trips.getSubAll();
         cluster = new Cluster();
 
-        int i = 0;
         for (Trip point : points) {
             cluster.add(point.getStartPoint());
-
-            if (i++ > Constant.ITER) {
-                Log.e("cluster count: ", cluster.getClusters());
-                break;
-            }
         }
 
         Log.p("end constructCluster");
 
         showCluster(points.get(0).getLatLngStart());
+        showVehicles(vehicles);
+    }
+
+    public void showVehicle(Vehicle vehicle) {
+        Map map = getMap();
+
+        Marker marker = new Marker(map);
+
+        Icon icon = new Icon();
+        File file = MapUtils.getVehicleIcon(vehicle.getFileIcon());
+        icon.loadFromFile(file);
+        marker.setIcon(icon);
+
+        marker.setClickable(true);
+        marker.setPosition(vehicle.getCurrPoint().toLatLng());
+
+        vehicleMarkers.add(marker);
+    }
+
+    public void showVehicles(Vehicles vehicles) {
+        Map map = getMap();
+
+        for (Vehicle vehicle : vehicles.getVehicles()) {
+            Marker marker = new Marker(map);
+
+            Icon icon = new Icon();
+            File file = MapUtils.getVehicleIcon(vehicle.getFileIcon());
+            icon.loadFromFile(file);
+            marker.setIcon(icon);
+
+            marker.setClickable(true);
+            marker.setPosition(vehicle.getCurrPoint().toLatLng());
+
+            vehicleMarkers.add(marker);
+        }
     }
 
     private void showCluster(LatLng center) {
@@ -109,18 +143,23 @@ public class MapExample extends MapView {
                     // showBounds();
                 }
             });
+
+            clusterMarkers.add(marker);
         }
     }
 
     public void showAllPoints(Trips trips) {
+        showAllPoints(trips, true);
+    }
+
+    public void showAllPoints(Trips trips, boolean visible) {
         Log.p("start showAllPoints");
-        List<Trip> points = trips.getAll();
+        List<Trip> points = trips.getSubAll();
 
         Map map = getMap();
 
         map.setCenter(points.get(0).getLatLngStart());
 
-        int i = 0;
         for (Trip point : points) {
             Marker marker = new Marker(map);
             marker.setPosition(point.getLatLngStart());
@@ -146,11 +185,10 @@ public class MapExample extends MapView {
                     // showBounds();
                 }
             });
-
-            if (i++ > Constant.ITER) {
-                break;
-            }
+            marker.setVisible(visible);
+            passageMarkers.add(marker);
         }
+
         Log.p("end showAllPoints");
     }
 
@@ -163,8 +201,6 @@ public class MapExample extends MapView {
         Marker marker1 = new Marker(getMap());
         marker1.setPosition(bounds.getSouthWest());
         marker1.setIcon("https://fossies.org/warix/comments.gif");
-
-
     }
 
     public void setZoom(int zoom) {
@@ -172,7 +208,55 @@ public class MapExample extends MapView {
     }
 
     public void clear() {
-        //final Map map = getMap();
+        for (Marker clusterMarker : clusterMarkers) {
+            clusterMarker.remove();
+        }
+        for (Marker passageMarker : passageMarkers) {
+            passageMarker.remove();
+        }
+    }
 
+    public void clearAll() {
+        clear();
+        for (Marker vehicleMarker : vehicleMarkers) {
+            vehicleMarker.remove();
+        }
+    }
+
+    public void toggleVehicle(int index) {
+        Marker marker = vehicleMarkers.get(index);
+
+        if (infoWindow != null) {
+            infoWindow.close();
+        }
+        infoWindow = new InfoWindow(getMap());
+        infoWindow.setContent("Ближайшее");
+        infoWindow.open(getMap(), marker);
+    }
+
+    public void togglePasseger(boolean find, int index) {
+        Marker marker = passageMarkers.get(index);
+
+        InfoWindow infoWindow = new InfoWindow(getMap());
+        infoWindow.setContent(find ? "Нашлась" : "Не найдено");
+        infoWindow.open(getMap(), marker);
+    }
+
+    public void showPasseger(Integer i) {
+        passageMarkers.get(i).setVisible(true);
+    }
+
+    public void showPoints(List<Trip> trips) {
+        Map map = getMap();
+
+        for (Trip point : trips) {
+            Marker marker = new Marker(map);
+            marker.setPosition(point.getLatLngStart());
+
+            Icon icon = new Icon();
+            File file = MapUtils.getIconFu();
+            icon.loadFromFile(file);
+            marker.setIcon(icon);
+        }
     }
 }

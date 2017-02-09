@@ -5,9 +5,11 @@ import av.VRP.rt.forecasting.Forecast;
 import av.VRP.rt.listener.FileWriterListener;
 import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.map.MapExample;
+import av.VRP.rt.map.ThreadImitation;
 import av.VRP.rt.parser.ThreadParser;
 import av.VRP.rt.parser.ThreadWriter;
 import av.VRP.rt.substance.Trips;
+import av.VRP.rt.substance.Vehicles;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +24,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     private List<ThreadWriter> writers;
     private List<ThreadParser> parsers;
+    private ThreadImitation imitation;
 
     private int wCount;
     private int pCount;
@@ -31,6 +34,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     private int size = 0;
 
     private volatile Trips trips;
+    private volatile Vehicles vehicles;
 
     private Forecast forecast;
 
@@ -53,6 +57,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
         frame = new MainFrame();
         trips = new Trips();
+        vehicles = new Vehicles();
 
         Log.p(System.currentTimeMillis());
     }
@@ -278,6 +283,8 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             }
 
             if (modeMap) {
+                vehicles.initDepo(trips.getPoints().subList(0, Constant.VEHICLES));//FIXME
+                vehicles.setInitDateTime(trips.getFirstPoint());
                 frame.showMap();
             }
         }
@@ -290,7 +297,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
         if (!isClicked) {
             isClicked = true;
-            map.constructCluster(trips);
+            map.constructCluster(trips, vehicles);
         } else {
             isClicked = false;
             map.showAllPoints(trips);
@@ -299,5 +306,13 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
     public void zoom(double zoom) {
         frame.setZoom(zoom);
+    }
+
+    public void startImitation(MapExample map) {
+        map.clearAll();
+        imitation = new ThreadImitation(map);
+        imitation.setTrips(trips);
+        imitation.setVehicles(vehicles);
+        imitation.run();
     }
 }

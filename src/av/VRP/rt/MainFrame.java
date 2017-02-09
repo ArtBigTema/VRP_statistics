@@ -53,6 +53,7 @@ public class MainFrame extends JFrame implements KeyListener {
     private JPanel panel_map;
     private JPanel maps;
     private JSlider slider_zoom;
+    private JButton startImitationButton;
     private MapExample sample;
 
     public MainFrame() {
@@ -244,6 +245,16 @@ public class MainFrame extends JFrame implements KeyListener {
             @Override
             public void stateChanged(ChangeEvent e) {
                 sample.setZoom(slider_zoom.getValue());
+            }
+        });
+
+        startImitationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startImitationButton.setVisible(false);
+                slider_zoom.setVisible(false);
+                showPointsButton.setVisible(false);
+                Main.getInstance().startImitation(sample);
             }
         });
 

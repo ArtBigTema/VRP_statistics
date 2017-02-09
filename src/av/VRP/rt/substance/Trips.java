@@ -140,8 +140,6 @@ public class Trips {
             List<String> subResult = new ArrayList<>();
 
             int i = 0;
-            //  int lastDayOfMonth = getDateFromStr(title)
-            //           .dayOfMonth().getMaximumValue();
             int lastHour = 24;
 
             while (i < lastHour) {
@@ -295,11 +293,40 @@ public class Trips {
         return trips;
     }
 
+    public List<Trip> getSubAll() {
+        return trips.subList(0, Constant.TRIPS);
+    }
+
     public List<LatLng> getPoints() {
         List<LatLng> points = new ArrayList<>();
-        for(Trip t:trips){
+        for (Trip t : trips) {
             points.add(t.getLatLngStart());
         }
         return points;
+    }
+
+    public PointWithTime getFirstPoint() {
+        return trips.get(0).getStartPoint();
+    }
+
+    public Trip get(int i) {
+        return trips.get(0);
+    }
+
+    public List<Integer> get(DateTime now) {
+        List<Integer> tripList = new ArrayList<>();
+
+        for (int i = 0; i < getSubAll().size(); i++) {
+            Trip trip = getSubAll().get(i);
+            if(trip.isCompleted()){
+                continue;
+            }
+
+            DateTime dt = trip.getStartPoint().getTimeForIm();
+            if (now.equals(dt)) {
+                tripList.add(i);
+            }
+        }
+        return tripList;
     }
 }

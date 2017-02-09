@@ -2,7 +2,6 @@ package av.VRP.rt.substance;
 
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
-
 import com.teamdev.jxmaps.LatLng;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
@@ -17,6 +16,8 @@ import java.util.List;
 public class Trip implements Comparable<Trip> {
     private PointWithTime startPoint;
     private PointWithTime endPoint;
+
+    private boolean completed;
 
     public Trip(PointWithTime startPoint, PointWithTime endPoint) {
         this.startPoint = startPoint;
@@ -103,8 +104,7 @@ public class Trip implements Comparable<Trip> {
     @Override
     public String toString() {
         return "Trip{" +
-                "startPoint=" + startPoint.toString() +
-                ", endPoint=" + endPoint.toString() +
+                startPoint.getDateTime().toString() +
                 '}';
     }
 
@@ -115,5 +115,21 @@ public class Trip implements Comparable<Trip> {
 
     public LatLng getLatLngStart() {
         return new LatLng(startPoint.getLat(), startPoint.getLng());
+    }
+
+    public boolean checkSameTime(DateTime time) {
+        return time.equals(getStartPoint().getTimeForIm());
+    }
+
+    public void incTime() {
+        startPoint.incTime();
+    }
+
+    public void completed() {
+        completed = true;
+    }
+
+    public boolean isCompleted() {
+        return completed;
     }
 }

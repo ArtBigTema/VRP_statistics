@@ -43,5 +43,7 @@ public class Constant {
     public static final String FILE_ENCODING = "UTF-8";
 
     public static final int CLUSTERS = 5;
+    public static final int VEHICLES = 50;
+    public static final int TRIPS = 100;
     public static final int ITER = 1000000;
 }

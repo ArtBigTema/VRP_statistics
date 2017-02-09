@@ -1,6 +1,6 @@
 package av.VRP.rt.substance;
 
-import av.VRP.rt.Utils.MapUtils;
+import av.VRP.rt.map.MapUtils;
 import av.VRP.rt.Utils.Utils;
 import com.teamdev.jxmaps.LatLng;
 
