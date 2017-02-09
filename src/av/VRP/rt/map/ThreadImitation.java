@@ -20,7 +20,7 @@ public class ThreadImitation extends Thread implements Runnable {
     private MapExample map;
 
     private Timer timer;
-    private int DELAY = 1000, START = 1000;
+    private int DELAY = 10000, START = 1000;
     private DateTime now;
 
     private Trip trip;
@@ -55,20 +55,27 @@ public class ThreadImitation extends Thread implements Runnable {
 
     int max = 20;
 
+    int k = 0;
+
     public void startTimer() {
-        showNearestTime();
+        //  showNearestTime();
         Log.e("startTimer");
 
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
 
                 new Thread(() -> {
+
+                    map.show(trips.get(k).getLatLngStart(), k);
+                    k++;
+
+                 /*   Log.p("-------------------");
                     Log.p("inc time");
                     now = now.plusMinutes(1);
                     Log.p("now: " + now.toString());
 
                     findNearestCar(trips.get(now));//get same time
-
+*/
                     if (max-- < 0) {
                         stopTimer();
                     }
@@ -78,22 +85,31 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     private void findNearestCar(List<Integer> trip) {
+        if (trip.size() < 1) {
+            Log.p("Client not found");
+        }
         for (Integer i : trip) {
             map.showPasseger(i);
 
             int index = vehicles.findNearestCar(trips.get(i).getStartPoint());
 
-            if (index > 0) {
-                Log.p("found nearest vehicle: " + index);
+            if (index < 0) {
+                Log.p("Vehicle not found for passage: " + trips.get(i));
+                trips.get(i).incTime();
+                map.togglePasseger(false, i, vehicles.get(index).getCurrPoint().toLatLng());
+            } else {
                 vehicles.transfer(index);
                 trips.get(i).completed();
 
+                Log.e("start");
+                Log.p("found nearest vehicle: " + index);
+                Log.e(vehicles.get(index).getCurrPoint(), index);
                 map.toggleVehicle(index);
-                map.togglePasseger(true, i);
-            } else {
-                Log.p("not found for passage: " + trips.get(i));
-                trips.get(i).incTime();
-                map.togglePasseger(false, i);
+
+                Log.e("----------------");
+                Log.e(trips.get(i).getStartPoint(), i);
+                map.togglePasseger(true, i, trips.get(i).getStartPoint().toLatLng());
+                Log.e("end");
             }
         }
     }

@@ -89,6 +89,8 @@ public class MapExample extends MapView {
         marker.setClickable(true);
         marker.setPosition(vehicle.getCurrPoint().toLatLng());
 
+        marker.setVisible(false);
+
         vehicleMarkers.add(marker);
     }
 
@@ -103,8 +105,19 @@ public class MapExample extends MapView {
             icon.loadFromFile(file);
             marker.setIcon(icon);
 
+            marker.setTitle(file.getName());
             marker.setClickable(true);
             marker.setPosition(vehicle.getCurrPoint().toLatLng());
+
+            marker.addEventListener("click", new MapMouseEvent() {
+                @Override
+                public void onEvent(MouseEvent mouseEvent) {
+                    InfoWindow infoWindow = new InfoWindow(getMap());
+                    infoWindow.setContent(marker.getTitle());
+                    infoWindow.open(getMap(), marker);
+                    // showBounds();
+                }
+            });
 
             vehicleMarkers.add(marker);
         }
@@ -126,23 +139,6 @@ public class MapExample extends MapView {
             marker.setClickable(true);
             marker.setPosition(point.toLatLng());
             // marker.set
-            marker.addEventListener("click", new MapMouseEvent() {
-                @Override
-                public void onEvent(MouseEvent mouseEvent) {
-                    Log.p("marker clicked: ", MapUtils.getHash(marker.getPosition()));
-
-                    if (infoWindow != null) {
-                        infoWindow.close();
-                        infoWindow = null;
-                        marker.remove();
-                    } else {
-                        infoWindow = new InfoWindow(getMap());
-                        infoWindow.setContent(point.getMsg());
-                        infoWindow.open(getMap(), marker);
-                    }
-                    // showBounds();
-                }
-            });
 
             clusterMarkers.add(marker);
         }
@@ -173,16 +169,9 @@ public class MapExample extends MapView {
                     Log.p("marker clicked: ", point.getStr());
                     Log.p("marker clicked: ", MapUtils.getHash(point.getLatLngStart()));
 
-                    if (infoWindow != null) {
-                        infoWindow.close();
-                        infoWindow = null;
-                        marker.remove();
-                    } else {
-                        infoWindow = new InfoWindow(getMap());
-                        infoWindow.setContent(MapUtils.getHash(point.getLatLngStart()));
-                        infoWindow.open(getMap(), marker);
-                    }
-                    // showBounds();
+                    InfoWindow infoWindow = new InfoWindow(getMap());
+                    infoWindow.setContent(MapUtils.getHash(point.getLatLngStart()));
+                    infoWindow.open(getMap(), marker);
                 }
             });
             marker.setVisible(visible);
@@ -190,17 +179,6 @@ public class MapExample extends MapView {
         }
 
         Log.p("end showAllPoints");
-    }
-
-    private void showBounds() {
-        Marker marker = new Marker(getMap());
-        LatLngBounds bounds = getMap().getBounds();
-        marker.setPosition(bounds.getNorthEast());
-        marker.setIcon("https://habrahabr.ru/images/favicons/apple-touch-icon-57x57.png");
-
-        Marker marker1 = new Marker(getMap());
-        marker1.setPosition(bounds.getSouthWest());
-        marker1.setIcon("https://fossies.org/warix/comments.gif");
     }
 
     public void setZoom(int zoom) {
@@ -211,9 +189,11 @@ public class MapExample extends MapView {
         for (Marker clusterMarker : clusterMarkers) {
             clusterMarker.remove();
         }
+        clusterMarkers.clear();
         for (Marker passageMarker : passageMarkers) {
             passageMarker.remove();
         }
+        passageMarkers.clear();
     }
 
     public void clearAll() {
@@ -221,25 +201,34 @@ public class MapExample extends MapView {
         for (Marker vehicleMarker : vehicleMarkers) {
             vehicleMarker.remove();
         }
+        vehicleMarkers.clear();
     }
 
     public void toggleVehicle(int index) {
         Marker marker = vehicleMarkers.get(index);
-
-        if (infoWindow != null) {
-            infoWindow.close();
-        }
-        infoWindow = new InfoWindow(getMap());
-        infoWindow.setContent("Ближайшее");
-        infoWindow.open(getMap(), marker);
-    }
-
-    public void togglePasseger(boolean find, int index) {
-        Marker marker = passageMarkers.get(index);
+        marker.setVisible(true);
 
         InfoWindow infoWindow = new InfoWindow(getMap());
-        infoWindow.setContent(find ? "Нашлась" : "Не найдено");
+        infoWindow.setContent("#" + (index + 1) + " Ближайшее" + marker.getPosition());
         infoWindow.open(getMap(), marker);
+        Log.p(marker.getPosition(), index);
+    }
+
+    public void togglePasseger(boolean find, int indexPassage, LatLng indexVehicle) {
+        Marker marker = passageMarkers.get(indexPassage);
+        // marker.remove();
+        Log.p(marker.getPosition(), indexPassage);
+
+        Marker m = new Marker(getMap());
+        m.setPosition(indexVehicle);
+
+        InfoWindow infoWindow = new InfoWindow(getMap());
+        if (find) {
+            infoWindow.setContent('#' + indexVehicle.toString() + " Нашлась: ");// + vehicleMarkers.get(indexVehicle).getTitle());
+        } else {
+            infoWindow.setContent("Не найдено");
+        }
+        infoWindow.open(getMap(), m);
     }
 
     public void showPasseger(Integer i) {
@@ -258,5 +247,27 @@ public class MapExample extends MapView {
             icon.loadFromFile(file);
             marker.setIcon(icon);
         }
+    }
+
+    public void show(LatLng p, int i) {
+        showPoint(p, "Trip start");
+        showPoint(passageMarkers.get(i).getPosition(), "ald map");
+    }
+
+    public void showPoint(LatLng p, String i) {
+        Map map = getMap();
+
+        Marker marker = new Marker(map);
+        marker.setPosition(p);
+        marker.setVisible(true);
+
+        Icon icon = new Icon();
+        File file = MapUtils.getIconFu();
+        icon.loadFromFile(file);
+        marker.setIcon(icon);
+
+        InfoWindow infoWindow = new InfoWindow(getMap());
+        infoWindow.setContent(i);
+        infoWindow.open(getMap(), marker);
     }
 }

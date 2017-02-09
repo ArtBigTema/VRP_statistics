@@ -43,10 +43,9 @@ public class Vehicles {
     }
 
     public int findNearestCar(Point point) {
-        double distance = Double.MAX_VALUE;
+        double tmp, distance = Double.MAX_VALUE;
         int index = -1;
 
-        double tmp = Double.MAX_VALUE;
         for (int i = 0; i < vehicles.size(); i++) {
             Vehicle vehicle = vehicles.get(i);
             if (vehicle.isBusy()) {
@@ -64,5 +63,9 @@ public class Vehicles {
 
     public void transfer(int index) {
         vehicles.get(index).setBusy(true);
+    }
+
+    public Vehicle get(int index) {
+        return vehicles.get(index);
     }
 }

@@ -20,7 +20,7 @@ public class Vehicle {
 
     public void setFileIcon(String fileIcon) {
         this.fileIcon = fileIcon;
-        title = "Taxi:" + fileIcon + ":" + System.nanoTime();
+        title = "Taxi:" + fileIcon; //+ ":" + System.nanoTime();
     }
 
     public String getTitle() {
@@ -65,7 +65,7 @@ public class Vehicle {
     }
 
     public void setCurrPoint(LatLng curr) {
-        this.currPoint = new PointWithTime(new Point(curr.getLat()+0.001, curr.getLng()+0.001));
+        this.currPoint = new PointWithTime(new Point(curr.getLat() + 0.001, curr.getLng() + 0.001));
     }
 
     public boolean isBusy() {
@@ -74,5 +74,12 @@ public class Vehicle {
 
     public void setBusy(boolean busy) {
         isBusy = busy;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" + title + " " +
+                "isBusy=" + isBusy +
+                '}';
     }
 }

@@ -297,10 +297,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
 
         if (!isClicked) {
             isClicked = true;
-            map.constructCluster(trips, vehicles);
+          //  map.constructCluster(trips, vehicles);
         } else {
             isClicked = false;
-            map.showAllPoints(trips);
+         //   map.showAllPoints(trips);
         }
     }
 
