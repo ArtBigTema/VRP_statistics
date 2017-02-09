@@ -10,13 +10,9 @@ public class Log {//FIXME log to file
         System.out.println(s.toString());
     }
 
-    public static void p() {
-        p("");
-    }
-
     public static void p(Object... s) {
         for (Object o : s) {
-            System.out.print(o.toString() + ':');
+            System.out.print(o.toString()+':');
         }
         p("");
     }
@@ -48,14 +44,5 @@ public class Log {//FIXME log to file
 
     public static void d(Object s, Object ss) {
         d(s.toString() + " " + ss.toString());
-    }
-
-    public static void p(Object s, int[] ss) {
-        System.out.print(s.toString() + ':');
-        for (Object object : ss) {
-            System.out.print(object.toString());
-            System.out.print('\t');
-        }
-        p("");
     }
 }

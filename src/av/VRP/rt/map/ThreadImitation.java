@@ -1,5 +1,6 @@
 package av.VRP.rt.map;
 
+import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.substance.Trip;
 import av.VRP.rt.substance.Trips;
@@ -20,7 +21,7 @@ public class ThreadImitation extends Thread implements Runnable {
     private MapExample map;
 
     private Timer timer;
-    private int DELAY = 1000, PERIOD = 100;
+    private int DELAY = 1000, PERIOD = 200;
     private int max = 200;
     private DateTime now;
 
@@ -44,7 +45,7 @@ public class ThreadImitation extends Thread implements Runnable {
 
     @Override
     public void run() {
-        max = trips.getSubAll().size();
+        max = 5 * Constant.TRIPS;
         now = vehicles.getInitDateTime();
 
         showPassegerOnMap();
@@ -92,16 +93,11 @@ public class ThreadImitation extends Thread implements Runnable {
                         map.moveVehicle(i, vehicle.getCurrPoint());
                     } else {
                         if (vehicle.containEndPoint()) {
+                            Log.p("First hide marker trip:", vehicle.getIndexOfTrip(), " with vehicle: ", i);
                             map.removeClientMarkers(vehicle.getIndexOfTrip());
                             map.showMessVehicleComplete(i);
                             vehicle.resetTrip();
                         }
-                    }
-                }else{
-                    if (vehicle.containEndPoint()) {
-                        map.removeClientMarkers(vehicle.getIndexOfTrip());
-                        map.showMessVehicleComplete(i);
-                        vehicle.resetTrip();
                     }
                 }
             }
@@ -124,7 +120,7 @@ public class ThreadImitation extends Thread implements Runnable {
                 trip.incTime();
                 map.togglePasseger(false, i, index);
             } else {
-                vehicles.transfer(index, trip);
+                vehicles.transfer(index, trip, i);
                 trip.completed();
 
                 map.toggleVehicle(index);

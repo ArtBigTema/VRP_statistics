@@ -44,7 +44,7 @@ public class Constant {
 
     public static final int CLUSTERS = 5;
     public static final int VEHICLES = 50;
-    public static final int TRIPS = 500;
+    public static final int TRIPS = 400;
     public static final int ITER = 1000000;
 
     public static final double STEP = 0.0001;

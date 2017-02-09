@@ -245,7 +245,7 @@ public class MapExample extends MapView {
         }
         infoWindowTaxi = new InfoWindow(getMap());
         infoWindowTaxi.setContent("#" + (index + 1) + " Ближайшее" + marker.getTitle());
-       // infoWindowTaxi.open(getMap(), marker);
+        // infoWindowTaxi.open(getMap(), marker);
 
         Log.p(marker.getPosition(), index);
     }
@@ -274,8 +274,8 @@ public class MapExample extends MapView {
             infoWindowClientEnd.setContent("Хотим сюда");
         }
 
-     //   infoWindowClientStart.open(getMap(), marker);
-     //   infoWindowClientEnd.open(getMap(), markerEnd);
+        //   infoWindowClientStart.open(getMap(), marker);
+        //   infoWindowClientEnd.open(getMap(), markerEnd);
     }
 
     public void showPasseger(Integer i) {
@@ -304,12 +304,20 @@ public class MapExample extends MapView {
     public void removeClientMarkers(int indexOfTrip) {
         passageMarkersStart.get(indexOfTrip).setVisible(false);
         passageMarkersEnd.get(indexOfTrip).setVisible(false);
+          passageMarkersStart.get(indexOfTrip).remove();
+          passageMarkersEnd.get(indexOfTrip).remove();
+
+        passageMarkersStart.get(indexOfTrip).setDraggable(true);
+        passageMarkersEnd.get(indexOfTrip).setDraggable(true);
+
+       // Log.pp(indexOfTrip,passageMarkersStart.get(indexOfTrip).getVisible());
+       // Log.pp(indexOfTrip,passageMarkersEnd.get(indexOfTrip).getVisible());
     }
 
     public void showMessVehicleComplete(int i) {
         Marker marker = vehicleMarkers.get(i);
         InfoWindow infoWindow = new InfoWindow(getMap());
         infoWindow.setContent("Completed");
-     //   infoWindow.open(getMap(), marker);
+        //   infoWindow.open(getMap(), marker);
     }
 }

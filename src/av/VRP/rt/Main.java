@@ -293,14 +293,14 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
     private boolean isClicked;
 
     public void showPoints(MapExample map) {
-        map.clear();
+     //   map.clear();
 
         if (!isClicked) {
             isClicked = true;
-            map.constructCluster(trips, vehicles);
+           // map.constructCluster(trips, vehicles);
         } else {
             isClicked = false;
-            map.showAllPoints(trips);
+          //  map.showAllPoints(trips);
         }
     }
 
