@@ -342,8 +342,8 @@ public class MapExample extends MapView {
     }
 
     public void toggleFailPasseger(int i, LatLng latLng) {
-        Marker markerFaile = new Marker(getMap());
-        markerFaile.setPosition(latLng);
+        Marker markerFail = new Marker(getMap());
+        markerFail.setPosition(latLng);
 
         passageMarkersStart.get(i).setVisible(false);
         passageMarkersEnd.get(i).setVisible(false);
@@ -351,16 +351,24 @@ public class MapExample extends MapView {
         Icon icon = new Icon();
         File file = MapUtils.getIconFail();
         icon.loadFromFile(file);
-        markerFaile.setIcon(icon);
+        markerFail.setIcon(icon);
 
         if (infoWindow != null) {
             infoWindow.close();
         }
+        markerFail.addEventListener("click", new MapMouseEvent() {
+            @Override
+            public void onEvent(MouseEvent mouseEvent) {
+                InfoWindow infoWindow = new InfoWindow(getMap());
+                infoWindow.setContent("#" + i + " Failed");
+                infoWindow.open(getMap(), markerFail);
+            }
+        });
         infoWindow = new InfoWindow(getMap());
         infoWindow.setContent("Failed");
-        infoWindow.open(getMap(), markerFaile);
+        infoWindow.open(getMap(), markerFail);
 
-        passageMarkersFailed.add(markerFaile);
+        passageMarkersFailed.add(markerFail);
     }
 
     public void clearFailedOrders(int i) {

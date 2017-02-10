@@ -52,7 +52,7 @@ public class MapUtils {
         return new File("icons/fu.png");
     }
     public static File getIconFail() {
-        return new File("icons/fail.png");
+        return new File("icons/faill.png");
     }
 
     public static double deg2rad(final double degree) {

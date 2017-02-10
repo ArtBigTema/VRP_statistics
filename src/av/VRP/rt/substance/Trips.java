@@ -314,7 +314,7 @@ public class Trips {
     }
 
     public synchronized List<Integer> get(DateTime now) {
-        List<Integer> tripList =Collections.synchronizedList(new ArrayList<>());
+        List<Integer> tripList = Collections.synchronizedList(new ArrayList<>());
 
         for (int i = 0; i < getSubAll().size(); i++) {//fixme from last to
             Trip trip = getSubAll().get(i);
@@ -324,6 +324,13 @@ public class Trips {
             }
             if (trip.isFailed()) {
                 continue;
+            }
+            if (trip.getStartPoint().getDateTime().minus(now.getMillis()).getMillis() > 0) {
+                return tripList;
+            }
+            if (i == 427) {
+                // setDelay(1000);
+                Log.e("errrrrrrrrrrrrrrrrr");
             }
 
             DateTime dt = trip.getStartPoint().getTimeForIm();

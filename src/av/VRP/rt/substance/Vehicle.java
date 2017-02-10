@@ -49,7 +49,7 @@ public class Vehicle {
         trip = t;
 
         if (t.getEndPoint() == null) {
-           Log.e("errrrrrrrrrrrrrrrrrrrroooooooor");
+            Log.e("errrrrrrrrrrrrrrrrrrrroooooooor");
         }
         calculateSteps(currPoint.toLatLng(), t.getStartPoint().toLatLng());
     }
@@ -140,8 +140,8 @@ public class Vehicle {
     private void arrivedToPointEnd() {
         withClient = false; // arrived to client end
         isBusy = false;
-       // startPoint = null;
-       // endPoint = null;
+        // startPoint = null;
+        // endPoint = null;
     }
 
     private void arrivedToPointStart() {
@@ -188,6 +188,7 @@ public class Vehicle {
         stepsLat = (int) Math.round(lat / Constant.STEP);
         stepsLng = (int) Math.round(lng / Constant.STEP);
 
-        return stepsLat > Constant.TIME_WAITING || stepsLng > Constant.TIME_WAITING;
+        return Math.abs(stepsLat) > Constant.TIME_WAITING
+                || Math.abs(stepsLng) > Constant.TIME_WAITING;
     }
 }

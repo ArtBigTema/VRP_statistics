@@ -48,8 +48,8 @@ public class Constant {
 
     public static final int CLUSTERS = 6;
     public static final int CLUSTERS_MAX = 12;
-    public static final int VEHICLES = 50;
-    public static final int TRIPS = 500;
+    public static final int VEHICLES = 60;
+    public static final int TRIPS = 1000;
     public static final int ITER = 1000000;
 
     public static final int TIME_WAITING = 10;//steps
