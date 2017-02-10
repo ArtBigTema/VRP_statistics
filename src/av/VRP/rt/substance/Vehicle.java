@@ -161,7 +161,7 @@ public class Vehicle {
     }
 
     public boolean containEndPoint() {
-        return indexOfTrip > 0 && !isBusy;
+        return indexOfTrip >= 0 && !isBusy;
     }
 
     public int getIndexOfTrip() {

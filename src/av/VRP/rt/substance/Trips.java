@@ -306,7 +306,7 @@ public class Trips {
     }
 
     public PointWithTime getFirstPoint() {
-        return trips.get(0).getStartPoint();
+        return trips.get(6).getStartPoint();
     }
 
     public Trip get(int i) {
@@ -318,7 +318,11 @@ public class Trips {
 
         for (int i = 0; i < getSubAll().size(); i++) {
             Trip trip = getSubAll().get(i);
-            if(trip.isCompleted()){
+
+            if (trip.isCompleted()) {
+                continue;
+            }
+            if (trip.isFailed()) {
                 continue;
             }
 

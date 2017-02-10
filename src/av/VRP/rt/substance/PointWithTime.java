@@ -7,9 +7,7 @@ import org.joda.time.DateTimeComparator;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by Artem on 09.04.2016.
@@ -19,17 +17,11 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     // 2,2014-01-01 00:00:07,2014-01-01 00:08:28,N,1,-73.9169921875,40.771003723144531,-73.8885498046875,40.745452880859375,1,2.52,10,0.5,0.5,0,0,,11,2,,,
 
     private DateTime _dateTime;
-    private Date _date;//FIXME rename
     private int waiting;
 
     private DateTimeFormatter fmt_1 = DateTimeFormat.forPattern("M/dd/yyyy HH:mm:ss");
-    private SimpleDateFormat sdf_1 = new SimpleDateFormat("M/dd/yyyy hh:mm:ss");
 
-    private SimpleDateFormat sdf_2 = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-    private DateTimeFormatter fmt_2 = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-
-    private SimpleDateFormat sdf_0 = new SimpleDateFormat("dd.mm.yyyy hh:mm:ss");
-    private DateTimeFormatter fmt_0 = DateTimeFormat.forPattern("dd.mm.yyyy HH:mm:ss");
+    private DateTimeFormatter fmt_2 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     public static String fmtLong = "dd.MM.yyyy";//fixme
     public static String fmtShort = "MM.yyyy";//fixme
@@ -59,17 +51,10 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     }
 
     public void setDateTime(String s) {
-        try {
-            if (s.contains("/")) {
-                _date = sdf_1.parse(s);
-                _dateTime = fmt_1.parseDateTime(s);
-            } else {//if '-'
-                _date = sdf_2.parse(s);
-                _dateTime = fmt_2.parseDateTime(s);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();//FIXME
-            Log.e(e.getMessage());
+        if (s.contains("/")) {
+            _dateTime = fmt_1.parseDateTime(s).withSecondOfMinute(0);
+        } else {//if '-'
+            _dateTime = fmt_2.parseDateTime(s).withSecondOfMinute(0);
         }
     }
 
@@ -79,7 +64,7 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
 
     public String[] toTableVector() {
         String[] result = new String[]{
-                fmt_0.print(_dateTime), getLat().toString(), getLng().toString()
+                _dateTime.toString(), getLat().toString(), getLng().toString()
         };
         return result;
     }

@@ -1,7 +1,9 @@
 package av.VRP.rt.substance;
 
+import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
+import av.VRP.rt.map.MapUtils;
 import com.teamdev.jxmaps.LatLng;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
@@ -18,6 +20,8 @@ public class Trip implements Comparable<Trip> {
     private PointWithTime endPoint;
 
     private boolean completed;
+    private boolean failed;
+    private int timeFailed = Constant.TIME_WAITING;
 
     public Trip(PointWithTime startPoint, PointWithTime endPoint) {
         this.startPoint = startPoint;
@@ -32,14 +36,20 @@ public class Trip implements Comparable<Trip> {
 
         String[] elements = Utils.strToArray(s, ",");
         if (s.length() > 100 || elements.length > 10) {//FIXME if split listSize>10 or else
+            Trip trip;
             if (elements[7].length() < 3) {
-                return new Trip(//yellow
+                trip = new Trip(//yellow
                         new PointWithTime(elements[5], elements[6], elements[1]),//FIXME const
                         new PointWithTime(elements[9], elements[10], elements[2]));//FIXME const
             } else {
-                return new Trip(//green
+                trip = new Trip(//green
                         new PointWithTime(elements[5], elements[6], elements[1]),//FIXME const
                         new PointWithTime(elements[7], elements[8], elements[2]));//FIXME const
+            }
+            if (trip.equalsStartEnd()) {
+                return null;
+            } else {
+                return trip;
             }
         }
 
@@ -51,6 +61,11 @@ public class Trip implements Comparable<Trip> {
 
         Log.e("null pointer");
         return null;
+    }
+
+    private boolean equalsStartEnd() {
+        return MapUtils.getDistance(startPoint, endPoint) < Constant.DISTANCE
+                || startPoint.check() || endPoint.check();
     }
 
     public PointWithTime getStartPoint() {
@@ -123,6 +138,10 @@ public class Trip implements Comparable<Trip> {
 
     public void incTime() {
         startPoint.incTime();
+
+        if (timeFailed-- < 0) {
+            failed = true;
+        }
     }
 
     public void completed() {
@@ -131,6 +150,10 @@ public class Trip implements Comparable<Trip> {
 
     public boolean isCompleted() {
         return completed;
+    }
+
+    public boolean isFailed() {
+        return failed;
     }
 
     public LatLng getLatLngEnd() {

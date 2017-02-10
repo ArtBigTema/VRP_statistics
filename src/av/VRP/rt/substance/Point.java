@@ -83,7 +83,7 @@ public class Point {
 
     public static Point nearby(PointWithTime startPoint) {
         Point point = new Point(
-                startPoint.getLat() - Constant.NEARBY, startPoint.getLng() -Constant.NEARBY);
+                startPoint.getLat() - Constant.NEARBY, startPoint.getLng() - Constant.NEARBY);
         return point;
     }
 
@@ -94,11 +94,16 @@ public class Point {
     public void plusLng(double step) {
         lng += step;
     }
+
     public void minusLat(double step) {
         lat = step;
     }
 
-    public void  minusLng(double step) {
+    public void minusLng(double step) {
         lng -= step;
+    }
+
+    public boolean check() {
+        return Math.abs(lat) < 1d;
     }
 }

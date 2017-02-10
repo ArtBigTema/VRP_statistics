@@ -2,6 +2,7 @@ package av.VRP.rt.map;
 
 import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Log;
+import av.VRP.rt.listener.MessageListener;
 import av.VRP.rt.substance.Trip;
 import av.VRP.rt.substance.Trips;
 import av.VRP.rt.substance.Vehicle;
@@ -16,14 +17,19 @@ import java.util.TimerTask;
  * Created by Artem on 09.02.2017.
  */
 public class ThreadImitation extends Thread implements Runnable {
+    private MessageListener messageListener;
+
     private Trips trips;
     private Vehicles vehicles;
     private MapExample map;
 
     private Timer timer;
-    private int DELAY = 1000, PERIOD = 200;
+    private int DELAY = 10, period = 100, oldPeriod = 100;
     private int max = 200;
+    private int iter = 0;
     private DateTime now;
+
+    private int countCompleteClient, countWaitingClient;
 
     public ThreadImitation(MapExample mapExample) {
         map = mapExample;
@@ -45,7 +51,7 @@ public class ThreadImitation extends Thread implements Runnable {
 
     @Override
     public void run() {
-        max = 5 * Constant.TRIPS;
+        max = Constant.ITER;
         now = vehicles.getInitDateTime();
 
         showPassegerOnMap();
@@ -55,14 +61,19 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     private void startTimer() {
+        oldPeriod = period;
+        timer.cancel();
+        timer = new Timer();
+
         Log.p();
         Log.e("startTimer");
-
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.schedule(new TimerTask() {
+            @Override
             public void run() {
-
                 new Thread(() -> {
+                    messageListener.showMessage(getMessage());
                     moveVehicles();
+                    map.clearFailedOrders(iter++);
 
                     Log.p("-------------------");
                     Log.p("inc time");
@@ -75,8 +86,12 @@ public class ThreadImitation extends Thread implements Runnable {
                         stopTimer();
                     }
                 }).run();
+
+                if (oldPeriod != period) {
+                    startTimer();
+                }
             }
-        }, DELAY, PERIOD);
+        }, DELAY, period);
     }
 
     private void moveVehicles() {
@@ -93,10 +108,10 @@ public class ThreadImitation extends Thread implements Runnable {
                         map.moveVehicle(i, vehicle.getCurrPoint());
                     } else {
                         if (vehicle.containEndPoint()) {
-                            Log.p("First hide marker trip:", vehicle.getIndexOfTrip(), " with vehicle: ", i);
                             map.removeClientMarkers(vehicle.getIndexOfTrip());
                             map.showMessVehicleComplete(i);
                             vehicle.resetTrip();
+                            vehicles.decBusy();
                         }
                     }
                 }
@@ -109,6 +124,7 @@ public class ThreadImitation extends Thread implements Runnable {
         if (list.size() < 1) {
             Log.p("Client not found");
         }
+        countWaitingClient = 0;
 
         for (Integer i : list) {
             map.showPasseger(i);
@@ -118,13 +134,21 @@ public class ThreadImitation extends Thread implements Runnable {
             Trip trip = trips.get(i);
             if (index < 0) {
                 trip.incTime();
-                map.togglePasseger(false, i, index);
+
+                if (trip.isFailed()) {
+                    map.toggleFailPasseger(i, trips.get(i).getLatLngStart());
+                } else {
+                    map.togglePasseger(i, index);
+                }
+
+                countWaitingClient++;
             } else {
                 vehicles.transfer(index, trip, i);
                 trip.completed();
 
                 map.toggleVehicle(index);
-                map.togglePasseger(true, i, index);
+                map.togglePasseger(i, index);
+                countCompleteClient++;
             }
         }
     }
@@ -149,5 +173,37 @@ public class ThreadImitation extends Thread implements Runnable {
 
     private void showPassegerOnMap() {
         map.showAllPoints(trips, false);
+    }
+
+    public void setDelay(int period) {
+        this.period = period * 10;
+    }
+
+    public void setMessageListener(MessageListener listener) {
+        messageListener = listener;
+    }
+
+    public String getMessage() {
+        StringBuilder message = new StringBuilder();
+        message.append("Всего заказов: ");
+        message.append(trips.getSubAll().size());
+        message.append("   ");
+        message.append("Выполнено заказов: ");
+        message.append(countCompleteClient);
+        message.append("   ");
+        message.append("Ожидающие заказы: ");
+        message.append(countWaitingClient);
+        message.append("   ");
+        message.append("Now: ");
+        message.append(Constant.FMT.print(now.getMillis()));
+        message.append("   ");
+        message.append("Занятый транспорт: ");
+        message.append(vehicles.getCountBusy());
+        message.append("   ");
+        message.append("Свободный транспорт: ");
+        message.append(vehicles.getCountFree());
+        message.append("   ");
+
+        return message.toString();
     }
 }

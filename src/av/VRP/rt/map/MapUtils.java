@@ -51,6 +51,9 @@ public class MapUtils {
     public static File getIconFu() {
         return new File("icons/fu.png");
     }
+    public static File getIconFail() {
+        return new File("icons/fail.png");
+    }
 
     public static double deg2rad(final double degree) {
         return degree * (Math.PI / 180);

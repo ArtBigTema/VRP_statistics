@@ -1,10 +1,13 @@
 package av.VRP.rt.Utils;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 /**
  * Created by Artem on 10.04.2016.
  */
 public class Constant {
-
+    public static final DateTimeFormatter FMT = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
     public static final String KEY = "AIzaSyAOFN5rfvcfxbpYQJ2orX1kYwBxTnOP4w8";
 
     public static final String URL_ALL_GREEN_AND_YELLOW = "https://raw.githubusercontent.com/ArtBigTema/VRP_statistics/master/resources/nyc-taxi-data_green_and_yellow.txt";
@@ -43,11 +46,14 @@ public class Constant {
     public static final String FILE_ENCODING = "UTF-8";
 
     public static final int CLUSTERS = 5;
-    public static final int VEHICLES = 50;
-    public static final int TRIPS = 400;
+    public static final int VEHICLES = 10;
+    public static final int TRIPS = 100;
     public static final int ITER = 1000000;
+
+    public static final int TIME_WAITING = 10;//minutes
 
     public static final double STEP = 0.0001;
     public static final double PRECISION = 0.001;
     public static final double NEARBY = 0.001;
+    public static final double DISTANCE = 1;
 }

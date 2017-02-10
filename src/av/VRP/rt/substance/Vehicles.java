@@ -15,6 +15,8 @@ public class Vehicles {
     private List<Vehicle> vehicles;
     private DateTime initDateTime;
 
+    private int countBusy;
+
     public Vehicles() {
         vehicles = new ArrayList<>();
 
@@ -63,10 +65,27 @@ public class Vehicles {
     }
 
     public void transfer(int index, Trip trip, int tripIndex) {
+        countBusy++;
         vehicles.get(index).setTrip(trip, tripIndex);
     }
 
     public Vehicle get(int index) {
         return vehicles.get(index);
+    }
+
+    public void incBusy() {
+        countBusy++;
+    }
+
+    public void decBusy() {
+        countBusy--;
+    }
+
+    public int getCountBusy() {
+        return countBusy;
+    }
+
+    public int getCountFree() {
+        return vehicles.size() - countBusy;
     }
 }

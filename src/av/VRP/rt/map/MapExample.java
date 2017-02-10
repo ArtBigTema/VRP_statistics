@@ -1,6 +1,5 @@
 package av.VRP.rt.map;
 
-import av.VRP.rt.Main;
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.substance.Point;
 import av.VRP.rt.substance.*;
@@ -19,6 +18,8 @@ public class MapExample extends MapView {
     private InfoWindow infoWindowClientStart;
     private InfoWindow infoWindowClientEnd;
 
+    private InfoWindow infoWindow;
+
     private Cluster cluster;
 
     private List<Marker> clusterMarkers;
@@ -26,12 +27,15 @@ public class MapExample extends MapView {
     private List<Marker> passageMarkersEnd;
     private List<Marker> vehicleMarkers;
 
+    private List<Marker> passageMarkersFailed;
+
 
     public MapExample() {
         vehicleMarkers = new ArrayList<>();
         clusterMarkers = new ArrayList<>();
         passageMarkersStart = new ArrayList<>();
         passageMarkersEnd = new ArrayList<>();
+        passageMarkersFailed = new ArrayList<>();
 
         setOnMapReadyHandler(new MapReadyHandler() {
             @Override
@@ -58,7 +62,25 @@ public class MapExample extends MapView {
                     map.addEventListener("zoom_changed", new MapEvent() {
                         @Override
                         public void onEvent() {
-                            Main.getInstance().zoom(map.getZoom());
+                            // Main.getInstance().zoom(map.getZoom());
+                        }
+                    });
+                    map.addEventListener("click", new MapMouseEvent() {
+                        @Override
+                        public void onEvent(MouseEvent mouseEvent) {
+                            // Closing initially created info window
+                            if (infoWindowTaxi != null) {
+                                infoWindowTaxi.close();
+                            }
+                            if (infoWindow != null) {
+                                infoWindow.close();
+                            }
+                            if (infoWindowClientEnd != null) {
+                                infoWindowClientEnd.close();
+                            }
+                            if (infoWindowClientStart != null) {
+                                infoWindowClientStart.close();
+                            }
                         }
                     });
                 }
@@ -96,10 +118,9 @@ public class MapExample extends MapView {
         marker.addEventListener("click", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                InfoWindow infoWindow = new InfoWindow(getMap());
+                infoWindow = new InfoWindow(getMap());
                 infoWindow.setContent(marker.getTitle());
                 infoWindow.open(getMap(), marker);
-                // showBounds();
             }
         });
 
@@ -132,7 +153,6 @@ public class MapExample extends MapView {
                     InfoWindow infoWindow = new InfoWindow(getMap());
                     infoWindow.setContent(marker.getTitle());
                     infoWindow.open(getMap(), marker);
-                    // showBounds();
                 }
             });
 
@@ -186,8 +206,8 @@ public class MapExample extends MapView {
                     Log.p("marker clicked: ", point.getStr());
                     Log.p("marker clicked: ", MapUtils.getHash(point.getLatLngStart()));
 
-                    InfoWindow infoWindow = new InfoWindow(getMap());
-                    infoWindow.setContent(MapUtils.getHash(point.getLatLngStart()));
+                    infoWindow = new InfoWindow(getMap());
+                    infoWindow.setContent("#" + points.indexOf(point));
                     infoWindow.open(getMap(), marker);
                 }
             });
@@ -232,8 +252,12 @@ public class MapExample extends MapView {
         for (Marker vehicleMarker : passageMarkersEnd) {
             vehicleMarker.remove();
         }
+        for (Marker vehicleMarker : passageMarkersFailed) {
+            vehicleMarker.remove();
+        }
         passageMarkersEnd.clear();
         vehicleMarkers.clear();
+        passageMarkersFailed.clear();
     }
 
     public void toggleVehicle(int index) {
@@ -245,12 +269,12 @@ public class MapExample extends MapView {
         }
         infoWindowTaxi = new InfoWindow(getMap());
         infoWindowTaxi.setContent("#" + (index + 1) + " Ближайшее" + marker.getTitle());
-        // infoWindowTaxi.open(getMap(), marker);
+        infoWindowTaxi.open(getMap(), marker);
 
         Log.p(marker.getPosition(), index);
     }
 
-    public void togglePasseger(boolean find, int indexPassage, int indexVehicle) {
+    public void togglePasseger(int indexPassage, int indexVehicle) {
         Marker marker = passageMarkersStart.get(indexPassage);
         Marker markerEnd = passageMarkersEnd.get(indexPassage);
         // marker.remove();
@@ -266,16 +290,11 @@ public class MapExample extends MapView {
         infoWindowClientStart = new InfoWindow(getMap());
         infoWindowClientEnd = new InfoWindow(getMap());
 
-        if (find) {
-            infoWindowClientStart.setContent("#" + indexPassage + " Нашлась такси: " + (indexVehicle + 1));
-            infoWindowClientEnd.setContent("Едем сюда");
-        } else {
-            infoWindowClientStart.setContent("Не найдено");
-            infoWindowClientEnd.setContent("Хотим сюда");
-        }
+        infoWindowClientStart.setContent("#" + indexPassage + " Нашлась такси: " + (indexVehicle + 1));
+        infoWindowClientEnd.setContent("Едем сюда");
 
-        //   infoWindowClientStart.open(getMap(), marker);
-        //   infoWindowClientEnd.open(getMap(), markerEnd);
+        infoWindowClientStart.open(getMap(), marker);
+        infoWindowClientEnd.open(getMap(), markerEnd);
     }
 
     public void showPasseger(Integer i) {
@@ -304,20 +323,48 @@ public class MapExample extends MapView {
     public void removeClientMarkers(int indexOfTrip) {
         passageMarkersStart.get(indexOfTrip).setVisible(false);
         passageMarkersEnd.get(indexOfTrip).setVisible(false);
-          passageMarkersStart.get(indexOfTrip).remove();
-          passageMarkersEnd.get(indexOfTrip).remove();
 
-        passageMarkersStart.get(indexOfTrip).setDraggable(true);
-        passageMarkersEnd.get(indexOfTrip).setDraggable(true);
-
-       // Log.pp(indexOfTrip,passageMarkersStart.get(indexOfTrip).getVisible());
-       // Log.pp(indexOfTrip,passageMarkersEnd.get(indexOfTrip).getVisible());
+        // Log.pp(indexOfTrip,passageMarkersStart.get(indexOfTrip).getVisible());
+        // Log.pp(indexOfTrip,passageMarkersEnd.get(indexOfTrip).getVisible());
     }
 
     public void showMessVehicleComplete(int i) {
         Marker marker = vehicleMarkers.get(i);
-        InfoWindow infoWindow = new InfoWindow(getMap());
+        if (infoWindow != null) {
+            infoWindow.close();
+        }
+        infoWindow = new InfoWindow(getMap());
         infoWindow.setContent("Completed");
-        //   infoWindow.open(getMap(), marker);
+        infoWindow.open(getMap(), marker);
+    }
+
+    public void toggleFailPasseger(int i, LatLng latLng) {
+
+        Marker markerFaile = new Marker(getMap());
+        markerFaile.setPosition(latLng);
+
+        passageMarkersStart.get(i).setVisible(false);
+        passageMarkersEnd.get(i).setVisible(false);
+
+        Icon icon = new Icon();
+        File file = MapUtils.getIconFail();
+        icon.loadFromFile(file);
+        markerFaile.setIcon(icon);
+
+        infoWindow = new InfoWindow(getMap());
+        infoWindow.setContent("Failed");
+        infoWindow.open(getMap(), markerFaile);
+
+        passageMarkersFailed.add(markerFaile);
+    }
+
+    public void clearFailedOrders(int i) {
+        if (i % 10 != 0) {
+            return;
+        }
+        for (Marker vehicleMarker : passageMarkersFailed) {
+            vehicleMarker.remove();
+        }
+        passageMarkersFailed.clear();
     }
 }

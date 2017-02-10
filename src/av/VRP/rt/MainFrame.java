@@ -54,6 +54,7 @@ public class MainFrame extends JFrame implements KeyListener {
     private JPanel maps;
     private JSlider slider_zoom;
     private JButton startImitationButton;
+    private JLabel messageLabel;
     private MapExample sample;
 
     public MainFrame() {
@@ -244,7 +245,7 @@ public class MainFrame extends JFrame implements KeyListener {
         slider_zoom.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                sample.setZoom(slider_zoom.getValue());
+                Main.getInstance().zoom(slider_zoom.getValue());
             }
         });
 
@@ -252,7 +253,7 @@ public class MainFrame extends JFrame implements KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 startImitationButton.setVisible(false);
-                slider_zoom.setVisible(false);
+                //  slider_zoom.setVisible(false);
                 showPointsButton.setVisible(false);
                 Main.getInstance().startImitation(sample);
             }
@@ -295,7 +296,7 @@ public class MainFrame extends JFrame implements KeyListener {
         listLink.setEnabled(true);
         dowloadLinkButton.setEnabled(false);
         progressBar.setVisible(false);
-
+        startImitationButton.setVisible(true);
         //   JOptionPane.showMessageDialog(this,
         //           isSucces ? "Succes" : "Fail", "Title",
         //           isSucces ? 1 : 0);//FIXME
@@ -478,6 +479,10 @@ public class MainFrame extends JFrame implements KeyListener {
             dowloadLinkButton.doClick();
             btn_read_file.doClick();
         }
+    }
+
+    public void showMessage(String msg) {
+        messageLabel.setText(msg);
     }
 
     @Override

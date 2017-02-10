@@ -3,6 +3,7 @@ package av.VRP.rt;
 import av.VRP.rt.Utils.*;
 import av.VRP.rt.forecasting.Forecast;
 import av.VRP.rt.listener.FileWriterListener;
+import av.VRP.rt.listener.MessageListener;
 import av.VRP.rt.listener.VRPgeneratorListener;
 import av.VRP.rt.map.MapExample;
 import av.VRP.rt.map.ThreadImitation;
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * Created by Artem on 09.04.2016.
  */
-public class Main implements VRPgeneratorListener, FileWriterListener {
+public class Main implements VRPgeneratorListener, FileWriterListener, MessageListener {
     private static volatile Main instance;
     private MainFrame frame;
 
@@ -140,7 +141,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         frame.setListData(rows);
 
         if (modeMap) {
-            frame.clickDownloadLink();
+          //  frame.clickDownloadLink();
         }
     }
 
@@ -276,7 +277,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             Log.p("Trips mapSizeForDay = ", trips.mapSizeForDay());
             Log.p("Trips mapSizeForHour = ", trips.mapSizeForHour());
 
-
+            frame.setTableData(trips.toTable());
             if (!modeMap) {
                 frame.setTableData(trips.toTable());
                 agregateForecast();//fixme
@@ -285,7 +286,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
             if (modeMap) {
                 vehicles.setInitDateTime(trips.getFirstPoint());
                 vehicles.initDepo(trips.getPoints().subList(0, Constant.VEHICLES));//FIXME
-                frame.showMap();
+              //  frame.showMap();
             }
         }
     }
@@ -304,15 +305,21 @@ public class Main implements VRPgeneratorListener, FileWriterListener {
         }
     }
 
-    public void zoom(double zoom) {
-        frame.setZoom(zoom);
+    public void zoom(int zoom) {
+        imitation.setDelay(zoom);
     }
 
     public void startImitation(MapExample map) {
         map.clearAll();
         imitation = new ThreadImitation(map);
+        imitation.setMessageListener(this);
         imitation.setTrips(trips);
         imitation.setVehicles(vehicles);
         imitation.run();
+    }
+
+    @Override
+    public void showMessage(String msg) {
+        frame.showMessage(msg);
     }
 }
