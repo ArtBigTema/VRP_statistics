@@ -1,6 +1,5 @@
 package av.VRP.rt.map;
 
-import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.substance.Point;
 import av.VRP.rt.substance.*;
@@ -170,8 +169,6 @@ public class MapExample extends MapView {
 
         Map map = getMap();
 
-        map.setCenter(points.get(0).getLatLngStart());
-
         for (Trip point : points) {
             Marker marker = new Marker(map);
             marker.setPosition(point.getLatLngStart());
@@ -285,6 +282,22 @@ public class MapExample extends MapView {
         infoWindowClientStart.open(getMap(), marker);
         infoWindowClientEnd.open(getMap(), markerEnd);
 
+        marker.addEventListener("click", new MapMouseEvent() {
+            @Override
+            public void onEvent(MouseEvent mouseEvent) {
+                InfoWindow infoWindow = new InfoWindow(getMap());
+                infoWindow.setContent("#" + indexPassage + " Нашлась такси: " + (indexVehicle + 1));
+                infoWindow.open(getMap(), marker);
+            }
+        });
+        markerEnd.addEventListener("click", new MapMouseEvent() {
+            @Override
+            public void onEvent(MouseEvent mouseEvent) {
+                InfoWindow infoWindow = new InfoWindow(getMap());
+                infoWindow.setContent("#" + indexPassage + " Нашлась такси: " + (indexVehicle + 1));
+                infoWindow.open(getMap(), marker);
+            }
+        });
     }
 
     public void showPasseger(Integer i) {

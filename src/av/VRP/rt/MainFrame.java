@@ -98,7 +98,7 @@ public class MainFrame extends JFrame implements KeyListener {
                         tabbedPane1.getRootPane().setDefaultButton(btnForecastD);
                         break;
                     case 6:
-                        tabbedPane1.getRootPane().setDefaultButton(showPointsButton);
+                        tabbedPane1.getRootPane().setDefaultButton(startImitationButton);
                         break;
                 }
             }
@@ -257,11 +257,10 @@ public class MainFrame extends JFrame implements KeyListener {
         });
         messageLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                Main.getInstance().stopImitation();
-                //   messageLabel.setText("");
-                startImitationButton.setVisible(true);
-                slider_zoom.setVisible(false);
-                showPointsButton.setVisible(true);
+                Main.getInstance().click();
+                startImitationButton.setVisible(!startImitationButton.isVisible());
+                slider_zoom.setVisible(!slider_zoom.isVisible());
+                showPointsButton.setVisible(!showPointsButton.isVisible());
             }
         });
 

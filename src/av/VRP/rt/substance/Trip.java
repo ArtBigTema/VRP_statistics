@@ -140,13 +140,17 @@ public class Trip implements Comparable<Trip> {
     public void incTime() {
         startPoint.incTime();
 
-        if (timeFailed-- < 0) {
+        if (--timeFailed <= 0) {
             failed = true;
         }
     }
 
+    public boolean isWaiting() {
+        return timeFailed == Constant.TIME_WAITING;
+    }
+
     public int getTimeFailed() {
-        return Constant.TIME_WAITING-timeFailed;
+        return Constant.TIME_WAITING - timeFailed - 1;
     }
 
     public void completed() {

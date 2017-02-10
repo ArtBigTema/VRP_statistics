@@ -9,7 +9,9 @@ import av.VRP.rt.substance.Vehicle;
 import av.VRP.rt.substance.Vehicles;
 import org.joda.time.DateTime;
 
-import java.util.*;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Artem on 09.02.2017.
@@ -21,20 +23,17 @@ public class ThreadImitation extends Thread implements Runnable {
     private Trips trips;
     private Vehicles vehicles;
     private MapExample map;
-    public Set<Integer> index;
-    public Set<Integer> indexx;
 
     private Timer timer;
     private int period = 1000, oldPeriod = 1000;
     private long max;
     private int iter = 0;
+    private int tripSize = 0;
     private DateTime now;
 
     private int countCompleteClient, countWaitingClient, countFailedOrder;
 
     public ThreadImitation(MapExample mapExample) {
-        index = Collections.synchronizedSet(new HashSet<>());
-        indexx = Collections.synchronizedSet(new HashSet<>());
         map = mapExample;
         timer = new Timer();
     }
@@ -60,6 +59,7 @@ public class ThreadImitation extends Thread implements Runnable {
     public void run() {
         now = vehicles.getInitDateTime();
         max = Math.abs(now.getMillis() - now.plusMonths(1).getMillis()) / 60000;
+        tripSize = trips.getSubAll().size();
         //minutes in month
 
         vehicles.initDepo(cluster);
@@ -70,7 +70,7 @@ public class ThreadImitation extends Thread implements Runnable {
         startTimer();
     }
 
-    private void startTimer() {
+    public void startTimer() {
         oldPeriod = period;
         timer.cancel();
         timer = new Timer();
@@ -95,6 +95,7 @@ public class ThreadImitation extends Thread implements Runnable {
 
                     if (max-- < 0) {
                         stopTimer();
+                        map.showMsgFinish(Constant.MSG_IMITATION);
                     }
                 }).run();
 
@@ -128,37 +129,37 @@ public class ThreadImitation extends Thread implements Runnable {
                     Log.p("end moveVehicles");
                 }
             }
+            checkImitation();
         }).run();
     }
 
     private synchronized void findNearestCar(List<Integer> list) {
-        index.addAll(list);
         if (list.size() < 1) {
             Log.p("Client not found");
             return;
         }
 
         for (Integer i : list) {
-            indexx.add(i);
             map.showPasseger(i);
 
             int index = vehicles.findNearestCar(trips.get(i).getStartPoint());
 
             Trip trip = trips.get(i);
 
+            if (trip.isWaiting()) {
+                countWaitingClient++;
+            }
             trip.incTime();//inc for all
 
             if (vehicles.timeMoreDistance(index, trip)) {
                 if (trip.isFailed()) {
-                    countWaitingClient -= trip.getTimeFailed();
+                    countWaitingClient--;
                     countFailedOrder++;
                     map.toggleFailPasseger(i, trips.get(i).getLatLngStart());
                 } else {
                     map.togglePasseger(i, index, false);
-                    countWaitingClient++;
                 }
-
-                return;// if time move to client > waitng
+                continue;// if time move to client > waitng
             }
 
             if (index >= 0) {
@@ -167,11 +168,18 @@ public class ThreadImitation extends Thread implements Runnable {
 
                 map.toggleVehicle(index);
                 map.togglePasseger(i, index, true);
-                countWaitingClient -= trip.getTimeFailed();
-                countCompleteClient++;
-            } else {
+
                 countWaitingClient--;
-                map.showMsgFinish("err");
+                countCompleteClient++;
+            }
+        }
+    }
+
+    private void checkImitation() {
+        if ((countFailedOrder + countCompleteClient) >= tripSize) {
+            if (vehicles.getCountBusy() == 0) {
+                stopTimer();
+                map.showMsgFinish(Constant.MSG_IMITATION);
             }
         }
     }
@@ -179,7 +187,6 @@ public class ThreadImitation extends Thread implements Runnable {
     public void stopTimer() {
         Log.e("stopTimer");
         timer.cancel();
-        map.showMsgFinish(Constant.MSG_IMITATION);
     }
 
     private void showVehicleOnMap() {
@@ -210,7 +217,7 @@ public class ThreadImitation extends Thread implements Runnable {
     public String getMessage() {
         StringBuilder message = new StringBuilder();
         message.append("Всего: ");
-        message.append(trips.getSubAll().size());
+        message.append(tripSize);
         message.append("   ");
         message.append("Ждут: ");
         message.append(countWaitingClient);
@@ -234,8 +241,7 @@ public class ThreadImitation extends Thread implements Runnable {
         message.append(iter);
         message.append("   ");
 
-       // return message.toString();
-        return index.toString();
+        return message.toString();
     }
 
     public void cancel() {

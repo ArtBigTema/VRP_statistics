@@ -204,10 +204,6 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     public void export() {
-
-        Log.e("-------------");
-        Log.e(imitation.index);
-
         Exporter.init(trips.getTitles()[0]);
         Exporter.export(trips.exportDataForDay());
     }
@@ -261,10 +257,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             trips.add(s, ss);
         }
 
-       // if (++i > size) {
-            i = 0;
-            trips.add(ss);
-      //  }
+        // if (++i > size) {
+        i = 0;
+        trips.add(ss);
+        //  }
         //    frame.showData(t.toString() + "\n");
     }
 
@@ -302,6 +298,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     private boolean isClicked;
+
     public void showPoints(MapExample map) {
         map.clearAll();
 
@@ -316,6 +313,28 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
     public void zoom(int zoom) {
         imitation.setDelay(zoom);
+    }
+
+    private boolean labelClicked;
+    public void click() {
+        if (imitation == null) {
+            return;
+        }
+        if (!labelClicked) {
+            labelClicked = true;
+            pauseImitation();
+        } else {
+            labelClicked = false;
+            continueImitation();
+        }
+    }
+
+    private void continueImitation() {
+        imitation.startTimer();
+    }
+
+    private void pauseImitation() {
+        imitation.stopTimer();
     }
 
     public void startImitation(MapExample map) {
