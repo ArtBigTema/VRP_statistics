@@ -5,6 +5,7 @@ import av.VRP.rt.forecasting.Forecast;
 import av.VRP.rt.listener.FileWriterListener;
 import av.VRP.rt.listener.MessageListener;
 import av.VRP.rt.listener.VRPgeneratorListener;
+import av.VRP.rt.map.Cluster;
 import av.VRP.rt.map.MapExample;
 import av.VRP.rt.map.ThreadImitation;
 import av.VRP.rt.parser.ThreadParser;
@@ -38,6 +39,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     private volatile Vehicles vehicles;
 
     private Forecast forecast;
+    private Cluster cluster;
 
     private boolean modeMap;
 
@@ -59,6 +61,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
         frame = new MainFrame();
         trips = new Trips();
         vehicles = new Vehicles();
+        cluster = new Cluster();
 
         Log.p(System.currentTimeMillis());
     }
@@ -141,7 +144,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
         frame.setListData(rows);
 
         if (modeMap) {
-          //  frame.clickDownloadLink();
+            //  frame.clickDownloadLink();
         }
     }
 
@@ -285,23 +288,25 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
             if (modeMap) {
                 vehicles.setInitDateTime(trips.getFirstPoint());
-                vehicles.initDepo(trips.getPoints().subList(0, Constant.VEHICLES));//FIXME
-              //  frame.showMap();
+                //vehicles.initDepo(trips.getPoints().subList(0, Constant.VEHICLES));//FIXME
+
+                cluster.constructClusters(trips);
+
+                frame.showMap();
             }
         }
     }
 
     private boolean isClicked;
-
     public void showPoints(MapExample map) {
-     //   map.clear();
+        map.clearAll();
 
         if (!isClicked) {
             isClicked = true;
-           // map.constructCluster(trips, vehicles);
+            map.showCluster(cluster);
         } else {
             isClicked = false;
-          //  map.showAllPoints(trips);
+            map.showAllPoints(trips, true);
         }
     }
 
@@ -313,9 +318,18 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
         map.clearAll();
         imitation = new ThreadImitation(map);
         imitation.setMessageListener(this);
+        imitation.setCluster(cluster);
         imitation.setTrips(trips);
         imitation.setVehicles(vehicles);
         imitation.run();
+    }
+
+    public void stopImitation() {
+        if (imitation != null) {
+            imitation.cancel();
+            imitation.interrupt();
+            imitation = null;//FIXME ask
+        }
     }
 
     @Override

@@ -1,18 +1,25 @@
 package av.VRP.rt.substance;
 
+import com.teamdev.jxmaps.LatLng;
+
 /**
  * Created by Artem on 08.02.2017.
  */
-public class PointWithMessage extends Point {
-    private int clust;
+public class PointWithMessage extends Point implements Comparable<PointWithMessage> {
+    private Integer clust;
+    private double la;
+    private double ln;
 
-    public PointWithMessage(double la, double ln) {
-        super(la, ln);
-    }
+    private String message;
 
-    public PointWithMessage(Point point) {
+    public PointWithMessage(Point point, String msg) {
         super(point.getLat(), point.getLng());
+
+        la = point.getLat();
+        ln = point.getLng();
+
         clust = 1;
+        message = msg;
     }
 
     public void incClust() {
@@ -20,14 +27,35 @@ public class PointWithMessage extends Point {
     }
 
     public String getMsg() {
-        return String.valueOf(clust);
+        return message;
     }
 
     public int getClust() {
         return clust;
     }
 
-    public void setClust(int clust) {
-        this.clust = clust;
+    public double getClustD() {
+        return clust;
+    }
+
+    public void incLatLng(Point point) {
+        la += point.getLat();
+        ln += point.getLng();
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(la / clust, ln / clust);
+    }
+
+    @Override
+    public String toString() {
+        return "PointWithMessage{" + super.toString() +
+                ", clust=" + clust + ":" + message +
+                '}';
+    }
+
+    @Override
+    public int compareTo(PointWithMessage o) {
+        return o.clust.compareTo(clust);
     }
 }

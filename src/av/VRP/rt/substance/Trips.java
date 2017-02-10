@@ -306,7 +306,7 @@ public class Trips {
     }
 
     public PointWithTime getFirstPoint() {
-        return trips.get(6).getStartPoint();
+        return trips.get(0).getStartPoint();
     }
 
     public Trip get(int i) {

@@ -10,8 +10,7 @@ import org.joda.time.DateTime;
  * Created by Artem on 09.02.2017.
  */
 public class Vehicle {
-    private PointWithTime startPoint;
-    private PointWithTime endPoint;
+    private Trip trip;
 
     private Point currPoint;
     private DateTime currTime;
@@ -43,17 +42,16 @@ public class Vehicle {
         return fileIcon;
     }
 
-    public void setTrip(Trip trip, int index) {
+    public void setTrip(Trip t, int index) {
         setBusy(true);
         indexOfTrip = index;
 
-        startPoint = trip.getStartPoint();
-        endPoint = trip.getEndPoint();
+        trip = t;
 
-        if (endPoint == null) {
-            endPoint = new PointWithTime(Point.nearby(startPoint));//generate nearby
+        if (t.getEndPoint() == null) {
+           Log.e("errrrrrrrrrrrrrrrrrrrroooooooor");
         }
-        calculateSteps(currPoint.toLatLng(), startPoint.toLatLng());
+        calculateSteps(currPoint.toLatLng(), t.getStartPoint().toLatLng());
     }
 
     public Point getCurrPoint() {
@@ -61,7 +59,7 @@ public class Vehicle {
     }
 
     public void setCurrPoint(LatLng curr) {
-        currPoint = new Point(curr.getLat() + 0.005, curr.getLng() + 0.005);
+        currPoint = new Point(curr.getLat(), curr.getLng());
     }
 
     public boolean isBusy() {
@@ -90,9 +88,9 @@ public class Vehicle {
 
     private boolean moveToClient() {
         Log.p();
-        Log.p("moveToClient", currPoint.toLatLng(), startPoint.toLatLng());
+        Log.p("moveToClient", currPoint.toLatLng(), trip.getStartPoint().toLatLng());
 
-        if (MapUtils.getDistance(currPoint, startPoint) < Constant.PRECISION) {
+        if (MapUtils.getDistance(currPoint, trip.getStartPoint()) < Constant.PRECISION) {
             Log.e("arrived to client with getDistance");
             arrivedToPointStart();
             return false;
@@ -115,9 +113,9 @@ public class Vehicle {
 
     private boolean moveToEndPoint() {
         Log.p();
-        Log.p("moveToEndPoint", currPoint.toLatLng(), endPoint.toLatLng());
+        Log.p("moveToEndPoint", currPoint.toLatLng(), trip.getEndPoint().toLatLng());
 
-        if (MapUtils.getDistance(currPoint, endPoint) < Constant.PRECISION) {
+        if (MapUtils.getDistance(currPoint, trip.getEndPoint()) < Constant.PRECISION) {
             Log.e("arrived moveToEndPoint with distance");
             arrivedToPointEnd();
             // TODO move to cluster
@@ -142,14 +140,14 @@ public class Vehicle {
     private void arrivedToPointEnd() {
         withClient = false; // arrived to client end
         isBusy = false;
-        startPoint = null;
-        endPoint = null;
+       // startPoint = null;
+       // endPoint = null;
     }
 
     private void arrivedToPointStart() {
         isBusy = true;
         withClient = true; // arrived to client
-        calculateSteps(currPoint.toLatLng(), endPoint.toLatLng());
+        calculateSteps(currPoint.toLatLng(), trip.getEndPoint().toLatLng());
     }
 
     private void calculateSteps(LatLng start, LatLng end) {
@@ -181,5 +179,15 @@ public class Vehicle {
 
     public void initTime(DateTime initDateTime) {
         currTime = new DateTime(initDateTime);
+    }
+
+    public boolean timeMoreDistance(PointWithTime startPoint) {
+        double lat = currPoint.getLat() - startPoint.getLat();
+        double lng = currPoint.getLng() - startPoint.getLng();
+
+        stepsLat = (int) Math.round(lat / Constant.STEP);
+        stepsLng = (int) Math.round(lng / Constant.STEP);
+
+        return stepsLat > Constant.TIME_WAITING || stepsLng > Constant.TIME_WAITING;
     }
 }

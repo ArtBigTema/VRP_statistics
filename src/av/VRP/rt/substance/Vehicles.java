@@ -1,8 +1,9 @@
 package av.VRP.rt.substance;
 
 import av.VRP.rt.Utils.Constant;
+import av.VRP.rt.Utils.Log;
+import av.VRP.rt.map.Cluster;
 import av.VRP.rt.map.MapUtils;
-import com.teamdev.jxmaps.LatLng;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -25,9 +26,33 @@ public class Vehicles {
         }
     }
 
-    public void initDepo(List<LatLng> list) {
-        for (int i = 0; i < vehicles.size(); i++) {
-            vehicles.get(i).setCurrPoint(list.get(i));
+    public void initDepo(Cluster cluster) {
+        double part;
+        int csize = cluster.getTripSize();
+        int vsize = vehicles.size();
+        int countVehicles;
+        int k = 0;
+        PointWithMessage point;
+
+        for (int i = 0; i < cluster.size(); i++) {
+            point = cluster.get(i);
+            part = vsize * point.getClustD() / csize;
+
+            countVehicles = (int) Math.round(part);
+            while (countVehicles > 0) {
+                if (k >= Constant.VEHICLES) {
+                    Log.e("dsg");
+                    return;
+                }
+                vehicles.get(k).setCurrPoint(point.getLatLng());
+                vehicles.get(k).setFileIcon("vi/" + (k + 1) + ".png");
+                vehicles.get(k).initTime(initDateTime);
+                k++;
+                countVehicles--;
+            }
+        }
+        for (int i = k; i < Constant.VEHICLES; i++) {
+            vehicles.get(i).setCurrPoint(cluster.get(0).getLatLng());
             vehicles.get(i).setFileIcon("vi/" + (i + 1) + ".png");
             vehicles.get(i).initTime(initDateTime);
         }
@@ -45,12 +70,13 @@ public class Vehicles {
         return vehicles;
     }
 
-    public int findNearestCar(Point point) {
+    public int findNearestCar(PointWithTime point) {
         double tmp, distance = Double.MAX_VALUE;
         int index = -1;
 
         for (int i = 0; i < vehicles.size(); i++) {
             Vehicle vehicle = vehicles.get(i);
+
             if (vehicle.isBusy()) {
                 continue;
             }
@@ -61,6 +87,7 @@ public class Vehicles {
                 index = i;
             }
         }
+
         return index;
     }
 
@@ -87,5 +114,9 @@ public class Vehicles {
 
     public int getCountFree() {
         return vehicles.size() - countBusy;
+    }
+
+    public boolean timeMoreDistance(int index, Trip trip) {
+        return index < 0 || vehicles.get(index).timeMoreDistance(trip.getStartPoint());
     }
 }

@@ -21,7 +21,7 @@ public class MapUtils {
     }
 
     public static String getHash(double lat, double lng) {
-        return GeoHash.geoHashStringWithCharacterPrecision(lat, lng, Constant.CLUSTERS);
+        return GeoHash.geoHashStringWithCharacterPrecision(lat, lng, Constant.CLUSTERS_MAX);
     }
 
     public static File getIcon(int count) {

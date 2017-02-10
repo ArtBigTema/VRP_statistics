@@ -30,6 +30,7 @@ public class Constant {
     public static final String TITLE_E_LON = "End Longitude";
 
     public static final String MSG_MORE_ONE = "Выберите более одного элемента";
+    public static final String MSG_IMITATION = "Иммитация окончена";
 
     public static final String[] TABLE_TITLES_FOR_GY = new String[]{
             TITLE_S_DT, TITLE_S_LAT, TITLE_S_LON, TITLE_E_DT, TITLE_E_LAT, TITLE_E_LON};
@@ -45,14 +46,15 @@ public class Constant {
     public static final String FILE_FORMAT_FOR_SCALA = ".tsv";
     public static final String FILE_ENCODING = "UTF-8";
 
-    public static final int CLUSTERS = 5;
-    public static final int VEHICLES = 10;
-    public static final int TRIPS = 100;
+    public static final int CLUSTERS = 6;
+    public static final int CLUSTERS_MAX = 12;
+    public static final int VEHICLES = 100;
+    public static final int TRIPS = 1000;
     public static final int ITER = 1000000;
 
-    public static final int TIME_WAITING = 10;//minutes
+    public static final int TIME_WAITING = 20;//steps
 
-    public static final double STEP = 0.0001;
+    public static final double STEP = 0.0005;
     public static final double PRECISION = 0.001;
     public static final double NEARBY = 0.001;
     public static final double DISTANCE = 1;

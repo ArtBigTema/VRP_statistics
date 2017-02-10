@@ -14,8 +14,6 @@ public class Point {
     private double lng = 0d;
     private String hash;
 
-    public boolean isStartPoint = true; //FIXME
-
     public int x = 0;
     public int y = 0;//FIXME remove
 
@@ -62,7 +60,11 @@ public class Point {
     }
 
     public String getHash() {
-        return hash;
+        return hash.substring(0, Constant.CLUSTERS);
+    }
+
+    public String getHashFull() {
+        return hash.substring(0, Constant.CLUSTERS);
     }
 
     public String getStrLatLng() {
@@ -93,14 +95,6 @@ public class Point {
 
     public void plusLng(double step) {
         lng += step;
-    }
-
-    public void minusLat(double step) {
-        lat = step;
-    }
-
-    public void minusLng(double step) {
-        lng -= step;
     }
 
     public boolean check() {

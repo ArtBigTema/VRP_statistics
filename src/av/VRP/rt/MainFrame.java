@@ -12,10 +12,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.List;
 
 /**
@@ -245,7 +242,7 @@ public class MainFrame extends JFrame implements KeyListener {
         slider_zoom.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                Main.getInstance().zoom(slider_zoom.getValue());
+                Main.getInstance().zoom(slider_zoom.getMaximum() - slider_zoom.getValue() + 1);
             }
         });
 
@@ -253,9 +250,18 @@ public class MainFrame extends JFrame implements KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 startImitationButton.setVisible(false);
-                //  slider_zoom.setVisible(false);
+                slider_zoom.setVisible(true);
                 showPointsButton.setVisible(false);
                 Main.getInstance().startImitation(sample);
+            }
+        });
+        messageLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                Main.getInstance().stopImitation();
+                messageLabel.setText("");
+                startImitationButton.setVisible(true);
+                slider_zoom.setVisible(false);
+                showPointsButton.setVisible(true);
             }
         });
 

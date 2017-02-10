@@ -19,21 +19,26 @@ import java.util.TimerTask;
 public class ThreadImitation extends Thread implements Runnable {
     private MessageListener messageListener;
 
+    private Cluster cluster;
     private Trips trips;
     private Vehicles vehicles;
     private MapExample map;
 
     private Timer timer;
-    private int DELAY = 10, period = 100, oldPeriod = 100;
-    private int max = 200;
+    private int period = 1000, oldPeriod = 1000;
+    private long max;
     private int iter = 0;
     private DateTime now;
 
-    private int countCompleteClient, countWaitingClient;
+    private int countCompleteClient, countWaitingClient, countFailedOrder;
 
     public ThreadImitation(MapExample mapExample) {
         map = mapExample;
         timer = new Timer();
+    }
+
+    public void setCluster(Cluster cluster) {
+        this.cluster = cluster;
     }
 
     public void setTrips(Trips trips) {
@@ -51,11 +56,14 @@ public class ThreadImitation extends Thread implements Runnable {
 
     @Override
     public void run() {
-        max = Constant.ITER;
         now = vehicles.getInitDateTime();
+        max = Math.abs(now.getMillis() - now.plusMonths(1).getMillis()) / 60000;
+        //minutes in month
 
+        vehicles.initDepo(cluster);
         showPassegerOnMap();
         showVehicleOnMap();
+        // map.showCluster(cluster);
 
         startTimer();
     }
@@ -91,7 +99,7 @@ public class ThreadImitation extends Thread implements Runnable {
                     startTimer();
                 }
             }
-        }, DELAY, period);
+        }, 10, period);
     }
 
     private void moveVehicles() {
@@ -132,22 +140,27 @@ public class ThreadImitation extends Thread implements Runnable {
             int index = vehicles.findNearestCar(trips.get(i).getStartPoint());
 
             Trip trip = trips.get(i);
-            if (index < 0) {
-                trip.incTime();
 
+            trip.incTime();//inc for all
+
+            if (vehicles.timeMoreDistance(index, trip)) {
                 if (trip.isFailed()) {
+                    countFailedOrder++;
                     map.toggleFailPasseger(i, trips.get(i).getLatLngStart());
                 } else {
-                    map.togglePasseger(i, index);
+                    map.togglePasseger(i, index, false);
                 }
-
                 countWaitingClient++;
-            } else {
+
+                return;// if time move to client > waitng
+            }
+
+            if (index >= 0) {
                 vehicles.transfer(index, trip, i);
                 trip.completed();
 
                 map.toggleVehicle(index);
-                map.togglePasseger(i, index);
+                map.togglePasseger(i, index, true);
                 countCompleteClient++;
             }
         }
@@ -156,6 +169,7 @@ public class ThreadImitation extends Thread implements Runnable {
     public void stopTimer() {
         Log.e("stopTimer");
         timer.cancel();
+        map.showMsgFinish(Constant.MSG_IMITATION);
     }
 
     private void showVehicleOnMap() {
@@ -176,7 +190,7 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     public void setDelay(int period) {
-        this.period = period * 10;
+        this.period = period * 1;
     }
 
     public void setMessageListener(MessageListener listener) {
@@ -185,25 +199,40 @@ public class ThreadImitation extends Thread implements Runnable {
 
     public String getMessage() {
         StringBuilder message = new StringBuilder();
-        message.append("Всего заказов: ");
+        message.append("Всего: ");
         message.append(trips.getSubAll().size());
         message.append("   ");
-        message.append("Выполнено заказов: ");
+        message.append("Успешно: ");
         message.append(countCompleteClient);
         message.append("   ");
-        message.append("Ожидающие заказы: ");
+        message.append("Ждут: ");
         message.append(countWaitingClient);
+        message.append("   ");
+        message.append("Неудачно: ");
+        message.append(countFailedOrder);
         message.append("   ");
         message.append("Now: ");
         message.append(Constant.FMT.print(now.getMillis()));
         message.append("   ");
-        message.append("Занятый транспорт: ");
+        message.append("Занято: ");
         message.append(vehicles.getCountBusy());
         message.append("   ");
-        message.append("Свободный транспорт: ");
+        message.append("Свободно: ");
         message.append(vehicles.getCountFree());
+        message.append("   ");
+        message.append("Итерация: ");
+        message.append(iter);
         message.append("   ");
 
         return message.toString();
+    }
+
+    public void cancel() {
+        map.clearAll();
+        if (timer != null) {
+            timer.cancel();
+        }
+        Log.e("thread imitation stopped");
+        Log.e("-------------------");
     }
 }

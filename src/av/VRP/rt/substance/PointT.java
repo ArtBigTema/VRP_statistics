@@ -12,9 +12,9 @@ public class PointT {
 
     public PointT(Point startPoint, Point endPoint) {
         this.startPoint = startPoint;
-        this.startPoint.isStartPoint = true;//FIXME
+        //  this.startPoint.isStartPoint = true;//FIXME
         this.endPoint = endPoint;
-        this.startPoint.isStartPoint = false;//FIXME
+        //  this.startPoint.isStartPoint = false;//FIXME
     }
 
     public PointT(Point startPoint) {
