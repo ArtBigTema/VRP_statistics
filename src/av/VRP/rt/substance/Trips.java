@@ -18,6 +18,7 @@ public class Trips {
     private Map<String, Integer> mapTripsForDay;
     private Map<String, Integer> mapTripsForHour;
     private List<String> titles;
+    public Set<Integer> index;
 
     private Map<String, Integer> mapTripsForDaySingle;
     private Map<String, Integer> mapTripsForHourSingle;
@@ -29,6 +30,7 @@ public class Trips {
         mapTripsForDaySingle = Collections.synchronizedMap(new TreeMap<String, Integer>());
         mapTripsForHourSingle = Collections.synchronizedMap(new TreeMap<String, Integer>());
         titles = Collections.synchronizedList(new ArrayList<String>());
+        index = Collections.synchronizedSet(new HashSet<>());
     }
 
     public void addTitle(String title) {//не убирай цифру после имени, т.к. сортировка
@@ -313,10 +315,10 @@ public class Trips {
         return trips.get(i);
     }
 
-    public List<Integer> get(DateTime now) {
-        List<Integer> tripList = new ArrayList<>();
+    public synchronized List<Integer> get(DateTime now) {
+        List<Integer> tripList =Collections.synchronizedList(new ArrayList<>());
 
-        for (int i = 0; i < getSubAll().size(); i++) {
+        for (int i = 0; i < getSubAll().size(); i++) {//fixme from last to
             Trip trip = getSubAll().get(i);
 
             if (trip.isCompleted()) {
@@ -329,6 +331,11 @@ public class Trips {
             DateTime dt = trip.getStartPoint().getTimeForIm();
             if (now.equals(dt)) {
                 tripList.add(i);
+                index.add(i);
+            } else {
+                if (now.getMillis() == dt.getMillis()) {
+                    Log.e("errrrrrrrrrrrrrrrrrrrrror");
+                }
             }
         }
         return tripList;

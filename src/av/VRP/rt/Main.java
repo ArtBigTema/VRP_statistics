@@ -204,6 +204,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     public void export() {
+
+        Log.e("-------------");
+        Log.e(imitation.index);
+
         Exporter.init(trips.getTitles()[0]);
         Exporter.export(trips.exportDataForDay());
     }
@@ -257,10 +261,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             trips.add(s, ss);
         }
 
-        if (++i > size) {
+       // if (++i > size) {
             i = 0;
             trips.add(ss);
-        }
+      //  }
         //    frame.showData(t.toString() + "\n");
     }
 

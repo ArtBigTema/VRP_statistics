@@ -19,6 +19,7 @@ public class Trip implements Comparable<Trip> {
     private PointWithTime startPoint;
     private PointWithTime endPoint;
 
+    private boolean assigned;
     private boolean completed;
     private boolean failed;
     private int timeFailed = Constant.TIME_WAITING;
@@ -144,6 +145,10 @@ public class Trip implements Comparable<Trip> {
         }
     }
 
+    public int getTimeFailed() {
+        return Constant.TIME_WAITING-timeFailed;
+    }
+
     public void completed() {
         completed = true;
     }
@@ -154,6 +159,14 @@ public class Trip implements Comparable<Trip> {
 
     public boolean isFailed() {
         return failed;
+    }
+
+    public boolean isAssigned() {
+        return assigned;
+    }
+
+    public void setAssigned(boolean assigned) {
+        this.assigned = assigned;
     }
 
     public LatLng getLatLngEnd() {

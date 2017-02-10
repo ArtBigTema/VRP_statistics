@@ -258,7 +258,7 @@ public class MainFrame extends JFrame implements KeyListener {
         messageLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 Main.getInstance().stopImitation();
-                messageLabel.setText("");
+                //   messageLabel.setText("");
                 startImitationButton.setVisible(true);
                 slider_zoom.setVisible(false);
                 showPointsButton.setVisible(true);
