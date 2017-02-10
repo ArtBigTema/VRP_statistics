@@ -151,6 +151,11 @@ public class ThreadImitation extends Thread implements Runnable {
             }
             trip.incTime();//inc for all
 
+            if(index==31 && i==427){
+               // setDelay(1000);
+                Log.e("errrrrrrrrrrrrrrrrr");
+            }
+
             if (vehicles.timeMoreDistance(index, trip)) {
                 if (trip.isFailed()) {
                     countWaitingClient--;

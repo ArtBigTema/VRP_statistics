@@ -52,7 +52,7 @@ public class Constant {
     public static final int TRIPS = 500;
     public static final int ITER = 1000000;
 
-    public static final int TIME_WAITING = 20;//steps
+    public static final int TIME_WAITING = 10;//steps
 
     public static final double STEP = 0.0005;
     public static final double PRECISION = 0.001;

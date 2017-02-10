@@ -82,6 +82,9 @@ public class Vehicles {
             }
             tmp = MapUtils.getDistance(point, vehicle.getCurrPoint());
 
+            if(i==427){
+                Log.e("errrrrrrrrrrrrrrrrr");
+            }
             if (tmp < distance) {
                 distance = tmp;
                 index = i;
