@@ -22,7 +22,9 @@ public class Trips {
     private Map<String, Integer> mapTripsForDaySingle;
     private Map<String, Integer> mapTripsForHourSingle;
 
-    DateTime dt;
+    private int countWaiting;
+    private int maxWaiting;
+    private DateTime dt;
 
     public Trips() {
         trips = Collections.synchronizedList(new ArrayList<Trip>());
@@ -296,6 +298,25 @@ public class Trips {
         }
 
         return result;
+    }
+
+    public void incWaiting() {
+        countWaiting++;
+    }
+
+    public void decWaiting() {
+        if (countWaiting > maxWaiting) {
+            maxWaiting = countWaiting;
+        }
+        countWaiting--;
+    }
+
+    public int getCountWaiting() {
+        return countWaiting;
+    }
+
+    public int getMaxWaiting() {
+        return maxWaiting;
     }
 
     public List<Trip> getAll() {

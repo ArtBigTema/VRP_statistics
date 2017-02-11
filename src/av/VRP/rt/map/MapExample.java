@@ -404,6 +404,65 @@ public class MapExample extends MapView {
         // Log.pp(indexOfTrip,passageMarkersEnd.get(indexOfTrip).getVisible());
     }
 
+    public void togglePassegerTransfer(int indexPass, int indexVeh) {
+        Marker marker = vehicleMarkers.get(indexVeh);
+        Marker markerEnd = passageMarkersEnd.get(indexPass);
+        Marker markerStart = passageMarkersStart.get(indexPass);
+
+        if (infoWindowTaxi != null) {
+            infoWindowTaxi.close();
+        }
+        infoWindowTaxi = new InfoWindow(getMap());
+        infoWindowTaxi.setContent("#" + indexVeh + " Подобрал #" + indexPass);
+        infoWindowTaxi.open(getMap(), marker);
+
+        marker.addEventListener("click", new MapMouseEvent() {
+            @Override
+            public void onEvent(MouseEvent mouseEvent) {
+                closeAllInfoWindow();
+                infoWindowClientEnd = new InfoWindow(getMap());
+                infoWindowClientEnd.setContent("#" + indexPass + " Едем сюда");
+                infoWindowClientEnd.open(getMap(), markerEnd);
+                infoWindowClientStart = new InfoWindow(getMap());
+                infoWindowClientStart.setContent("#" + indexVeh + " Подобрал #" + indexPass);
+                infoWindowClientStart.open(getMap(), markerStart);
+                infoWindowTaxi = new InfoWindow(getMap());
+                infoWindowTaxi.setContent("#" + indexVeh + " Подобрал #" + indexPass);
+                infoWindowTaxi.open(getMap(), marker);
+            }
+        });
+        markerEnd.addEventListener("click", new MapMouseEvent() {
+            @Override
+            public void onEvent(MouseEvent mouseEvent) {
+                closeAllInfoWindow();
+                infoWindowClientStart = new InfoWindow(getMap());
+                infoWindowClientStart.setContent("#" + indexVeh + " Подобрал #" + indexPass);
+                infoWindowClientStart.open(getMap(), markerStart);
+                infoWindowTaxi = new InfoWindow(getMap());
+                infoWindowTaxi.setContent("#" + indexVeh + " Подобрал #" + indexPass);
+                infoWindowTaxi.open(getMap(), marker);
+                infoWindowClientEnd = new InfoWindow(getMap());
+                infoWindowClientEnd.setContent("#" + indexPass + " Едем сюда");
+                infoWindowClientEnd.open(getMap(), markerEnd);
+            }
+        });
+        markerStart.addEventListener("click", new MapMouseEvent() {
+            @Override
+            public void onEvent(MouseEvent mouseEvent) {
+                closeAllInfoWindow();
+                infoWindowClientEnd = new InfoWindow(getMap());
+                infoWindowClientEnd.setContent("#" + indexPass + " Едем сюда");
+                infoWindowClientEnd.open(getMap(), markerEnd);
+                infoWindowTaxi = new InfoWindow(getMap());
+                infoWindowTaxi.setContent("#" + indexVeh + " Подобрал #" + indexPass);
+                infoWindowTaxi.open(getMap(), marker);
+                infoWindowClientStart = new InfoWindow(getMap());
+                infoWindowClientStart.setContent("#" + indexVeh + " Подобрал #" + indexPass);
+                infoWindowClientStart.open(getMap(), markerStart);
+            }
+        });
+    }
+
     public synchronized void showMessVehicleComplete(int i) {
         Marker marker = vehicleMarkers.get(i);
         if (infoWindow != null) {

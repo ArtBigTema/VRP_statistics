@@ -17,6 +17,7 @@ public class Vehicles {
     private DateTime initDateTime;
 
     private int countBusy;
+    private int maxBusy;
 
     public Vehicles() {
         vehicles = new ArrayList<>();
@@ -103,11 +104,18 @@ public class Vehicles {
     }
 
     public void decBusy() {
+        if (countBusy > maxBusy) {
+            maxBusy = countBusy;
+        }
         countBusy--;
     }
 
     public int getCountBusy() {
         return countBusy;
+    }
+
+    public int getMaxBusy() {
+        return maxBusy;
     }
 
     public int getCountFree() {

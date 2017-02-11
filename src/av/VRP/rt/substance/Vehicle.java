@@ -13,10 +13,12 @@ public class Vehicle {
     private Trip trip;
 
     private PointWithTime currPoint;
+    private Point depo;
     private DateTime currTime;
 
     private boolean isBusy;
     private boolean withClient;
+    private boolean goToDepo;
 
     private String fileIcon;
     private String title;
@@ -60,6 +62,7 @@ public class Vehicle {
     }
 
     public void setCurrPoint(LatLng curr) {
+        depo = new Point(curr.getLat(), curr.getLng());
         currPoint = new PointWithTime(curr);
         currPoint.setDateTime(currPoint.getDateTime());
     }
@@ -88,6 +91,36 @@ public class Vehicle {
         }
     }
 
+    public boolean moveToDepo() {
+        if (!goToDepo) {
+            return false;
+        }
+
+        Log.p();
+        Log.p("moveToDepo", currPoint.toLatLng(), depo.toLatLng());
+
+        if (MapUtils.getDistance(currPoint, depo) < Constant.PRECISION) {
+            Log.e("arrived to depo with distance");
+            stepsLat = stepsLng = 0;//fixme
+            goToDepo = false;
+            return false;
+        }
+        if (stepsLat == 0 && stepsLng == 0) {
+            Log.e("arrived to Depo with 00");
+            goToDepo = false;
+            return false;
+        }
+
+        currTime.plusMinutes(1);
+
+        currPoint.plusLat(Constant.STEP * Math.signum(-stepsLat));
+        currPoint.plusLng(Constant.STEP * Math.signum(-stepsLng));
+        stepsLat -= Math.signum(stepsLat);
+        stepsLng -= Math.signum(stepsLng);
+
+        return true;
+    }
+
     private boolean moveToClient() {
         Log.p();
         Log.p("moveToClient", currPoint.toLatLng(), trip.getStartPoint().toLatLng());
@@ -95,6 +128,7 @@ public class Vehicle {
         if (MapUtils.getDistance(currPoint, trip.getStartPoint()) < Constant.PRECISION) {
             Log.e("arrived to client with getDistance");
             arrivedToPointStart();
+            stepsLat = stepsLng = 0;//fixme
             return false;
         }
         if (stepsLat == 0 && stepsLng == 0) {
@@ -110,7 +144,7 @@ public class Vehicle {
         stepsLat -= Math.signum(stepsLat);
         stepsLng -= Math.signum(stepsLng);
 
-        return true;
+        return false; //move to end
     }
 
     private boolean moveToEndPoint() {
@@ -120,6 +154,7 @@ public class Vehicle {
         if (MapUtils.getDistance(currPoint, trip.getEndPoint()) < Constant.PRECISION) {
             Log.e("arrived moveToEndPoint with distance");
             arrivedToPointEnd();
+            stepsLat = stepsLng = 0;//fixme
             // TODO move to cluster
             return false;
         }
@@ -142,6 +177,9 @@ public class Vehicle {
     private void arrivedToPointEnd() {
         withClient = false; // arrived to client end
         isBusy = false;
+        goToDepo = true;
+
+        calculateSteps(currPoint.toLatLng(), depo.toLatLng());
         // startPoint = null;
         // endPoint = null;
     }
@@ -196,5 +234,9 @@ public class Vehicle {
 
     public void incTime() {
         currPoint.incTime();
+    }
+
+    public void setDepo(Point depo) {
+        this.depo = depo;
     }
 }

@@ -31,7 +31,7 @@ public class ThreadImitation extends Thread implements Runnable {
     private int tripSize = 0;
     private DateTime now;
 
-    private int countCompleteClient, countWaitingClient, countFailedOrder;
+    private int countCompleteClient, countFailedOrder;
 
     public ThreadImitation(MapExample mapExample) {
         map = mapExample;
@@ -124,9 +124,16 @@ public class ThreadImitation extends Thread implements Runnable {
                             map.showMessVehicleComplete(i);
                             vehicle.resetTrip();
                             vehicles.decBusy();
+                        } else {
+                            map.togglePassegerTransfer(vehicle.getIndexOfTrip(), i);
                         }
                     }
                     Log.p("end moveVehicles");
+                } else {
+                    boolean moving = vehicle.moveToDepo();
+                    if (moving) {
+                        map.moveVehicle(i, vehicle.getCurrPoint());
+                    }
                 }
                 vehicle.incTime();
             }
@@ -148,13 +155,13 @@ public class ThreadImitation extends Thread implements Runnable {
             Trip trip = trips.get(i);
 
             if (trip.isWaiting()) {
-                countWaitingClient++;
+                trips.incWaiting();
             }
             trip.incTime();//inc for all
 
             if (vehicles.timeMoreDistance(index, trip)) {
                 if (trip.isFailed()) {
-                    countWaitingClient--;
+                    trips.decWaiting();
                     countFailedOrder++;
                     map.toggleFailPasseger(i, trips.get(i).getLatLngStart());
                 } else {
@@ -170,7 +177,7 @@ public class ThreadImitation extends Thread implements Runnable {
                 map.toggleVehicle(index, i);
                 map.togglePasseger(i, index, true);
 
-                countWaitingClient--;
+                trips.decWaiting();
                 countCompleteClient++;
             }
         }
@@ -230,7 +237,7 @@ public class ThreadImitation extends Thread implements Runnable {
         }
         if (period < 3) {
             this.period = period * 10;
-        }else{
+        } else {
             this.period = period;
         }
     }
@@ -245,7 +252,7 @@ public class ThreadImitation extends Thread implements Runnable {
         message.append(tripSize);
         message.append("  ");
         message.append("Wait: ");
-        message.append(countWaitingClient);
+        message.append(trips.getCountWaiting());
         message.append("  ");
         message.append("Succ: ");
         message.append(countCompleteClient);
@@ -264,6 +271,12 @@ public class ThreadImitation extends Thread implements Runnable {
         message.append("  ");
         message.append("Iter: ");
         message.append(iter);
+        message.append("  ");
+        message.append("mWait: ");
+        message.append(trips.getMaxWaiting());
+        message.append("  ");
+        message.append("mBusy: ");
+        message.append(vehicles.getMaxBusy());
 
         return message.toString();
     }
