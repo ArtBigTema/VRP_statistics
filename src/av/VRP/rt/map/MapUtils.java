@@ -35,15 +35,7 @@ public class MapUtils {
     public static File getVehicleIcon(String path) {
         File file = new File(path);
         if (file == null || !file.exists()) {
-            file = new File("vi/0.png");
-        }
-        return file;
-    }
-
-    public static File getVehicleIcon(int count) {
-        File file = new File("vi/" + count + ".png");
-        if (file == null || !file.exists()) {
-            file = new File("vi/0.png");
+            file = new File("vi/-1.png");
         }
         return file;
     }
@@ -60,6 +52,12 @@ public class MapUtils {
 
     public static File getIconPoint() {
         return new File("icons/point.png");
+    }
+    public static File getIconPuuu() {
+        return new File("icons/puuu.png");
+    }
+    public static File getIconPuu() {
+        return new File("icons/puu.png");
     }
 
     public static File getIconFail() {

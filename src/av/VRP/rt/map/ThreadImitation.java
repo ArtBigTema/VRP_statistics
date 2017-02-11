@@ -167,7 +167,7 @@ public class ThreadImitation extends Thread implements Runnable {
                 vehicles.transfer(index, trip, i);
                 trip.completed();
 
-                map.toggleVehicle(index,i);
+                map.toggleVehicle(index, i);
                 map.togglePasseger(i, index, true);
 
                 countWaitingClient--;
@@ -186,6 +186,7 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     public void stopTimer() {
+        setDelay(1000);
         Log.e("stopTimer");
         timer.cancel();
     }
@@ -215,17 +216,22 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     public void setDelay(int period) {
+        if (period == 6) {
+            period = 1000;
+        }
         if (period == 5) {
-            this.period = 1000;
+            period = 500;
         }
         if (period == 4) {
-            this.period = 100;
+            period = 100;
         }
         if (period == 3) {
-            this.period = 50;
+            period = 50;
         }
         if (period < 3) {
             this.period = period * 10;
+        }else{
+            this.period = period;
         }
     }
 
