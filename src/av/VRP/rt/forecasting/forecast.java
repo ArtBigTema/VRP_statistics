@@ -131,7 +131,7 @@ public class Forecast {
         String[] months = new String[28];
         Arrays.fill(months, "Forecast");
 
-        mainFrame.showGraphForForecastH(ds, counts, months);
+        mainFrame.showGraphForForecastH("Часы", counts, months);
     }
 
     public void startForD(int[] index) {
@@ -174,7 +174,7 @@ public class Forecast {
         //  counts[2] = countForecast3;
         String[] months = new String[128];
         Arrays.fill(months, "Forecast");
-        mainFrame.showGraphForForecastD(ds, counts, months);
+        mainFrame.showGraphForForecastD("Дни", counts, months);
     }
 
     public String[] arrCoefToArrStr() {
@@ -222,9 +222,9 @@ public class Forecast {
         String[] months = new String[]{"Real", "Forecast"};
 
         if (forH) {
-            mainFrame.showGraphForForecastH(ds, counts, months);
+            mainFrame.showGraphForForecastH("Часы", counts, months);
         } else {
-            mainFrame.showGraphForForecastD(ds, counts, months);
+            mainFrame.showGraphForForecastD("Дни", counts, months);
         }
     }
 }

@@ -41,7 +41,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     private Forecast forecast;
     private Cluster cluster;
 
-    private boolean modeMap;
+    // private boolean modeMap;
 
     public static void main(String[] args) throws Exception {
         getInstance();
@@ -56,7 +56,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     private Main() {
-        modeMap = true;
+        // modeMap = true;
 
         frame = new MainFrame();
         trips = new Trips();
@@ -118,22 +118,23 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     private void showStatisticForDay() {//FIXME rename
-        String[][] dates = trips.getActiveDaysStr();
         Integer[][] counts = trips.getCountTripsForDay();
         String[] months = trips.getTitles();
 
-        frame.showGraphForDays(dates, counts, months);
+        frame.showGraphForDays("Дни", counts, months);
     }
 
     private void showStatisticForHour() {//FIXME rename
-        String[][] dates = trips.getActiveHoursStr();
         Integer[][] counts = trips.getCountTripsForHour();
         String[] months = trips.getTitles();
 
-        frame.showGraphForHours(dates, counts, months);
+        frame.showGraphForHours("Часы", counts, months);
     }
 
     public void aggregateList() {
+        // frame.getGraphic();
+        // return;
+
         Log.p("Скачивание списка ссылок");
 
         String rowGreenYellow = HttpApi.getInstance().getContent(Constant.URL_ALL_GREEN_AND_YELLOW);
@@ -143,9 +144,9 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
         frame.setListData(rows);
 
-        if (modeMap) {
-            //  frame.clickDownloadLink();
-        }
+        // if (modeMap) {
+        //  frame.clickDownloadLink();
+        // }
     }
 
     public void aggregateLink(List<String> list) {
@@ -223,9 +224,9 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             frame.setTableModel(false);//обновить таблицу
             frame.endDownloading(true);
 
-            if (modeMap) {
-                frame.clickReadFile();
-            }
+            // if (modeMap) {
+            //     frame.clickReadFile();
+            // }
         }
     }
 
@@ -253,15 +254,14 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
     @Override
     public void generated(String s, String ss) {
-        if (!modeMap) {
-            trips.add(s, ss);
-        }
+        // if (!modeMap) {
+        trips.add(s, ss);
+        // }
 
-        // if (++i > size) {
-        i = 0;
-        trips.add(ss);
-        //  }
-        //    frame.showData(t.toString() + "\n");
+        if (++i > size) {
+            i = 0;
+            trips.add(ss);
+        }
     }
 
     @Override
@@ -281,19 +281,17 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             Log.p("Trips mapSizeForHour = ", trips.mapSizeForHour());
 
             frame.setTableData(trips.toTable());
-            if (!modeMap) {
-                frame.setTableData(trips.toTable());
-                agregateForecast();//fixme
-            }
+            // if (!modeMap) {
+            agregateForecast();//fixme
+            // }
 
-            if (modeMap) {
-                vehicles.setInitDateTime(trips.getFirstPoint());
-                //vehicles.initDepo(trips.getPoints().subList(0, Constant.VEHICLES));//FIXME
+            // if (modeMap) {
+            vehicles.setInitDateTime(trips.getFirstPoint());
 
-                cluster.constructClusters(trips);
+            cluster.constructClusters(trips);
 
-                frame.showMap();
-            }
+            //     frame.showMap();
+            // }
         }
     }
 

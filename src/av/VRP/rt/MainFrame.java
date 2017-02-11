@@ -3,7 +3,16 @@ package av.VRP.rt;
 import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Utils;
 import av.VRP.rt.map.MapExample;
-import net.sourceforge.chart2d.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -52,6 +61,7 @@ public class MainFrame extends JFrame implements KeyListener {
     private JSlider slider_zoom;
     private JButton startImitationButton;
     private JLabel messageLabel;
+    private JLabel labelH;
     private MapExample sample;
 
     private boolean isClicked;
@@ -327,27 +337,29 @@ public class MainFrame extends JFrame implements KeyListener {
         slider_zoom.setVisible(true);
     }
 
-    public void showGraphForDays(String[][] days, Integer[][] dots, String[] month) {
+    public void showGraphForDays(String days, Integer[][] dots, String[] month) {
         pb_calc_stat_days.setVisible(false);
         btn_statistic_days.setVisible(false);
-        visualizationD.add(getChart2DDemoK(days, dots, month));
+        visualizationD.add(getGraphic(days, dots, month));
         this.repaint();
     }
 
-    public void showGraphForHours(String[][] days, Integer[][] dots, String[] day) {
+    public void showGraphForHours(String days, Integer[][] dots, String[] day) {
         pb_calc_stat_hours.setVisible(false);
         btn_statistic_hours.setVisible(false);
-        visualizationH.add(getChart2DDemoK(days, dots, day));
+        // visualizationH.add(getChart2DDemoK(days, dots, day));
+        visualizationH.add(getGraphic(days, dots, day));
+
         this.repaint();
     }
 
-    public void showGraphForForecastH(String[][] days, Integer[][] dots, String[] day) {
-        visualizationFH.add(getChart2DDemoK(days, dots, day));
+    public void showGraphForForecastH(String days, Integer[][] dots, String[] day) {
+        visualizationFH.add(getGraphic(days, dots, day));
         this.repaint();
     }
 
-    public void showGraphForForecastD(String[][] days, Integer[][] dots, String[] day) {
-        visualizationFD.add(getChart2DDemoK(days, dots, day));
+    public void showGraphForForecastD(String days, Integer[][] dots, String[] day) {
+        visualizationFD.add(getGraphic(days, dots, day));
         this.repaint();
     }
 
@@ -370,93 +382,68 @@ public class MainFrame extends JFrame implements KeyListener {
         );
     }
 
-    //FIXME move
-    private Chart2D getChart2DDemoK(String[][] days, Integer[][] dots, String[] month) {
-        LBChart2D chart = getStandartChard2D(month, days);
+    public JLabel getLabelH() {
+        return labelH;
+    }
 
-        Dataset dataset = new Dataset(dots.length, days[0].length, 1);
+    public JPanel getGraphic(String dayOrHour, Integer[][] dots, String[] month) {
+        final XYDataset dataset = createDataset(dots, month);
+        final JFreeChart chart = createChart(dataset, dayOrHour);
+        final ChartPanel chartPanel = new ChartPanel(chart);
+        return chartPanel;
+    }
 
-        for (int i = 0; i < dataset.getNumSets(); ++i) {
-            for (int j = 0; j < dataset.getNumCats(); ++j) {
-                for (int k = 0; k < dataset.getNumItems(); k++) {
-                    dataset.set(i, j, k,
-                            dots[i][j]);
-                }
+    private XYDataset createDataset(Integer[][] dots, String[] month) {
+        XYSeriesCollection dataset = new XYSeriesCollection();
+
+        for (int i = 0; i < dots.length; i++) {
+            XYSeries s = new XYSeries(month[i]);
+            for (int j = 0; j < dots[i].length; j++) {
+                s.add(j + 1, dots[i][j]);
             }
+            dataset.addSeries(s);
         }
-        chart.addDataset(dataset);
-        //Optional validation:  Prints debug messages if invalid only.
-        if (!chart.validate(false)) chart.validate(true);
+        return dataset;
 
+    }
+
+    private JFreeChart createChart(final XYDataset dataset, String dayOrHour) {
+        // create the chart...
+        final JFreeChart chart = ChartFactory.createXYLineChart(
+                "Статистика: " + dayOrHour,      // chart title
+                dayOrHour,                      // x axis label
+                "Загруженность",                      // y axis label
+                dataset,                  // data
+                PlotOrientation.VERTICAL,
+                true,                     // include legend
+                true,                     // tooltips
+                false                     // urls
+        );
+
+        chart.setBackgroundPaint(Color.white);
+
+//        final StandardLegend legend = (StandardLegend) chart.getLegend();
+        //      legend.setDisplaySeriesShapes(true);
+
+        // get a reference to the plot for further customisation...
+        final XYPlot plot = chart.getXYPlot();
+        plot.setBackgroundPaint(Color.LIGHT_GRAY);
+        plot.setDomainGridlinePaint(Color.white);
+        plot.setRangeGridlinePaint(Color.white);
+
+        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        //  renderer.setSeriesLinesVisible(0, false);
+        //  renderer.setSeriesShapesVisible(1, false);
+        plot.setRenderer(renderer);
+
+        // change the auto tick unit selection to integer units only...
+        final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        // OPTIONAL CUSTOMISATION COMPLETED.
 
         return chart;
     }
 
-    public LBChart2D getStandartChard2D(String[] title, String[][] labels) {
-        //<-- Begin Chart2D configuration -->
-
-        //Configure object properties
-        Object2DProperties object2DProps = new Object2DProperties();
-
-        StringBuilder sb = new StringBuilder(""); //fixme
-        for (String s : title) {
-            // String ss = s.split("&")[0];
-            //  if (!sb.toString().contains(ss)) {
-            sb.append(s.split("&")[0]);
-            sb.append("|");
-            // }
-        }
-        object2DProps.setObjectTitleText(sb.toString());//fixme need title
-
-        //Configure chart properties
-        Chart2DProperties chart2DProps = new Chart2DProperties();
-        chart2DProps.setChartDataLabelsPrecision(1);
-
-        //Configure legend properties
-        LegendProperties legendProps = new LegendProperties();
-        String[] legendLabels = title;// {"2001", "2000", "1999"};
-        legendProps.setLegendLabelsTexts(legendLabels);
-
-        //Configure graph chart properties
-        GraphChart2DProperties graphChart2DProps = new GraphChart2DProperties();
-        String[] labelsAxisLabels = labels[0];//days 1 to 30(31)
-        //   {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Nov", "Dec"};
-        graphChart2DProps.setLabelsAxisLabelsTexts(labelsAxisLabels);
-        graphChart2DProps.setLabelsAxisTitleText("Days|Hours");
-        graphChart2DProps.setNumbersAxisTitleText("Count");
-        graphChart2DProps.setLabelsAxisTicksAlignment(graphChart2DProps.CENTERED);
-
-        //Configure graph properties
-        GraphProperties graphProps = new GraphProperties();
-        graphProps.setGraphBarsExistence(false);
-        graphProps.setGraphLinesExistence(true);
-        graphProps.setGraphLinesThicknessModel(2);
-        graphProps.setGraphLinesWithinCategoryOverlapRatio(1f);
-        graphProps.setGraphDotsExistence(true);
-        //   graphProps.setGraphDotsThicknessModel(10);
-        //  graphProps.setGraphDotsWithinCategoryOverlapRatio(1f);
-        graphProps.setGraphAllowComponentAlignment(true);
-
-        //Configure dataset
-
-
-        //Configure graph component colors
-        MultiColorsProperties multiColorsProps = new MultiColorsProperties();
-
-        //Configure chart
-        LBChart2D chart2D = new LBChart2D();
-        chart2D.setObject2DProperties(object2DProps);
-        chart2D.setChart2DProperties(chart2DProps);
-        chart2D.setLegendProperties(legendProps);
-        chart2D.setGraphChart2DProperties(graphChart2DProps);
-        chart2D.addGraphProperties(graphProps);
-        chart2D.addMultiColorsProperties(multiColorsProps);
-
-
-        //<-- End Chart2D configuration -->
-
-        return chart2D;
-    }
 
     public void setListForecast(String[] titles) {
         listForecastH.setListData(titles);//fixme if null or 0
