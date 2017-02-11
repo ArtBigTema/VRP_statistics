@@ -224,12 +224,12 @@ public class MapExample extends MapView {
 
             if (!bigSize) {
                 Icon icon = new Icon();
-                File file = visible ? MapUtils.getIconPuuu() : MapUtils.getIconFuuu();
+                File file = visible ? MapUtils.getIconSmallStart() : MapUtils.getIconBigStart();
                 icon.loadFromFile(file);
                 markerEnd.setIcon(icon);
 
                 Icon icon1 = new Icon();
-                File file1 = visible ? MapUtils.getIconPuu() : MapUtils.getIconFuu();
+                File file1 = visible ? MapUtils.getIconSmallEnd() : MapUtils.getIconBigEnd();
                 icon1.loadFromFile(file1);
                 marker.setIcon(icon1);
             }
@@ -297,6 +297,7 @@ public class MapExample extends MapView {
                 infoWindow.close();
             }
             infoWindow = new InfoWindow(getMap());
+            infoWindow.setPosition(marker.getPosition());
             infoWindow.setContent("Жду");
             infoWindow.open(getMap(), marker);
             return;
@@ -380,13 +381,13 @@ public class MapExample extends MapView {
                 }
             });
 
-          //  if (!bigSize) {
+            if (!bigSize) {
                 Icon icon = new Icon();
                 //fixme h
-                File file = middleSize ? isStart ? MapUtils.getIconPuu() : MapUtils.getIconPuuu() : isStart ? MapUtils.getIconFuuu() : MapUtils.getIconFuu();
+                File file = middleSize ? isStart ? MapUtils.getIconSmallStart() : MapUtils.getIconSmallEnd() : isStart ? MapUtils.getIconBigStart() : MapUtils.getIconBigEnd();
                 icon.loadFromFile(file);
                 marker.setIcon(icon);
-          //  }
+           }
             passageMarkersStart.add(marker);
         }
     }
@@ -501,7 +502,7 @@ public class MapExample extends MapView {
         marker.setPosition(trip.getLatLngStart());
         marker.setTitle("#" + i);
         Icon icon = new Icon();
-        File file =  MapUtils.getIconPuu();
+        File file =  MapUtils.getIconSmallEnd();
         icon.loadFromFile(file);
         marker.setIcon(icon);
     }

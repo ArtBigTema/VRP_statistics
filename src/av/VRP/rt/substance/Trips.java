@@ -22,6 +22,8 @@ public class Trips {
     private Map<String, Integer> mapTripsForDaySingle;
     private Map<String, Integer> mapTripsForHourSingle;
 
+    DateTime dt;
+
     public Trips() {
         trips = Collections.synchronizedList(new ArrayList<Trip>());
         mapTripsForDay = Collections.synchronizedMap(new TreeMap<String, Integer>());
@@ -29,6 +31,7 @@ public class Trips {
         mapTripsForDaySingle = Collections.synchronizedMap(new TreeMap<String, Integer>());
         mapTripsForHourSingle = Collections.synchronizedMap(new TreeMap<String, Integer>());
         titles = Collections.synchronizedList(new ArrayList<String>());
+        dt = DateTime.now().minusYears(20);
     }
 
     public void addTitle(String title) {//не убирай цифру после имени, т.к. сортировка
@@ -43,6 +46,19 @@ public class Trips {
         Trip trip = Trip.construct(s);
         if (trip != null) {
             add(trip);
+        }
+    }
+
+    public void check() {
+        dt = DateTime.now().minusYears(20);
+        for (Trip trip : trips) {
+            if (dt.getMillis() > trip.getStartPoint().getDateTime().getMillis()) {
+                Log.e("errrorrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+                Log.e(dt);
+                Log.e(trip.getStartPoint().getDateTime());
+            } else {
+                dt = trip.getStartPoint().getDateTime();
+            }
         }
     }
 
@@ -221,15 +237,11 @@ public class Trips {
     }
 
     public void sortWithDate() {// add comparators
+        long l = System.nanoTime();
         Log.d("sorting");
         Collections.sort(trips);
         Log.d("sorted");
-    }
-
-    public void sortWithHour() {// add comparators
-        Log.d("sorting");
-        Collections.sort(trips);
-        Log.d("sorted");
+        Log.d((System.nanoTime() - l) / 1_000_000_000);
     }
 
     public void removeNull() {
@@ -291,8 +303,8 @@ public class Trips {
     }
 
     public List<Trip> getSubAll() {
-       // return  getAll();
-        return trips.subList(0, Constant.TRIPS);
+        // return  getAll();
+        return trips.subList(0, trips.size() > Constant.TRIPS ? Constant.TRIPS : trips.size());
     }
 
     public List<LatLng> getPoints() {

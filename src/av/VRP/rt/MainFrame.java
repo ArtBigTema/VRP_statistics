@@ -252,7 +252,7 @@ public class MainFrame extends JFrame implements KeyListener {
         slider_zoom.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                Main.getInstance().zoom(slider_zoom.getValue() );
+                Main.getInstance().zoom(slider_zoom.getValue());
             }
         });
 
@@ -270,6 +270,7 @@ public class MainFrame extends JFrame implements KeyListener {
                 Main.getInstance().click();
                 startImitationButton.setVisible(!startImitationButton.isVisible());
                 slider_zoom.setVisible(!slider_zoom.isVisible());
+                slider_zoom.setValue(slider_zoom.getMaximum());
                 comboBoxShow.setVisible(!comboBoxShow.isVisible());
             }
         });

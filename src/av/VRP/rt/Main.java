@@ -285,11 +285,16 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             agregateForecast();//fixme
             // }
 
+            // trips.check();
+            trips.sortWithDate();
+            // trips.check();
+
             // if (modeMap) {
             vehicles.setInitDateTime(trips.getFirstPoint());
 
             cluster.constructClusters(trips);
-            vehicles.initDepo(cluster,0);
+            vehicles.initDepo(cluster, 0);
+
 
             //     frame.showMap();
             // }
@@ -339,7 +344,9 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     public void zoom(int zoom) {
-        imitation.setDelay(zoom);
+        if (imitation != null) {
+            imitation.setDelay(zoom);
+        }
     }
 
     private boolean labelClicked;

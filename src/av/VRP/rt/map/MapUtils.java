@@ -43,21 +43,25 @@ public class MapUtils {
     public static File getIconFu() {
         return new File("icons/fu.png");
     }
-    public static File getIconFuu() {
-        return new File("icons/fuu.png");
+
+    public static File getIconBigEnd() {
+        return new File("icons/pend.png");
     }
-    public static File getIconFuuu() {
-        return new File("icons/fuuu.png");
+
+    public static File getIconBigStart() {
+        return new File("icons/pstart.png");
+    }
+
+    public static File getIconSmallStart() {
+        return new File("icons/psstart.png");
+    }
+
+    public static File getIconSmallEnd() {
+        return new File("icons/psend.png");
     }
 
     public static File getIconPoint() {
         return new File("icons/point.png");
-    }
-    public static File getIconPuuu() {
-        return new File("icons/puuu.png");
-    }
-    public static File getIconPuu() {
-        return new File("icons/puu.png");
     }
 
     public static File getIconFail() {

@@ -6,7 +6,6 @@ import av.VRP.rt.Utils.Utils;
 import av.VRP.rt.map.MapUtils;
 import com.teamdev.jxmaps.LatLng;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeComparator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -126,7 +125,8 @@ public class Trip implements Comparable<Trip> {
 
     @Override
     public int compareTo(Trip o) {
-        return DateTimeComparator.getDateOnlyInstance().compare(this.getStartPoint().getDateTime(), o.getStartPoint().getDateTime());//FIXME if null
+        return Long.compare(getStartPoint().getDateTime().getMillis(), o.getStartPoint().getDateTime().getMillis());
+        //  return DateTimeComparator.getDateOnlyInstance().compare(o.getStartPoint().getDateTime(), getStartPoint().getDateTime());//FIXME if null
     }
 
     public LatLng getLatLngStart() {
