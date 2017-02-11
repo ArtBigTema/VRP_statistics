@@ -49,7 +49,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
 
     @Override
     public String toString() {
-        return "PointWithMessage{" + super.toString() +
+        return "PointWithMessage{" + getLatLng() +
                 ", clust=" + clust + ":" + message +
                 '}';
     }

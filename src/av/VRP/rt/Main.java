@@ -289,6 +289,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             vehicles.setInitDateTime(trips.getFirstPoint());
 
             cluster.constructClusters(trips);
+            vehicles.initDepo(cluster,0);
 
             //     frame.showMap();
             // }
@@ -297,15 +298,28 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
     private boolean isClicked;
 
-    public void showPoints(MapExample map) {
+    public void showPoints(MapExample map, int index) {
+        stopImitation();
         map.clearAll();
+        isClicked = false;
 
-        if (!isClicked) {
-            isClicked = true;
-            map.showCluster(cluster);
-        } else {
-            isClicked = false;
-            map.showAllPoints(trips, true);
+        switch (index) {
+            case 0:
+                map.showCluster(cluster);
+                isClicked = true;
+                break;
+            case 1:
+                map.showPoints(trips.getSubAll(), true);
+                break;
+            case 2:
+                map.showPoints(trips.getSubAll(), false);
+                break;
+            case 3:
+                map.showAllPoints(trips, true);
+                break;
+            case 4:
+                map.showVehicles(vehicles);
+                break;
         }
     }
 
@@ -331,6 +345,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     private boolean labelClicked;
 
     public void click() {
+        isClicked = false;
         if (imitation == null) {
             return;
         }
@@ -352,6 +367,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     public void startImitation(MapExample map) {
+        isClicked = false;
         map.clearAll();
         if (imitation != null) {
             stopImitation();

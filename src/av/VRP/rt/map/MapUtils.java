@@ -51,6 +51,17 @@ public class MapUtils {
     public static File getIconFu() {
         return new File("icons/fu.png");
     }
+    public static File getIconFuu() {
+        return new File("icons/fuu.png");
+    }
+    public static File getIconFuuu() {
+        return new File("icons/fuuu.png");
+    }
+
+    public static File getIconPoint() {
+        return new File("icons/point.png");
+    }
+
     public static File getIconFail() {
         return new File("icons/faill.png");
     }

@@ -200,10 +200,10 @@ public class MapExample extends MapView {
             markerEnd.setPosition(point.getLatLngEnd());
             markerEnd.setVisible(visible);
 
-            Icon icon = new Icon();
-            File file = MapUtils.getIconFu();
-            icon.loadFromFile(file);
-            markerEnd.setIcon(icon);
+             Icon icon = new Icon();
+             File file = MapUtils.getIconFu();
+             icon.loadFromFile(file);
+             markerEnd.setIcon(icon);
 
             passageMarkersEnd.add(markerEnd);
         }
@@ -311,15 +311,16 @@ public class MapExample extends MapView {
         passageMarkersEnd.get(i).setVisible(true);
     }
 
-    public void showPoints(List<Trip> trips) {
+    public void showPoints(List<Trip> trips, boolean isStart) {
         Map map = getMap();
 
         for (Trip point : trips) {
             Marker marker = new Marker(map);
-            marker.setPosition(point.getLatLngStart());
+            marker.setPosition(isStart
+                    ? point.getLatLngStart() : point.getLatLngEnd());
 
             Icon icon = new Icon();
-            File file = MapUtils.getIconFu();
+            File file = MapUtils.getIconPoint();
             icon.loadFromFile(file);
             marker.setIcon(icon);
         }

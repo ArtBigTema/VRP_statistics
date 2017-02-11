@@ -34,12 +34,12 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
 
     public PointWithTime(Point currPoint) {
         super(currPoint.getLat(), currPoint.getLng());
-        _dateTime = DateTime.now(); // fixme
+        _dateTime = DateTime.now();
     }
 
-    public PointWithTime(LatLng currPoint, long ms) {
+    public PointWithTime(LatLng currPoint) {
         super(currPoint.getLat(), currPoint.getLng());
-        _dateTime = new DateTime(ms); // fixme
+        _dateTime = DateTime.now();
     }
 
     public static PointWithTime construct(String s) {
@@ -52,6 +52,14 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
         }
         Log.e("null pointer");
         return null;
+    }
+
+    public void setDateTime(DateTime ms) {
+        if (ms == null) {
+            _dateTime = DateTime.now();
+        } else {
+            _dateTime = new DateTime(ms.getMillis());
+        }
     }
 
     public void setDateTime(String s) {

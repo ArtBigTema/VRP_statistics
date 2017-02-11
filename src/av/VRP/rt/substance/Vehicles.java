@@ -22,16 +22,15 @@ public class Vehicles {
         vehicles = new ArrayList<>();
 
         for (int i = 0; i < Constant.VEHICLES; i++) {
-            vehicles.add(new Vehicle());
+            vehicles.add(new Vehicle(i));
         }
     }
 
-    public void initDepo(Cluster cluster) {
+    public void initDepo(Cluster cluster, int k) {
         double part;
         int csize = cluster.getTripSize();
         int vsize = vehicles.size();
         int countVehicles;
-        int k = 0;
         PointWithMessage point;
 
         for (int i = 0; i < cluster.size(); i++) {
@@ -41,21 +40,20 @@ public class Vehicles {
             countVehicles = (int) Math.round(part);
             while (countVehicles > 0) {
                 if (k >= Constant.VEHICLES) {
-                    Log.e("dsg");
+                    Log.e("depo initialized");
                     return;
                 }
                 vehicles.get(k).setCurrPoint(point.getLatLng());
-                vehicles.get(k).setFileIcon("vi/" + (k + 1) + ".png");
+                vehicles.get(k).setFileIcon("vi/" + k + ".png");
                 vehicles.get(k).initTime(initDateTime);
                 k++;
                 countVehicles--;
             }
         }
-        for (int i = k; i < Constant.VEHICLES; i++) {
-            vehicles.get(i).setCurrPoint(cluster.get(0).getLatLng());
-            vehicles.get(i).setFileIcon("vi/" + (i + 1) + ".png");
-            vehicles.get(i).initTime(initDateTime);
+        if (k < Constant.VEHICLES) {
+            initDepo(cluster, k++);
         }
+        Log.e("depo initialized");
     }
 
     public DateTime getInitDateTime() {

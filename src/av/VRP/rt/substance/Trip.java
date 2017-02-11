@@ -120,7 +120,7 @@ public class Trip implements Comparable<Trip> {
     @Override
     public String toString() {
         return "Trip{" +
-                startPoint.getDateTime().toString() +
+                startPoint.getDateTime().toString() + getLatLngStart() + getLatLngEnd() +
                 '}';
     }
 

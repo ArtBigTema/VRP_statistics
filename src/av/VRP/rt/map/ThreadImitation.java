@@ -62,7 +62,7 @@ public class ThreadImitation extends Thread implements Runnable {
         tripSize = trips.getSubAll().size();
         //minutes in month
 
-        vehicles.initDepo(cluster);
+        vehicles.initDepo(cluster, 0);
         showPassegerOnMap();
         showVehicleOnMap();
         // map.showCluster(cluster);
@@ -167,7 +167,7 @@ public class ThreadImitation extends Thread implements Runnable {
                 vehicles.transfer(index, trip, i);
                 trip.completed();
 
-                map.toggleVehicle(index);
+                map.toggleVehicle(index,i);
                 map.togglePasseger(i, index, true);
 
                 countWaitingClient--;
@@ -215,7 +215,18 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     public void setDelay(int period) {
-        this.period = period * 1;
+        if (period == 5) {
+            this.period = 1000;
+        }
+        if (period == 4) {
+            this.period = 100;
+        }
+        if (period == 3) {
+            this.period = 50;
+        }
+        if (period < 3) {
+            this.period = period * 10;
+        }
     }
 
     public void setMessageListener(MessageListener listener) {
@@ -224,30 +235,29 @@ public class ThreadImitation extends Thread implements Runnable {
 
     public String getMessage() {
         StringBuilder message = new StringBuilder();
-        message.append("Всего: ");
+        message.append("All: ");
         message.append(tripSize);
-        message.append("   ");
-        message.append("Ждут: ");
+        message.append("  ");
+        message.append("Wait: ");
         message.append(countWaitingClient);
-        message.append("   ");
-        message.append("Успешно: ");
+        message.append("  ");
+        message.append("Succ: ");
         message.append(countCompleteClient);
-        message.append("   ");
-        message.append("Неудачно: ");
+        message.append("  ");
+        message.append("Fail: ");
         message.append(countFailedOrder);
-        message.append("   ");
+        message.append("  ");
         message.append("Now: ");
         message.append(Constant.FMT.print(now.getMillis()));
-        message.append("   ");
-        message.append("Занято: ");
+        message.append("  ");
+        message.append("Busy: ");
         message.append(vehicles.getCountBusy());
-        message.append("   ");
-        message.append("Свободно: ");
+        message.append("  ");
+        message.append("Free: ");
         message.append(vehicles.getCountFree());
-        message.append("   ");
-        message.append("Итерация: ");
+        message.append("  ");
+        message.append("Iter: ");
         message.append(iter);
-        message.append("   ");
 
         return message.toString();
     }

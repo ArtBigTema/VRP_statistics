@@ -291,6 +291,7 @@ public class Trips {
     }
 
     public List<Trip> getSubAll() {
+       // return  getAll();
         return trips.subList(0, Constant.TRIPS);
     }
 

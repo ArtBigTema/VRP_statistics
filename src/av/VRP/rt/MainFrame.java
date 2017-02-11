@@ -56,15 +56,14 @@ public class MainFrame extends JFrame implements KeyListener {
     private JButton btnForecastCoefD;
     private JButton exportButton;
     private JButton showPointsButton;
-    private JPanel panel_map;
-    private JPanel maps;
     private JSlider slider_zoom;
     private JButton startImitationButton;
     private JLabel messageLabel;
     private JLabel labelH;
+    private JComboBox comboBoxShow;
+    private JPanel maps1;
+    private JPanel map_panel;
     private MapExample sample;
-
-    private boolean isClicked;
 
     public MainFrame() {
         super("MainFrame");
@@ -242,21 +241,18 @@ public class MainFrame extends JFrame implements KeyListener {
                                            }
         );
 
-        showPointsButton.addActionListener(new ActionListener() {
+        comboBoxShow.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.getInstance().showPoints(sample);
-                // showPointsButton.setVisible(false);
-                showPointsButton.setText(!isClicked ? Constant.TITLE_BTN_MAP_POINTS : Constant.TITLE_BTN_MAP_CLUSTERS);
+                Main.getInstance().showPoints(sample, comboBoxShow.getSelectedIndex());
                 slider_zoom.setVisible(false);
-                isClicked = !isClicked;
             }
         });
 
         slider_zoom.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                Main.getInstance().zoom(slider_zoom.getMaximum() - slider_zoom.getValue() + 1);
+                Main.getInstance().zoom(slider_zoom.getValue() );
             }
         });
 
@@ -265,7 +261,7 @@ public class MainFrame extends JFrame implements KeyListener {
             public void actionPerformed(ActionEvent e) {
                 startImitationButton.setVisible(false);
                 slider_zoom.setVisible(true);
-                showPointsButton.setVisible(false);
+                comboBoxShow.setVisible(false);
                 Main.getInstance().startImitation(sample);
             }
         });
@@ -274,12 +270,12 @@ public class MainFrame extends JFrame implements KeyListener {
                 Main.getInstance().click();
                 startImitationButton.setVisible(!startImitationButton.isVisible());
                 slider_zoom.setVisible(!slider_zoom.isVisible());
-                showPointsButton.setVisible(!showPointsButton.isVisible());
+                comboBoxShow.setVisible(!comboBoxShow.isVisible());
             }
         });
 
         sample = new MapExample();
-        maps.add(sample);
+        map_panel.add(sample);
     }
 
     public List getLinkFromList() {
@@ -289,7 +285,7 @@ public class MainFrame extends JFrame implements KeyListener {
     public void setListData(String[] listData) {
         listLink.setListData(listData);
         // listLink.setSelectedIndices(new int[]{6, 7});
-        listLink.setSelectedIndex(0);
+        listLink.setSelectedIndex(6);
         dowloadLinksButton.setVisible(false);
 
         tabbedPane1.getRootPane().setDefaultButton(dowloadLinkButton);
@@ -307,7 +303,7 @@ public class MainFrame extends JFrame implements KeyListener {
         exportButton.setVisible(false);
         exportButton.setEnabled(false);
 
-        //  showPointsButton.setVisible(false);
+        comboBoxShow.setVisible(false);
         slider_zoom.setVisible(false);
     }
 
@@ -333,7 +329,7 @@ public class MainFrame extends JFrame implements KeyListener {
         exportButton.setVisible(true);
         exportButton.setEnabled(true);
 
-        showPointsButton.setVisible(true);
+        comboBoxShow.setVisible(true);
         slider_zoom.setVisible(true);
     }
 
@@ -504,7 +500,7 @@ public class MainFrame extends JFrame implements KeyListener {
     }
 
     public void showPoints() {
-        showPointsButton.doClick();
+        //comboBoxShow.doClick();
     }
 
     public void setZoom(double zoom) {

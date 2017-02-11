@@ -25,13 +25,14 @@ public class Vehicle {
     private int stepsLng = 0;
     private int indexOfTrip = -1;
 
-    public Vehicle() {
+    public Vehicle(int i) {
+        title = "#" + i;
         // title = "Taxi" + System.nanoTime();
     }
 
     public void setFileIcon(String fileIcon) {
         this.fileIcon = fileIcon;
-        title = "Taxi:" + fileIcon; //+ ":" + System.nanoTime();
+        //  title = "Taxi: " + title; //+ ":" + System.nanoTime();
     }
 
     public String getTitle() {
@@ -59,7 +60,8 @@ public class Vehicle {
     }
 
     public void setCurrPoint(LatLng curr) {
-        currPoint = new PointWithTime(curr, currPoint.getDateTime().getMillis());
+        currPoint = new PointWithTime(curr);
+        currPoint.setDateTime(currPoint.getDateTime());
     }
 
     public boolean isBusy() {
