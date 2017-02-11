@@ -78,7 +78,9 @@ public class Forecast {
     private int getMeanOldData(int i) {
         Integer sum = 0;
         for (Integer[] el : oldData) {
-            sum += el[i];
+            if (i < el.length) {
+                sum += el[i];
+            }
         }
         return sum / oldData.length;
     }

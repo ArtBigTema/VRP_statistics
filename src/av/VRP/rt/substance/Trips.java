@@ -162,9 +162,8 @@ public class Trips {
             List<String> keys = getKeysContainsTitle(title, mapTripsForDay, PointWithTime.fmtShort);
             String preKey = keys.get(0).split("&")[0] + "&";//FIXME to index
 
-            int lastDayOfMonth = 31;
-            //getDateFromStr(title)
-            // .dayOfMonth().getMaximumValue()
+            int lastDayOfMonth = getDateFromStr(title).dayOfMonth().getMaximumValue();
+
             for (int i = 1; i <= lastDayOfMonth; i++) {
 
                 String postKey = (i < 10 ? "0" + i : i) + "."//fixme pattern
@@ -205,8 +204,6 @@ public class Trips {
             String preKey = title.split("&")[0] + "&";//FIXME to index
 
             int lastHour = 24;
-            //getDateFromStr(title)
-            // .dayOfMonth().getMaximumValue()
             for (int i = 0; i < lastHour; i++) {
 
                 String postKey = (i < 10 ? "0" + i : i) + "";//fixme pattern
