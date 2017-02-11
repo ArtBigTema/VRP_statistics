@@ -2,12 +2,11 @@ package av.VRP.rt.substance;
 
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
+import com.teamdev.jxmaps.LatLng;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
-import java.text.SimpleDateFormat;
 
 /**
  * Created by Artem on 09.04.2016.
@@ -36,6 +35,11 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
     public PointWithTime(Point currPoint) {
         super(currPoint.getLat(), currPoint.getLng());
         _dateTime = DateTime.now(); // fixme
+    }
+
+    public PointWithTime(LatLng currPoint, long ms) {
+        super(currPoint.getLat(), currPoint.getLng());
+        _dateTime = new DateTime(ms); // fixme
     }
 
     public static PointWithTime construct(String s) {
@@ -97,8 +101,12 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
         return DateTimeComparator.getDateOnlyInstance().compare(this._dateTime, o._dateTime);//FIXME if null
     }
 
-    public void incTime() {
+    public void incWaiting() {
         waiting++;
+    }
+
+    public void incTime() {
+        _dateTime = _dateTime.plusMinutes(waiting);
     }
 
     public DateTime getTimeForIm() {

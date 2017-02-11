@@ -12,7 +12,7 @@ import org.joda.time.DateTime;
 public class Vehicle {
     private Trip trip;
 
-    private Point currPoint;
+    private PointWithTime currPoint;
     private DateTime currTime;
 
     private boolean isBusy;
@@ -59,7 +59,7 @@ public class Vehicle {
     }
 
     public void setCurrPoint(LatLng curr) {
-        currPoint = new Point(curr.getLat(), curr.getLng());
+        currPoint = new PointWithTime(curr, currPoint.getDateTime().getMillis());
     }
 
     public boolean isBusy() {
@@ -190,5 +190,9 @@ public class Vehicle {
 
         return Math.abs(stepsLat) > Constant.TIME_WAITING
                 || Math.abs(stepsLng) > Constant.TIME_WAITING;
+    }
+
+    public void incTime() {
+        currPoint.incTime();
     }
 }

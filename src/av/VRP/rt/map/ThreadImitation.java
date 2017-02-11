@@ -128,6 +128,7 @@ public class ThreadImitation extends Thread implements Runnable {
                     }
                     Log.p("end moveVehicles");
                 }
+                vehicle.incTime();
             }
             checkImitation();
         }).run();
