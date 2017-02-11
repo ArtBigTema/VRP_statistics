@@ -33,26 +33,26 @@ public class Vehicles {
         int countVehicles;
         PointWithMessage point;
 
-        for (int i = 0; i < cluster.size(); i++) {
-            point = cluster.get(i);
-            part = vsize * point.getClustD() / csize;
+        while (k < Constant.VEHICLES) {
+            for (int i = 0; i < cluster.size(); i++) {
+                point = cluster.get(i);
+                part = vsize * point.getClustD() / csize;
 
-            countVehicles = (int) Math.round(part);
-            while (countVehicles > 0) {
-                if (k >= Constant.VEHICLES) {
-                    Log.e("depo initialized");
-                    return;
+                countVehicles = (int) Math.round(part);
+                while (countVehicles > 0) {
+                    if (k >= Constant.VEHICLES) {
+                        Log.e("depo initialized");
+                        return;
+                    }
+                    vehicles.get(k).setCurrPoint(point.getLatLng());
+                    vehicles.get(k).setFileIcon("vi/" + k + ".png");
+                    vehicles.get(k).initTime(initDateTime);
+                    k++;
+                    countVehicles--;
                 }
-                vehicles.get(k).setCurrPoint(point.getLatLng());
-                vehicles.get(k).setFileIcon("vi/" + k + ".png");
-                vehicles.get(k).initTime(initDateTime);
-                k++;
-                countVehicles--;
             }
         }
-        if (k < Constant.VEHICLES) {
-            initDepo(cluster, k++);
-        }
+
         Log.e("depo initialized");
     }
 
