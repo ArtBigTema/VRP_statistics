@@ -59,8 +59,8 @@ public class Point {
         return lng;
     }
 
-    public String getHash() {
-        return hash.substring(0, Constant.CLUSTERS);
+    public String getHash(int v) {
+        return hash.substring(0, (v < Constant.CLUSTERS_MAX) ? v : Constant.CLUSTERS);
     }
 
     public String getHashFull() {

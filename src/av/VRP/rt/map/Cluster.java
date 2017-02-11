@@ -24,9 +24,9 @@ public class Cluster {
         clusters = new ArrayList<>();
     }
 
-    public void add(Point point) {
+    public void add(Point point, int v) {
         for (PointWithMessage p : clusters) {
-            if (p.getHash().equals(point.getHash())) {
+            if (p.getHash(v).equals(point.getHash(v))) {
                 p.incLatLng(point);
                 p.incClust();
                 return;
@@ -39,18 +39,23 @@ public class Cluster {
         return clusters;
     }
 
-    public void constructClusters(Trips trips) {
+
+    public void constructClusters(Trips trips, int v) {
         Log.p("start constructCluster");
 
         List<Trip> points = trips.getSubAll();
         countPoints = points.size();
 
         for (Trip point : points) {
-            add(point.getStartPoint());
+            add(point.getStartPoint(), v);
         }
         Collections.sort(clusters);
 
         Log.p("end constructCluster");
+    }
+
+    public void constructClusters(Trips trips) {
+        constructClusters(trips, Constant.CLUSTERS);
     }
 
     public List<PointWithMessage> getPoints() {

@@ -189,6 +189,13 @@ public class ThreadImitation extends Thread implements Runnable {
         timer.cancel();
     }
 
+    public void showClusterZoom(int v) {
+        new Thread(() -> {
+            cluster.constructClusters(trips, v);
+            map.showCluster(cluster);
+        }).run();
+    }
+
     private void showVehicleOnMap() {
         for (Vehicle vehicle : vehicles.getVehicles()) {
             map.showVehicle(vehicle);

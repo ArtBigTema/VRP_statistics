@@ -311,11 +311,27 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
         }
     }
 
+    public void showCluster(MapExample map) {
+        if (!isClicked) {
+            return;
+        }
+        cluster.clear();
+        if (imitation != null) {
+            imitation.showClusterZoom((int) map.getMap().getZoom() / 2);
+        } else {
+            new Thread(() -> {
+                cluster.constructClusters(trips, (int) (map.getMap().getZoom() / 2));
+                map.showCluster(cluster);
+            }).run();
+        }
+    }
+
     public void zoom(int zoom) {
         imitation.setDelay(zoom);
     }
 
     private boolean labelClicked;
+
     public void click() {
         if (imitation == null) {
             return;
@@ -339,6 +355,9 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
     public void startImitation(MapExample map) {
         map.clearAll();
+        if (imitation != null) {
+            stopImitation();
+        }
         imitation = new ThreadImitation(map);
         imitation.setMessageListener(this);
         imitation.setCluster(cluster);

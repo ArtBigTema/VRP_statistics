@@ -15,6 +15,9 @@ public class Constant {
 
     public static final String URL_FIRST = "https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-apr14.csv";
 
+    public static final String TITLE_BTN_MAP_POINTS = "Show All Points";
+    public static final String TITLE_BTN_MAP_CLUSTERS = "Show All Clusters";
+
     public static final String TITLE_DT = "Date&Time";
     public static final String TITLE_LAT = "Latitude";
     public static final String TITLE_LON = "Longitude";

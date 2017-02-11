@@ -54,6 +54,8 @@ public class MainFrame extends JFrame implements KeyListener {
     private JLabel messageLabel;
     private MapExample sample;
 
+    private boolean isClicked;
+
     public MainFrame() {
         super("MainFrame");
 
@@ -235,7 +237,9 @@ public class MainFrame extends JFrame implements KeyListener {
             public void actionPerformed(ActionEvent e) {
                 Main.getInstance().showPoints(sample);
                 // showPointsButton.setVisible(false);
-                slider_zoom.setVisible(true);
+                showPointsButton.setText(!isClicked ? Constant.TITLE_BTN_MAP_POINTS : Constant.TITLE_BTN_MAP_CLUSTERS);
+                slider_zoom.setVisible(false);
+                isClicked = !isClicked;
             }
         });
 

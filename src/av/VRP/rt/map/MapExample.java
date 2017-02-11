@@ -1,5 +1,6 @@
 package av.VRP.rt.map;
 
+import av.VRP.rt.Main;
 import av.VRP.rt.Utils.Log;
 import av.VRP.rt.substance.Point;
 import av.VRP.rt.substance.*;
@@ -61,7 +62,7 @@ public class MapExample extends MapView {
                     map.addEventListener("zoom_changed", new MapEvent() {
                         @Override
                         public void onEvent() {
-                            // Main.getInstance().zoom(map.getZoom());
+                            Main.getInstance().showCluster(MapExample.this);
                         }
                     });
                     map.addEventListener("click", new MapMouseEvent() {
@@ -133,6 +134,11 @@ public class MapExample extends MapView {
     }
 
     public void showCluster(Cluster cluster) {
+        for (Marker clusterMarker : clusterMarkers) {
+            clusterMarker.remove();
+        }
+        clusterMarkers.clear();
+
         Map map = getMap();
 
         for (PointWithMessage point : cluster.getClusters()) {
@@ -144,7 +150,7 @@ public class MapExample extends MapView {
             marker.setIcon(icon);
 
             marker.setClickable(true);
-            marker.setTitle(point.getMsg());
+            marker.setTitle(point + ":" + point.getMsg());
             marker.setPosition(point.getLatLng());
 
             marker.addEventListener("click", new MapMouseEvent() {
