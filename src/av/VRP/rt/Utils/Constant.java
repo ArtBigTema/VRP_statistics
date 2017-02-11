@@ -52,13 +52,13 @@ public class Constant {
     public static final int CLUSTERS = 6;
     public static final int CLUSTERS_MAX = 12; // max hash
 
-    public static final int VEHICLES = 60;
-    public static final int TRIPS = 1000;
+    public static final int VEHICLES = 100;
+    public static final int TRIPS = 2000;
 
     public static final int MIDDLE_SIZE = 999;
     public static final int BIG_SIZE = 50000;
 
-    public static final int TIME_WAITING = 100;//steps
+    public static final int TIME_WAITING = 20;//steps
 
     public static final double STEP = 0.0005;
     public static final double PRECISION = 0.001;

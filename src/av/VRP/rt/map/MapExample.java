@@ -224,12 +224,12 @@ public class MapExample extends MapView {
 
             if (!bigSize) {
                 Icon icon = new Icon();
-                File file = visible ? MapUtils.getIconSmallStart() : MapUtils.getIconBigStart();
+                File file = visible ? MapUtils.getIconSmallEnd() : MapUtils.getIconBigEnd();
                 icon.loadFromFile(file);
                 markerEnd.setIcon(icon);
 
                 Icon icon1 = new Icon();
-                File file1 = visible ? MapUtils.getIconSmallEnd() : MapUtils.getIconBigEnd();
+                File file1 = visible ? MapUtils.getIconSmallStart() : MapUtils.getIconBigStart();
                 icon1.loadFromFile(file1);
                 marker.setIcon(icon1);
             }
@@ -387,7 +387,7 @@ public class MapExample extends MapView {
                 File file = middleSize ? isStart ? MapUtils.getIconSmallStart() : MapUtils.getIconSmallEnd() : isStart ? MapUtils.getIconBigStart() : MapUtils.getIconBigEnd();
                 icon.loadFromFile(file);
                 marker.setIcon(icon);
-           }
+            }
             passageMarkersStart.add(marker);
         }
     }
@@ -497,12 +497,12 @@ public class MapExample extends MapView {
         JOptionPane.showMessageDialog(this, message);
     }
 
-    public void showPoint(Trip trip, int i){
+    public void showPoint(Trip trip, int i) {
         Marker marker = new Marker(getMap());
         marker.setPosition(trip.getLatLngStart());
         marker.setTitle("#" + i);
         Icon icon = new Icon();
-        File file =  MapUtils.getIconSmallEnd();
+        File file = MapUtils.getIconSmallEnd();
         icon.loadFromFile(file);
         marker.setIcon(icon);
     }
