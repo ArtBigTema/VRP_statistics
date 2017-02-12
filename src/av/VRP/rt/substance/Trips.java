@@ -22,6 +22,7 @@ public class Trips {
     private Map<String, Integer> mapTripsForDaySingle;
     private Map<String, Integer> mapTripsForHourSingle;
 
+    private int lastIndex;
     private int countWaiting;
     private int maxWaiting;
     private DateTime dt;
@@ -347,7 +348,9 @@ public class Trips {
     public synchronized List<Integer> get(DateTime now) {
         List<Integer> tripList = Collections.synchronizedList(new ArrayList<>());
 
-        for (int i = 0; i < getSubAll().size(); i++) {//fixme from last to
+        int last = lastIndex;
+        lastIndex = -1;
+        for (int i = 0; i < getSubAll().size(); i++) {
             Trip trip = getSubAll().get(i);
 
             if (trip.isCompleted()) {
@@ -356,22 +359,29 @@ public class Trips {
             if (trip.isFailed()) {
                 continue;
             }
+
             if (trip.getStartPoint().getDateTime().minus(now.getMillis()).getMillis() > 0) {
+                if (lastIndex < 0) {
+                    lastIndex = i;
+                }
                 return tripList;
-            }
-            if (i == 427) {
-                // setDelay(1000);
-                Log.e("errrrrrrrrrrrrrrrrr");
             }
 
             DateTime dt = trip.getStartPoint().getTimeForIm();
             if (now.equals(dt)) {
+                if (lastIndex < 0) {
+                    lastIndex = i;
+                }
+
                 tripList.add(i);
             } else {
                 if (now.getMillis() == dt.getMillis()) {
                     Log.e("errrrrrrrrrrrrrrrrrrrrror");
                 }
             }
+        }
+        if (lastIndex < 0) {
+            lastIndex = last;
         }
         return tripList;
     }
