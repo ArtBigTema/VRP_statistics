@@ -2,6 +2,7 @@ package av.VRP.rt;
 
 import av.VRP.rt.Utils.Constant;
 import av.VRP.rt.Utils.Utils;
+import av.VRP.rt.listener.BoundsPopupMenuListener;
 import av.VRP.rt.map.MapExample;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -15,7 +16,10 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -238,6 +242,7 @@ public class MainFrame extends JFrame implements KeyListener {
                                            }
         );
 
+        comboBoxShow.addPopupMenuListener(new BoundsPopupMenuListener(false, true));
         comboBoxShow.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -266,6 +271,7 @@ public class MainFrame extends JFrame implements KeyListener {
             public void mouseClicked(MouseEvent e) {
                 Main.getInstance().click();
                 startImitationButton.setVisible(!startImitationButton.isVisible());
+                startImitationButton.setText(Constant.TITLE_BTN_IMITATION_AGAIN);
                 slider_zoom.setVisible(!slider_zoom.isVisible());
                 slider_zoom.setValue(slider_zoom.getMaximum());
                 comboBoxShow.setVisible(!comboBoxShow.isVisible());
@@ -303,13 +309,15 @@ public class MainFrame extends JFrame implements KeyListener {
 
         comboBoxShow.setVisible(false);
         slider_zoom.setVisible(false);
+        startImitationButton.setVisible(false);
+        messageLabel.setVisible(false);
+        startImitationButton.setText(Constant.TITLE_BTN_IMITATION_AGAIN);
     }
 
     public void endDownloading(boolean isSucces) {
         listLink.setEnabled(true);
         dowloadLinkButton.setEnabled(false);
         progressBar.setVisible(false);
-        startImitationButton.setVisible(true);
         //   JOptionPane.showMessageDialog(this,
         //           isSucces ? "Succes" : "Fail", "Title",
         //           isSucces ? 1 : 0);//FIXME
@@ -328,7 +336,8 @@ public class MainFrame extends JFrame implements KeyListener {
         exportButton.setEnabled(true);
 
         comboBoxShow.setVisible(true);
-        slider_zoom.setVisible(true);
+        startImitationButton.setVisible(true);
+        messageLabel.setVisible(true);
     }
 
     public void showGraphForDays(String days, Integer[][] dots, String[] month) {

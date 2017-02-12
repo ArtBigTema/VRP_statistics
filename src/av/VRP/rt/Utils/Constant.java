@@ -15,8 +15,8 @@ public class Constant {
 
     public static final String URL_FIRST = "https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-apr14.csv";
 
-    public static final String TITLE_BTN_MAP_POINTS = "Show All Points";
-    public static final String TITLE_BTN_MAP_CLUSTERS = "Show All Clusters";
+    public static final String TITLE_BTN_IMITATION = "Start imitation";
+    public static final String TITLE_BTN_IMITATION_AGAIN = "Start imitation again";
 
     public static final String TITLE_DT = "Date&Time";
     public static final String TITLE_LAT = "Latitude";
@@ -52,8 +52,8 @@ public class Constant {
     public static final int CLUSTERS = 6;
     public static final int CLUSTERS_MAX = 12; // max hash
 
-    public static final int VEHICLES = 20;
-    public static final int TRIPS = 100;
+    public static final int VEHICLES = 40;
+    public static final int TRIPS = 1000;
 
     public static final int MIDDLE_SIZE = 999;
     public static final int BIG_SIZE = 50000;
