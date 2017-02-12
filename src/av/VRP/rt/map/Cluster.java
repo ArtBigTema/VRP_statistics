@@ -126,12 +126,9 @@ public class Cluster {
         constructClusters(trips, Constant.CLUSTERS);
     }
 
-    public List<PointWithMessage> getPoints() {
-        return clusters;
-    }
-
     public void clear() {
         clusters.clear();
+        vehicleCluster.clear();
     }
 
     public PointWithMessage get(int i) {

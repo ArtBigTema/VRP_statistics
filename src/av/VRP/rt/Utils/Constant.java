@@ -52,8 +52,8 @@ public class Constant {
     public static final int CLUSTERS = 6;
     public static final int CLUSTERS_MAX = 12; // max hash
 
-    public static final int VEHICLES = 40;
-    public static final int TRIPS = 1000;
+    public static final int VEHICLES = 3;
+    public static final int TRIPS = 10;
 
     public static final int MIDDLE_SIZE = 999;
     public static final int BIG_SIZE = 50000;

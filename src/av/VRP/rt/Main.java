@@ -41,7 +41,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     private Forecast forecast;
     private Cluster cluster;
 
-    // private boolean modeMap;
+    private boolean modeMap;
 
     public static void main(String[] args) throws Exception {
         getInstance();
@@ -56,7 +56,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     private Main() {
-        // modeMap = true;
+        modeMap = true;
 
         frame = new MainFrame();
         trips = new Trips();
@@ -76,7 +76,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
     public void startParserThread() {
         Log.d("startForH threads parser");
-        size = size / 200_000;//for 1m = 5
+        // size = size / 200_000;//for 1m = 5
 
         /*
         VRPStaticData data = new VRPStaticData();
@@ -144,9 +144,9 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
         frame.setListData(rows);
 
-        // if (modeMap) {
-        //  frame.clickDownloadLink();
-        // }
+        if (modeMap) {
+            frame.clickDownloadLink();
+        }
     }
 
     public void aggregateLink(List<String> list) {
@@ -224,9 +224,9 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             frame.setTableModel(false);//обновить таблицу
             frame.endDownloading(true);
 
-            // if (modeMap) {
-            //     frame.clickReadFile();
-            // }
+            if (modeMap) {
+                frame.clickReadFile();
+            }
         }
     }
 
@@ -254,14 +254,14 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
     @Override
     public void generated(String s, String ss) {
-        // if (!modeMap) {
-        trips.add(s, ss);
-        // }
-
-        if (++i > size) {
-            i = 0;
-            trips.add(ss);
+        if (!modeMap) {
+            trips.add(s, ss);
         }
+
+        //  if (++i > size) {
+        i = 0;
+        trips.add(ss);
+        // }
     }
 
     @Override
@@ -281,23 +281,23 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             Log.p("Trips mapSizeForHour = ", trips.mapSizeForHour());
 
             frame.setTableData(trips.toTable());
-            // if (!modeMap) {
-            agregateForecast();//fixme
-            // }
+            if (!modeMap) {
+                agregateForecast();//fixme
+            }
 
             // trips.check();
             trips.sortWithDate();
             // trips.check();
 
-            // if (modeMap) {
-            vehicles.setInitDateTime(trips.getFirstPoint());
+            if (modeMap) {
+                vehicles.setInitDateTime(trips.getFirstPoint());
 
-            cluster.constructClusters(trips);
-            vehicles.initDepo(cluster);
+                cluster.constructClusters(trips);
+                vehicles.initDepo(cluster);
 
 
-            //     frame.showMap();
-            // }
+                frame.showMap();
+            }
         }
     }
 
@@ -323,6 +323,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
                 map.showAllPoints(trips, true);
                 break;
             case 4:
+                vehicles.initDepo(cluster);
                 map.showVehicles(vehicles);
                 break;
         }
@@ -333,6 +334,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             return;
         }
         cluster.clear();
+
         if (imitation != null) {
             imitation.showClusterZoom((int) map.getMap().getZoom() / 2);
         } else {

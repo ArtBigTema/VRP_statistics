@@ -1,6 +1,7 @@
 package av.VRP.rt;
 
 import av.VRP.rt.Utils.Constant;
+import av.VRP.rt.Utils.Log;
 import av.VRP.rt.Utils.Utils;
 import av.VRP.rt.listener.BoundsPopupMenuListener;
 import av.VRP.rt.map.MapExample;
@@ -59,11 +60,11 @@ public class MainFrame extends JFrame implements KeyListener {
     private JButton showPointsButton;
     private JSlider slider_zoom;
     private JButton startImitationButton;
-    private JLabel messageLabel;
     private JLabel labelH;
     private JComboBox comboBoxShow;
     private JPanel maps1;
     private JPanel map_panel;
+    private JButton buttonLabel;
     private MapExample sample;
 
     public MainFrame() {
@@ -265,10 +266,13 @@ public class MainFrame extends JFrame implements KeyListener {
                 slider_zoom.setVisible(true);
                 comboBoxShow.setVisible(false);
                 Main.getInstance().startImitation(sample);
+                buttonLabel.setEnabled(true);
+                tabbedPane1.getRootPane().setDefaultButton(buttonLabel);
             }
         });
-        messageLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
+        buttonLabel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 Main.getInstance().click();
                 startImitationButton.setVisible(!startImitationButton.isVisible());
                 startImitationButton.setText(Constant.TITLE_BTN_IMITATION_AGAIN);
@@ -280,6 +284,16 @@ public class MainFrame extends JFrame implements KeyListener {
 
         sample = new MapExample();
         map_panel.add(sample);
+
+        showDark();
+    }
+
+    private void showDark() {
+        try {
+            UIManager.setLookAndFeel(new com.sun.java.swing.plaf.motif.MotifLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
     }
 
     public List getLinkFromList() {
@@ -289,7 +303,7 @@ public class MainFrame extends JFrame implements KeyListener {
     public void setListData(String[] listData) {
         listLink.setListData(listData);
         // listLink.setSelectedIndices(new int[]{6, 7});
-        listLink.setSelectedIndex(6);
+        listLink.setSelectedIndex(7);
         dowloadLinksButton.setVisible(false);
 
         tabbedPane1.getRootPane().setDefaultButton(dowloadLinkButton);
@@ -310,7 +324,8 @@ public class MainFrame extends JFrame implements KeyListener {
         comboBoxShow.setVisible(false);
         slider_zoom.setVisible(false);
         startImitationButton.setVisible(false);
-        messageLabel.setVisible(false);
+        buttonLabel.setVisible(false);
+        buttonLabel.setEnabled(false);
         startImitationButton.setText(Constant.TITLE_BTN_IMITATION_AGAIN);
     }
 
@@ -337,7 +352,7 @@ public class MainFrame extends JFrame implements KeyListener {
 
         comboBoxShow.setVisible(true);
         startImitationButton.setVisible(true);
-        messageLabel.setVisible(true);
+        buttonLabel.setVisible(true);
     }
 
     public void showGraphForDays(String days, Integer[][] dots, String[] month) {
@@ -481,12 +496,12 @@ public class MainFrame extends JFrame implements KeyListener {
     }
 
     public void showMessage(String msg) {
-        messageLabel.setText(msg);
+        buttonLabel.setText(msg);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        Log.e(e);
     }
 
     public void clickDownloadList() {

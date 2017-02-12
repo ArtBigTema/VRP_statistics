@@ -27,7 +27,7 @@ public class MapUtils {
     public static File getIcon(int count) {
         File file = new File("icons/number_" + count + ".png");
         if (file == null || !file.exists()) {
-            file = new File("icons/number_0.png");
+            file = new File("icons/number_-1.png");
         }
         return file;
     }

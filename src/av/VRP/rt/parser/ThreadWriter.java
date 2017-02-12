@@ -1,6 +1,9 @@
 package av.VRP.rt.parser;
 
-import av.VRP.rt.Utils.*;
+import av.VRP.rt.Utils.Constant;
+import av.VRP.rt.Utils.Files;
+import av.VRP.rt.Utils.HttpApi;
+import av.VRP.rt.Utils.Log;
 import av.VRP.rt.listener.FileWriterListener;
 
 import java.io.*;
@@ -40,10 +43,21 @@ public class ThreadWriter extends Thread implements Runnable {
             String line = br.readLine();
 
             while (line != null) {
+
+                line = br.readLine();
+                if (line == null) {
+                    break;
+                }
+                if (line.contains(",0,0,0,")) {
+                    continue;
+                }
                 i++;
                 writer.append(line.replace("\"", ""));
                 writer.append(System.lineSeparator());
-                line = br.readLine();
+
+                if (i > 10 * Constant.MIDDLE_SIZE) {
+                    break;
+                }
             }
 
             writer.flush();
@@ -51,7 +65,7 @@ public class ThreadWriter extends Thread implements Runnable {
             if (listener != null) {
                 listener.onError();
             }
-            Log.e(e.getMessage());
+            Log.e(e);
             e.printStackTrace();
         } finally {//FIXME
             writer.close();
@@ -64,7 +78,7 @@ public class ThreadWriter extends Thread implements Runnable {
                 if (listener != null) {
                     listener.onError();
                 }
-                Log.e(e.getMessage());
+                Log.e(e);
                 e.printStackTrace();
             }
         }

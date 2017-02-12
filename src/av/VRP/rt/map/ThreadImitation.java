@@ -65,6 +65,7 @@ public class ThreadImitation extends Thread implements Runnable {
         vehicles.initDepo(cluster);
         showPassegerOnMap();
         showVehicleOnMap();
+        showClusterOnMap();
         // map.showCluster(cluster);
 
         startTimer();
@@ -120,11 +121,12 @@ public class ThreadImitation extends Thread implements Runnable {
                     } else {
                         if (vehicle.containEndPoint()) {
                             map.removeClientMarkers(vehicle.getIndexOfTrip());
-                            map.showMessVehicleComplete(i);
 
                             vehicle.resetTrip();
                             int indexCluster = cluster.getNearestCluster(vehicle);
                             vehicle.resetDepo(cluster.get(indexCluster), indexCluster);
+                            map.toggleCluster(indexCluster, i, cluster.get(indexCluster).getClust());
+                            map.showMessVehicleComplete(i, indexCluster);
 
                             vehicles.decBusy();
                         } else {
@@ -139,6 +141,8 @@ public class ThreadImitation extends Thread implements Runnable {
                         Log.p("-------------------");
                         Log.p("start moveVehicles for depo");
                         map.moveVehicle(i, vehicle.getCurrPoint());
+                        int k = vehicle.getDepoIndex();
+                        map.toggleCluster(k, i, cluster.get(k).getClust());
                         Log.p("end moveVehicles for depo");
                     } else {//in depo
                         cluster.incClusterSize(vehicle.getDepoIndex());
@@ -184,7 +188,9 @@ public class ThreadImitation extends Thread implements Runnable {
                 Log.e("Client #" + i + "   Taxi #" + index);
 
                 vehicles.transfer(index, trip, i);
-                cluster.decClusterSize(vehicles.get(index).getDepoIndex());
+                int k = vehicles.get(index).getDepoIndex();
+                cluster.decClusterSize(k);
+
                 //fixme check
                 trip.completed();
 
@@ -220,24 +226,30 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     private void showVehicleOnMap() {
+        Log.p("start showAll vehicle");
         for (Vehicle vehicle : vehicles.getVehicles()) {
             map.showVehicle(vehicle);
-            try {
-                Thread.sleep(30);
-            } catch (InterruptedException e) {
-                Log.e(e);
-                e.printStackTrace();
-            }
         }
         // map.showVehicles(vehicles);
+        Log.p("end showAll vehicle");
+    }
+
+    private void showClusterOnMap() {
+        Log.p("start showAll cluster");
+        map.showCluster(cluster, false);
+        // map.showVehicles(vehicles);
+        Log.p("end showAll cluster");
     }
 
     private void showPassegerOnMap() {
+        Log.p("start showAllPoints");
         map.showAllPoints(trips, false);
+        Log.p("end showAllPoints");
     }
 
     public void setDelay(int period) {
-        map.setShowInfo(period < 4 || tripSize > Constant.MIDDLE_SIZE);
+        map.setShowInfo(// invisible
+                period < 6 || tripSize > Constant.MIDDLE_SIZE);
 
         if (period == 6) {
             period = 1000;
@@ -263,6 +275,8 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     public String getMessage() {
+       // map.setShowInfo(trips.getCountWaiting() > 5);
+
         StringBuilder message = new StringBuilder();
         message.append("All: ");
         message.append(tripSize);

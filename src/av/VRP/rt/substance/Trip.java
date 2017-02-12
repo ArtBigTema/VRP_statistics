@@ -64,7 +64,8 @@ public class Trip implements Comparable<Trip> {
     }
 
     private boolean equalsStartEnd() {
-        return MapUtils.getDistance(startPoint, endPoint) < Constant.DISTANCE
+        // Log.e(MapUtils.getDistance(startPoint, endPoint).toString());
+        return MapUtils.getDistance(startPoint, endPoint) < 100 * Constant.PRECISION //Constant.Dis
                 || startPoint.check() || endPoint.check();
     }
 

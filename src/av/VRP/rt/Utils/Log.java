@@ -30,8 +30,8 @@ public class Log {//FIXME log to file
     }
 
     public static void e(Exception e) {
-        // e.printStackTrace();
         e(e.toString());
+        e.printStackTrace();
     }
 
     public static void e(Object s, Object ss) {

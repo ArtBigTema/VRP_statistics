@@ -2,7 +2,6 @@ package av.VRP.rt.map;
 
 import av.VRP.rt.Main;
 import av.VRP.rt.Utils.Constant;
-import av.VRP.rt.Utils.Log;
 import av.VRP.rt.substance.Point;
 import av.VRP.rt.substance.*;
 import com.teamdev.jxmaps.*;
@@ -144,6 +143,10 @@ public class MapExample extends MapView {
     }
 
     public void showCluster(Cluster cluster) {
+        showCluster(cluster, true);
+    }
+
+    public void showCluster(Cluster cluster, boolean visible) {
         for (Marker clusterMarker : clusterMarkers) {
             clusterMarker.remove();
         }
@@ -151,7 +154,9 @@ public class MapExample extends MapView {
 
         Map map = getMap();
 
-        for (PointWithMessage point : cluster.getClusters()) {
+        for (int i = 0; i < cluster.getClusters().size(); i++) {
+            PointWithMessage point = cluster.getClusters().get(i);
+
             Marker marker = new Marker(map);
 
             Icon icon = new Icon();
@@ -160,8 +165,9 @@ public class MapExample extends MapView {
             marker.setIcon(icon);
 
             marker.setClickable(true);
-            marker.setTitle(point + ":" + point.getMsg());
+            marker.setTitle("#" + i + " Max " + point.getClust() + " Curr " + point.getCount());
             marker.setPosition(point.getLatLng());
+            marker.setVisible(visible);
 
             marker.addEventListener("click", new MapMouseEvent() {
                 @Override
@@ -180,7 +186,6 @@ public class MapExample extends MapView {
     }
 
     public void showAllPoints(Trips trips, boolean visible) {
-        Log.p("start showAllPoints");
         List<Trip> points = trips.getSubAll();
 
         Map map = getMap();
@@ -240,8 +245,6 @@ public class MapExample extends MapView {
             passageMarkersStart.add(marker);
             passageMarkersEnd.add(markerEnd);
         }
-
-        Log.p("end showAllPoints");
     }
 
     public void setZoom(int zoom) {
@@ -279,10 +282,35 @@ public class MapExample extends MapView {
         passageMarkersFailed.clear();
     }
 
+    public void toggleCluster(int index, int i, int count) {
+        Marker marker = clusterMarkers.get(index);
+        marker.setVisible(true);
+
+        Icon icon = new Icon();
+        File file = MapUtils.getIcon(count);
+        icon.loadFromFile(file);
+        marker.setIcon(icon);
+
+        closeAllInfoWindow();
+
+        if (infoWindow != null) {
+            infoWindow.close();
+        }
+        infoWindow = new InfoWindow(getMap());
+        infoWindow.setContent(count + ", #" + index + " Ближайший #" + i);
+        infoWindow.open(getMap(), marker);
+
+        if (infoWindowTaxi != null) {
+            infoWindowTaxi.close();
+        }
+        infoWindowTaxi = new InfoWindow(getMap());
+        infoWindowTaxi.setContent("#" + i + " Еду в #" + index);
+        infoWindowTaxi.open(getMap(), vehicleMarkers.get(i));
+    }
+
     public void toggleVehicle(int index, int i) {
         Marker marker = vehicleMarkers.get(index);
         marker.setVisible(true);
-        Log.p(marker.getPosition(), index);
 
         if (infoWindowForClickOnly) {
             return;
@@ -301,7 +329,10 @@ public class MapExample extends MapView {
         Marker markerEnd = passageMarkersEnd.get(indexPassage);
         // marker.remove();
 
-        if (!transfer && !infoWindowForClickOnly) {
+        if (!transfer) {
+            if (infoWindowForClickOnly) {
+                return;
+            }
             if (infoWindow != null) {
                 infoWindow.close();
             }
@@ -413,9 +444,6 @@ public class MapExample extends MapView {
         passageMarkersEnd.get(indexOfTrip).setVisible(false);
         passageMarkersStart.set(indexOfTrip, null);
         passageMarkersEnd.set(indexOfTrip, null);
-
-        // Log.pp(indexOfTrip,passageMarkersStart.get(indexOfTrip).getVisible());
-        // Log.pp(indexOfTrip,passageMarkersEnd.get(indexOfTrip).getVisible());
     }
 
     public void togglePassegerTransfer(int indexPass, int indexVeh) {
@@ -480,7 +508,7 @@ public class MapExample extends MapView {
         infoWindowTaxi.open(getMap(), marker);
     }
 
-    public synchronized void showMessVehicleComplete(int i) {
+    public synchronized void showMessVehicleComplete(int i, int depo) {
         Marker marker = vehicleMarkers.get(i);
 
         marker.addEventListener("click", new MapMouseEvent() {
@@ -495,6 +523,10 @@ public class MapExample extends MapView {
                 infoWindowTaxi = new InfoWindow(getMap());
                 infoWindowTaxi.setContent(marker.getTitle());
                 infoWindowTaxi.open(getMap(), marker);
+
+                infoWindow = new InfoWindow(getMap());
+                infoWindow.setContent(clusterMarkers.get(depo).getTitle());
+                infoWindow.open(getMap(), clusterMarkers.get(depo));
             }
         });
 
