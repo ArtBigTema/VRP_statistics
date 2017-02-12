@@ -293,7 +293,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             vehicles.setInitDateTime(trips.getFirstPoint());
 
             cluster.constructClusters(trips);
-            vehicles.initDepo(cluster, 0);
+            vehicles.initDepo(cluster);
 
 
             //     frame.showMap();

@@ -58,11 +58,11 @@ public class ThreadImitation extends Thread implements Runnable {
     @Override
     public void run() {
         now = vehicles.getInitDateTime();
-        max = Math.abs(now.getMillis() - now.plusMonths(1).getMillis()) / 60000;
+        max = (now.plusMonths(1).getMillis() - now.getMillis()) / 60000;
         tripSize = trips.getSubAll().size();
         //minutes in month
 
-        vehicles.initDepo(cluster, 0);
+        vehicles.initDepo(cluster);
         showPassegerOnMap();
         showVehicleOnMap();
         // map.showCluster(cluster);
@@ -133,6 +133,8 @@ public class ThreadImitation extends Thread implements Runnable {
                     boolean moving = vehicle.moveToDepo();
                     if (moving) {
                         map.moveVehicle(i, vehicle.getCurrPoint());
+                    } else {//in depo
+                        cluster.incClusterSize(vehicle.getDepoIndex());
                     }
                 }
                 vehicle.incTime();
@@ -172,6 +174,8 @@ public class ThreadImitation extends Thread implements Runnable {
 
             if (index >= 0) {
                 vehicles.transfer(index, trip, i);
+                cluster.decClusterSize(vehicles.get(index).getDepoIndex());
+                //fixme check
                 trip.completed();
 
                 map.toggleVehicle(index, i);

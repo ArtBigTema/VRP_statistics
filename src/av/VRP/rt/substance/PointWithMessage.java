@@ -7,6 +7,7 @@ import com.teamdev.jxmaps.LatLng;
  */
 public class PointWithMessage extends Point implements Comparable<PointWithMessage> {
     private Integer clust;
+    private int count;
     private double la;
     private double ln;
 
@@ -18,7 +19,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
         la = point.getLat();
         ln = point.getLng();
 
-        clust = 1;
+        clust = 0; //fixme why 1
         message = msg;
     }
 
@@ -43,14 +44,30 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
         ln += point.getLng();
     }
 
+    public boolean freeDepo() {
+        return count < clust;
+    }
+
+    public void incCount() {
+        count++;
+    }
+
+    public void decCount() {
+        count--;
+    }
+
+    public boolean needShuffle() {
+        return count > clust;
+    }
+
     public LatLng getLatLng() {
         return new LatLng(la / clust, ln / clust);
     }
 
     @Override
     public String toString() {
-        return "PointWithMessage{" + getLatLng() +
-                ", clust=" + clust + ":" + message +
+        return "PointWithMessage{" +// getLatLng() +
+                ", max=" + clust + ", curr=" + count + ":" + message +
                 '}';
     }
 

@@ -27,10 +27,11 @@ public class Vehicles {
         }
     }
 
-    public void initDepo(Cluster cluster, int k) {
+    public void initDepo(Cluster cluster) {
         double part;
         int csize = cluster.getTripSize();
         int vsize = vehicles.size();
+        int k = 0;
         int countVehicles;
         PointWithMessage point;
 
@@ -42,17 +43,21 @@ public class Vehicles {
                 countVehicles = (int) Math.round(part);
                 while (countVehicles > 0) {
                     if (k >= Constant.VEHICLES) {
+                        cluster.sortMap();
                         Log.e("depo initialized");
                         return;
                     }
-                    vehicles.get(k).setCurrPoint(point.getLatLng());
-                    vehicles.get(k).setFileIcon("vi/" + k + ".png");
-                    vehicles.get(k).initTime(initDateTime);
+                    Vehicle vehicle = vehicles.get(k);
+                    cluster.initDepo(vehicle, i);
+                    vehicle.setCurrPoint(point.getLatLng(),i);
+                    vehicle.setFileIcon("vi/" + k + ".png");
+                    vehicle.initTime(initDateTime);
                     k++;
                     countVehicles--;
                 }
             }
         }
+        cluster.sortMap();
 
         Log.e("depo initialized");
     }

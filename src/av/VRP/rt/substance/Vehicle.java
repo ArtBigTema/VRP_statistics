@@ -14,6 +14,7 @@ public class Vehicle {
 
     private PointWithTime currPoint;
     private Point depo;
+    private int depoIndex;
     private DateTime currTime;
 
     private boolean isBusy;
@@ -61,10 +62,15 @@ public class Vehicle {
         return currPoint;
     }
 
-    public void setCurrPoint(LatLng curr) {
+    public void setCurrPoint(LatLng curr, int i) {
         depo = new Point(curr.getLat(), curr.getLng());
+        depoIndex = i;
         currPoint = new PointWithTime(curr);
         currPoint.setDateTime(currPoint.getDateTime());
+    }
+
+    public int getDepoIndex() {
+        return depoIndex;
     }
 
     public boolean isBusy() {
