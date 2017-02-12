@@ -80,6 +80,9 @@ public class ThreadImitation extends Thread implements Runnable {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (oldPeriod != period) {
+                    startTimer();
+                }
                 new Thread(() -> {
                     messageListener.showMessage(getMessage());
 
@@ -98,10 +101,6 @@ public class ThreadImitation extends Thread implements Runnable {
                         map.showMsgFinish(Constant.MSG_IMITATION);
                     }
                 }).run();
-
-                if (oldPeriod != period) {
-                    startTimer();
-                }
             }
         }, 10, period);
     }
@@ -197,9 +196,9 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     public void stopTimer() {
-        setDelay(1000);
         Log.e("stopTimer");
         timer.cancel();
+        setDelay(1000);
     }
 
     public void showClusterZoom(int v) {
@@ -227,7 +226,7 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     public void setDelay(int period) {
-        map.setShowInfo(period < 4);
+        map.setShowInfo(period < 4 || tripSize > Constant.MIDDLE_SIZE);
 
         if (period == 6) {
             period = 1000;

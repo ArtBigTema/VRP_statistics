@@ -15,10 +15,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -286,7 +283,7 @@ public class MainFrame extends JFrame implements KeyListener {
     public void setListData(String[] listData) {
         listLink.setListData(listData);
         // listLink.setSelectedIndices(new int[]{6, 7});
-        listLink.setSelectedIndex(6);
+        listLink.setSelectedIndex(7);
         dowloadLinksButton.setVisible(false);
 
         tabbedPane1.getRootPane().setDefaultButton(dowloadLinkButton);
