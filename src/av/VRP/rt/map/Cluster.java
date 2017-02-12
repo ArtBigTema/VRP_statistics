@@ -42,12 +42,14 @@ public class Cluster {
 
     public void initDepo(Vehicle vehicle, int indexCluster) {
         clusters.get(indexCluster).incCount();
+
         String hash = clusters.get(indexCluster).getHash(pres);
+
         ArrayList<Vehicle> vehicles = vehicleCluster.get(hash);
         vehicles.add(vehicle);
         vehicleCluster.put(clusters.get(indexCluster).getHash(pres), vehicles);
 
-       // vehicleCluster = sortMapCluster();
+        // vehicleCluster = sortMapCluster();
     }
 
     public void constructClusters(Trips trips, int v) {
@@ -84,10 +86,12 @@ public class Cluster {
 
     public void decClusterSize(int index) {
         clusters.get(index).decCount();
+        // map list remove
     }
 
     public void incClusterSize(int index) {
         clusters.get(index).incCount();
+        // map list remove
     }
 
     public void checkStack() {
@@ -96,6 +100,26 @@ public class Cluster {
 
             }
         }
+    }
+
+    public int getNearestCluster(Vehicle vehicle) {
+        double tmp, distance = Double.MAX_VALUE;
+        int index = -1;
+
+        for (int i = 0; i < size(); i++) {
+            PointWithMessage point = clusters.get(i);
+
+            tmp = MapUtils.getDistance(point, vehicle.getCurrPoint());
+
+            if (tmp < distance) {
+                distance = tmp;
+                index = i;
+            }
+        }
+
+        // incClusterSize(index);
+        initDepo(vehicle, index);
+        return index;
     }
 
     public void constructClusters(Trips trips) {

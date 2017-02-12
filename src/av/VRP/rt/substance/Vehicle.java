@@ -216,6 +216,11 @@ public class Vehicle {
         indexOfTrip = -1;
     }
 
+    public void resetDepo(Point point, int i) {
+        depo = point;
+        depoIndex = i;
+    }
+
     @Override
     public String toString() {
         return "Vehicle{" + title + " " +

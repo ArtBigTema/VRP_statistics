@@ -112,7 +112,7 @@ public class ThreadImitation extends Thread implements Runnable {
 
                 if (vehicle.isBusy()) {
                     Log.p("-------------------");
-                    Log.p("start moveVehicles");
+                    Log.p("start moveVehicles for client");
                     boolean moving = vehicle.move();
 
                     if (moving) {
@@ -121,17 +121,25 @@ public class ThreadImitation extends Thread implements Runnable {
                         if (vehicle.containEndPoint()) {
                             map.removeClientMarkers(vehicle.getIndexOfTrip());
                             map.showMessVehicleComplete(i);
+
                             vehicle.resetTrip();
+                            int indexCluster = cluster.getNearestCluster(vehicle);
+                            vehicle.resetDepo(cluster.get(indexCluster), indexCluster);
+
                             vehicles.decBusy();
                         } else {
                             map.togglePassegerTransfer(vehicle.getIndexOfTrip(), i);
                         }
                     }
-                    Log.p("end moveVehicles");
+                    Log.p("end moveVehicles for client");
                 } else {
-                    boolean moving = vehicle.moveToDepo();
+
+                    boolean moving = vehicle.moveToDepo();//to nearest depo
                     if (moving) {
+                        Log.p("-------------------");
+                        Log.p("start moveVehicles for depo");
                         map.moveVehicle(i, vehicle.getCurrPoint());
+                        Log.p("end moveVehicles for depo");
                     } else {//in depo
                         cluster.incClusterSize(vehicle.getDepoIndex());
                     }
@@ -166,12 +174,15 @@ public class ThreadImitation extends Thread implements Runnable {
                     countFailedOrder++;
                     map.toggleFailPasseger(i, trips.get(i).getLatLngStart());
                 } else {
+                    Log.p("Client #" + i + " wait " + trips.get(i).getTimeFailed());
                     map.togglePasseger(i, index, false);
                 }
                 continue;// if time move to client > waitng
             }
 
             if (index >= 0) {
+                Log.e("Client #" + i + "   Taxi #" + index);
+
                 vehicles.transfer(index, trip, i);
                 cluster.decClusterSize(vehicles.get(index).getDepoIndex());
                 //fixme check

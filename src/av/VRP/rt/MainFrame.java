@@ -289,7 +289,7 @@ public class MainFrame extends JFrame implements KeyListener {
     public void setListData(String[] listData) {
         listLink.setListData(listData);
         // listLink.setSelectedIndices(new int[]{6, 7});
-        listLink.setSelectedIndex(7);
+        listLink.setSelectedIndex(6);
         dowloadLinksButton.setVisible(false);
 
         tabbedPane1.getRootPane().setDefaultButton(dowloadLinkButton);

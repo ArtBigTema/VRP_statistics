@@ -300,7 +300,6 @@ public class MapExample extends MapView {
         Marker marker = passageMarkersStart.get(indexPassage);
         Marker markerEnd = passageMarkersEnd.get(indexPassage);
         // marker.remove();
-        Log.p(marker.getPosition(), indexPassage);
 
         if (!transfer && !infoWindowForClickOnly) {
             if (infoWindow != null) {
