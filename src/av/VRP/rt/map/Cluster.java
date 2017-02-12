@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class Cluster {
     private List<PointWithMessage> clusters;
-    private Map<String, ArrayList<Vehicle>> vehicleCluster;
+    private Map<String, ArrayList<Vehicle>> clusterMap;
 
     private int count;
     private int countPoints;
@@ -21,7 +21,7 @@ public class Cluster {
     public Cluster() {
         count = Constant.CLUSTERS;
         clusters = new ArrayList<>();
-        vehicleCluster = new HashMap<>();
+        clusterMap = new HashMap<>();
     }
 
     public void add(Point point, int v) {
@@ -32,7 +32,7 @@ public class Cluster {
                 return;
             }
         }
-        vehicleCluster.put(point.getHash(v), new ArrayList<>());
+        clusterMap.put(point.getHash(v), new ArrayList<>());
         clusters.add(new PointWithMessage(point, point.getHashFull()));
     }
 
@@ -45,11 +45,11 @@ public class Cluster {
 
         String hash = clusters.get(indexCluster).getHash(pres);
 
-        ArrayList<Vehicle> vehicles = vehicleCluster.get(hash);
+        ArrayList<Vehicle> vehicles = clusterMap.get(hash);
         vehicles.add(vehicle);
-        vehicleCluster.put(clusters.get(indexCluster).getHash(pres), vehicles);
+        clusterMap.put(clusters.get(indexCluster).getHash(pres), vehicles);
 
-        // vehicleCluster = sortMapCluster();
+        // clusterMap = sortMapCluster();
     }
 
     public void constructClusters(Trips trips, int v) {
@@ -68,11 +68,11 @@ public class Cluster {
     }
 
     public void sortMap() {
-        vehicleCluster = sortMapCluster();
+        clusterMap = sortMapCluster();
     }
 
     public Map sortMapCluster() {//бугагашенька
-        return vehicleCluster.entrySet()
+        return clusterMap.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue((o1, o2) ->
                         Integer.compare(o2.size(), o1.size())))
@@ -84,20 +84,45 @@ public class Cluster {
                 ));
     }
 
-    public void decClusterSize(int index) {
-        clusters.get(index).decCount();
-        // map list remove
+    public void decClusterSize(Vehicle vehicle) {
+        clusters.get(vehicle.getDepoIndex()).decCount();
+
+        String hash = vehicle.getDepo().getHash(pres);
+        ArrayList<Vehicle> vehicles = clusterMap.get(hash);
+        vehicles.remove(vehicle);
+        clusterMap.put(hash, vehicles);
     }
 
-    public void incClusterSize(int index) {
-        clusters.get(index).incCount();
-        // map list remove
+    public void incClusterSize(Vehicle vehicle) {
+        clusters.get(vehicle.getDepoIndex()).incCount();
+
+        String hash = vehicle.getDepo().getHash(pres);
+        ArrayList<Vehicle> vehicles = clusterMap.get(hash);
+        vehicles.add(vehicle);
+        clusterMap.put(hash, vehicles);
     }
 
-    public void checkStack() {
-        for (PointWithMessage p : clusters) {
-            if (p.needShuffle()) {
-
+    public void shuffle() {
+        for (int i = clusters.size() - 1; i >= 0; i--) {
+            PointWithMessage point = get(i);
+            if (point.needShuffle()) {
+                String hash = point.getHash(pres);
+                ArrayList<Vehicle> vehicles = clusterMap.get(hash);
+                for (Vehicle vehicle : vehicles) {
+                    if (!vehicle.isBusy()) {
+                        if (!vehicle.goToDepo()) {
+                            vehicle.resetDepo(get(0), 0);
+                        /*    for (int k = 0; k < clusters.size(); k++) {
+                                PointWithMessage p = get(k);
+                                if(p.getComingMore()){
+                                    p.incComing();//fixme dec if turnoff
+                                    vehicle.resetDepo(p, k);
+                                    break;
+                                }
+                            }*/
+                        }
+                    }
+                }
             }
         }
     }
@@ -118,7 +143,7 @@ public class Cluster {
         }
 
         // incClusterSize(index);
-        initDepo(vehicle, index);
+        // initDepo(vehicle, index);
         return index;
     }
 
@@ -128,7 +153,7 @@ public class Cluster {
 
     public void clear() {
         clusters.clear();
-        vehicleCluster.clear();
+        clusterMap.clear();
     }
 
     public PointWithMessage get(int i) {

@@ -1,6 +1,5 @@
 package av.VRP.rt.substance;
 
-import av.VRP.rt.Utils.Constant;
 import com.teamdev.jxmaps.LatLng;
 
 /**
@@ -9,6 +8,9 @@ import com.teamdev.jxmaps.LatLng;
 public class PointWithMessage extends Point implements Comparable<PointWithMessage> {
     private Integer clust;
     private int count;
+    private double part;
+    private int coming;
+
     private double la;
     private double ln;
 
@@ -21,6 +23,9 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
         ln = point.getLng();
 
         clust = 1; //fixme why 1 Edivbyzero
+        count = 1; //fixme why 1 Edivbyzero
+        part = 1d;
+
         message = msg;
     }
 
@@ -51,10 +56,29 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
 
     public void incCount() {
         count++;
+        coming++;
     }
 
     public void decCount() {
+        coming--;
         count--;
+    }
+
+    public void incComing() {
+        coming++;
+    }
+
+    public int getComing() {
+        return coming;
+    }
+
+    public boolean getComingMore() {
+        return coming <= getPart();
+    }
+
+
+    public void decComing() {
+        coming--;
     }
 
     public int getCount() {
@@ -62,7 +86,15 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public boolean needShuffle() {
-        return count > clust;
+        return coming >= getPart();//count > clust;
+    }
+
+    public Double getPart() {
+        return part * clust;
+    }
+
+    public void setPart(double part) {
+        this.part = Math.max(part, 1);
     }
 
     public LatLng getLatLng() {

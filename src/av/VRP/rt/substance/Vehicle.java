@@ -219,6 +219,7 @@ public class Vehicle {
     }
 
     public void resetDepo(Point point, int i) {
+        goToDepo = true;
         depo = point;
         depoIndex = i;
         calculateSteps(currPoint.toLatLng(), depo.toLatLng());

@@ -81,13 +81,12 @@ public class ThreadImitation extends Thread implements Runnable {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (oldPeriod != period) {
-                    startTimer();
-                }
                 new Thread(() -> {
                     messageListener.showMessage(getMessage());
 
                     moveVehicles();
+                    shuffleCluster();
+
                     map.clearFailedOrders(iter++);
 
                     now = now.plusMinutes(1);
@@ -98,6 +97,9 @@ public class ThreadImitation extends Thread implements Runnable {
                         //   stopTimer();
                         //  map.showMsgFinish(Constant.MSG_IMITATION);
                     }
+                    if (oldPeriod != period) {
+                        startTimer();
+                    }
                 }).run();
             }
         }, 10, period);
@@ -107,6 +109,12 @@ public class ThreadImitation extends Thread implements Runnable {
         Log.p("-------------------");
         Log.p("inc time");
         Log.p("now: " + now.toString());
+    }
+
+    private void shuffleCluster() {
+        new Thread(() -> {
+            cluster.shuffle();
+        }).run();
     }
 
     private void moveVehicles() {
@@ -154,7 +162,7 @@ public class ThreadImitation extends Thread implements Runnable {
                         } else {//in depo
                             vehicle.resetGoDepo();
                             //  map.showPoint(vehicle.getDepo().toLatLng(), "Car " + i + " to arrived");
-                            cluster.incClusterSize(vehicle.getDepoIndex());
+                            cluster.incClusterSize(vehicle);
                             map.removeCluster(vehicle.getDepoIndex());
                         }
                     } else {
@@ -204,8 +212,7 @@ public class ThreadImitation extends Thread implements Runnable {
 
                 map.removeCluster(vehicles.get(index).getDepoIndex());
                 vehicles.transfer(index, trip, i);
-                int k = vehicles.get(index).getDepoIndex();
-                cluster.decClusterSize(k);
+                cluster.decClusterSize(vehicles.get(index));
 
                 //fixme check
                 trip.completed();
