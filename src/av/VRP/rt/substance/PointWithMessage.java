@@ -19,7 +19,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
         la = point.getLat();
         ln = point.getLng();
 
-        clust = 0; //fixme why 1
+        clust = 0; //fixme why 1 Edivbyzero
         message = msg;
     }
 
@@ -61,8 +61,9 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public LatLng getLatLng() {
-        return new LatLng(la / clust, ln / clust);
+        return new LatLng(la / (clust+1), ln / (clust+1));
     }
+    //fixme Edivbyzero
 
     @Override
     public String toString() {

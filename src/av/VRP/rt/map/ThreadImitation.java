@@ -227,6 +227,8 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     public void setDelay(int period) {
+        map.setShowInfo(period < 4);
+
         if (period == 6) {
             period = 1000;
         }

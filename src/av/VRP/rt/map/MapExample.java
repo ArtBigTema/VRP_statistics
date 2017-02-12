@@ -30,8 +30,11 @@ public class MapExample extends MapView {
     private List<Marker> vehicleMarkers;
     private List<Marker> passageMarkersFailed;
 
+    private boolean withInfoWindow;
+    private boolean infoWindowForClickOnly;
 
     public MapExample() {
+        infoWindowForClickOnly = true;
         vehicleMarkers = new ArrayList<>();
         clusterMarkers = new ArrayList<>();
         passageMarkersStart = new ArrayList<>();
@@ -245,6 +248,10 @@ public class MapExample extends MapView {
         getMap().setZoom(zoom);
     }
 
+    public void setShowInfo(boolean b) {
+        infoWindowForClickOnly = b;
+    }
+
     public void clear() {
         for (Marker clusterMarker : clusterMarkers) {
             clusterMarker.remove();
@@ -275,7 +282,11 @@ public class MapExample extends MapView {
     public void toggleVehicle(int index, int i) {
         Marker marker = vehicleMarkers.get(index);
         marker.setVisible(true);
+        Log.p(marker.getPosition(), index);
 
+        if (infoWindowForClickOnly) {
+            return;
+        }
         if (infoWindowTaxi != null) {
             infoWindowTaxi.close();
         }
@@ -283,16 +294,15 @@ public class MapExample extends MapView {
         infoWindowTaxi.setContent("#" + index + " Я Ближайший к #" + i);
         infoWindowTaxi.open(getMap(), marker);
 
-        Log.p(marker.getPosition(), index);
     }
 
-    public void togglePasseger(int indexPassage, int indexVehicle, boolean wait) {
+    public void togglePasseger(int indexPassage, int indexVehicle, boolean transfer) {
         Marker marker = passageMarkersStart.get(indexPassage);
         Marker markerEnd = passageMarkersEnd.get(indexPassage);
         // marker.remove();
         Log.p(marker.getPosition(), indexPassage);
 
-        if (!wait) {
+        if (!transfer && !infoWindowForClickOnly) {
             if (infoWindow != null) {
                 infoWindow.close();
             }
@@ -302,17 +312,6 @@ public class MapExample extends MapView {
             infoWindow.open(getMap(), marker);
             return;
         }
-
-        closeAllInfoWindowForClients();
-
-        infoWindowClientStart = new InfoWindow(getMap());
-        infoWindowClientEnd = new InfoWindow(getMap());
-
-        infoWindowClientStart.setContent("#" + indexPassage + " Нашлась такси: " + indexVehicle);
-        infoWindowClientEnd.setContent("Едем сюда");
-
-        infoWindowClientStart.open(getMap(), marker);
-        infoWindowClientEnd.open(getMap(), markerEnd);
 
         marker.addEventListener("click", new MapMouseEvent() {
             @Override
@@ -350,6 +349,20 @@ public class MapExample extends MapView {
                 infoWindowClientEnd.open(getMap(), markerEnd);
             }
         });
+
+        if (infoWindowForClickOnly) {
+            return;
+        }
+        closeAllInfoWindowForClients();
+
+        infoWindowClientStart = new InfoWindow(getMap());
+        infoWindowClientEnd = new InfoWindow(getMap());
+
+        infoWindowClientStart.setContent("#" + indexPassage + " Нашлась такси: " + indexVehicle);
+        infoWindowClientEnd.setContent("Едем сюда");
+
+        infoWindowClientStart.open(getMap(), marker);
+        infoWindowClientEnd.open(getMap(), markerEnd);
     }
 
     public void showPasseger(Integer i) {
@@ -411,13 +424,6 @@ public class MapExample extends MapView {
         Marker markerEnd = passageMarkersEnd.get(indexPass);
         Marker markerStart = passageMarkersStart.get(indexPass);
 
-        if (infoWindowTaxi != null) {
-            infoWindowTaxi.close();
-        }
-        infoWindowTaxi = new InfoWindow(getMap());
-        infoWindowTaxi.setContent("#" + indexVeh + " Подобрал #" + indexPass);
-        infoWindowTaxi.open(getMap(), marker);
-
         marker.addEventListener("click", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
@@ -463,13 +469,20 @@ public class MapExample extends MapView {
                 infoWindowClientStart.open(getMap(), markerStart);
             }
         });
+
+        if (infoWindowForClickOnly) {
+            return;
+        }
+        if (infoWindowTaxi != null) {
+            infoWindowTaxi.close();
+        }
+        infoWindowTaxi = new InfoWindow(getMap());
+        infoWindowTaxi.setContent("#" + indexVeh + " Подобрал #" + indexPass);
+        infoWindowTaxi.open(getMap(), marker);
     }
 
     public synchronized void showMessVehicleComplete(int i) {
         Marker marker = vehicleMarkers.get(i);
-        if (infoWindow != null) {
-            infoWindow.close();
-        }
 
         marker.addEventListener("click", new MapMouseEvent() {
             @Override
@@ -485,6 +498,13 @@ public class MapExample extends MapView {
                 infoWindowTaxi.open(getMap(), marker);
             }
         });
+
+        if (infoWindowForClickOnly) {
+            return;
+        }
+        if (infoWindow != null) {
+            infoWindow.close();
+        }
         infoWindow = new InfoWindow(getMap());
         infoWindow.setContent("Completed");
         infoWindow.open(getMap(), marker);
@@ -504,9 +524,6 @@ public class MapExample extends MapView {
         icon.loadFromFile(file);
         markerFail.setIcon(icon);
 
-        if (infoWindow != null) {
-            infoWindow.close();
-        }
         markerFail.addEventListener("click", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
@@ -515,11 +532,17 @@ public class MapExample extends MapView {
                 infoWindow.open(getMap(), markerFail);
             }
         });
+        passageMarkersFailed.add(markerFail);
+
+        if (infoWindowForClickOnly) {
+            return;
+        }
+        if (infoWindow != null) {
+            infoWindow.close();
+        }
         infoWindow = new InfoWindow(getMap());
         infoWindow.setContent("Failed");
         infoWindow.open(getMap(), markerFail);
-
-        passageMarkersFailed.add(markerFail);
     }
 
     public void clearFailedOrders(int i) {
@@ -534,7 +557,9 @@ public class MapExample extends MapView {
         }
         passageMarkersFailed.clear();
 
-        closeAllInfoWindow();
+        if (!infoWindowForClickOnly) {
+            closeAllInfoWindow();
+        }
     }
 
     public void closeAllInfoWindowForClients() {
