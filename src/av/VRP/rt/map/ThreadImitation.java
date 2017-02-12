@@ -90,20 +90,23 @@ public class ThreadImitation extends Thread implements Runnable {
                     moveVehicles();
                     map.clearFailedOrders(iter++);
 
-                    Log.p("-------------------");
-                    Log.p("inc time");
                     now = now.plusMinutes(1);
-                    Log.p("now: " + now.toString());
 
                     findNearestCar(trips.get(now));//get same time
 
                     if (max-- < 0) {
-                        stopTimer();
-                        map.showMsgFinish(Constant.MSG_IMITATION);
+                        //   stopTimer();
+                        //  map.showMsgFinish(Constant.MSG_IMITATION);
                     }
                 }).run();
             }
         }, 10, period);
+    }
+
+    private void printTime() {
+        Log.p("-------------------");
+        Log.p("inc time");
+        Log.p("now: " + now.toString());
     }
 
     private void moveVehicles() {
@@ -122,7 +125,7 @@ public class ThreadImitation extends Thread implements Runnable {
                         if (vehicle.containEndPoint()) {
                             map.removeClientMarkers(vehicle.getIndexOfTrip());
 
-                            vehicle.resetTrip();
+                            // vehicle.resetTrip();
                             int indexCluster = cluster.getNearestCluster(vehicle);
                             vehicle.resetDepo(cluster.get(indexCluster), indexCluster);
                             map.toggleCluster(indexCluster, i, cluster.get(indexCluster).getClust());
@@ -135,17 +138,28 @@ public class ThreadImitation extends Thread implements Runnable {
                     }
                     Log.p("end moveVehicles for client");
                 } else {
+                    if (vehicle.goToDepo()) {
+                        boolean moving = vehicle.moveToDepo();//to nearest depo
 
-                    boolean moving = vehicle.moveToDepo();//to nearest depo
-                    if (moving) {
-                        Log.p("-------------------");
-                        Log.p("start moveVehicles for depo");
-                        map.moveVehicle(i, vehicle.getCurrPoint());
-                        int k = vehicle.getDepoIndex();
-                        map.toggleCluster(k, i, cluster.get(k).getClust());
-                        Log.p("end moveVehicles for depo");
-                    } else {//in depo
-                        cluster.incClusterSize(vehicle.getDepoIndex());
+                        if (moving) {
+                            //   map.showPoint(vehicle.getDepo().toLatLng(), "Car " + i + " to ");
+                            //   map.showPoint(vehicle.getCurrPoint().toLatLng(), "Car " + i + " to ");
+
+                            Log.p("-------------------");
+                            Log.p("start moveVehicles for depo");
+                            map.moveVehicle(i, vehicle.getCurrPoint());
+                            int k = vehicle.getDepoIndex();
+                            map.toggleCluster(k, i, cluster.get(k).getClust());
+                            Log.p("end moveVehicles for depo");
+                        } else {//in depo
+                            vehicle.resetGoDepo();
+                            //  map.showPoint(vehicle.getDepo().toLatLng(), "Car " + i + " to arrived");
+                            cluster.incClusterSize(vehicle.getDepoIndex());
+                            map.removeCluster(vehicle.getDepoIndex());
+                        }
+                    } else {
+                        // отдых такси
+                        // map.showPoint(vehicle.getDepo().toLatLng(),"Отдыхаю");
                     }
                 }
                 vehicle.incTime();
@@ -156,9 +170,10 @@ public class ThreadImitation extends Thread implements Runnable {
 
     private synchronized void findNearestCar(List<Integer> list) {
         if (list.size() < 1) {
-            Log.p("Client not found");
+            // Log.p("Client not found");
             return;
         }
+        printTime();
 
         for (Integer i : list) {
             map.showPasseger(i);
@@ -187,6 +202,7 @@ public class ThreadImitation extends Thread implements Runnable {
             if (index >= 0) {
                 Log.e("Client #" + i + "   Taxi #" + index);
 
+                map.removeCluster(vehicles.get(index).getDepoIndex());
                 vehicles.transfer(index, trip, i);
                 int k = vehicles.get(index).getDepoIndex();
                 cluster.decClusterSize(k);
@@ -275,7 +291,7 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     public String getMessage() {
-       // map.setShowInfo(trips.getCountWaiting() > 5);
+        // map.setShowInfo(trips.getCountWaiting() > 5);
 
         StringBuilder message = new StringBuilder();
         message.append("All: ");

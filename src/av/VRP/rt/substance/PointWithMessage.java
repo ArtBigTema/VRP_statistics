@@ -1,5 +1,6 @@
 package av.VRP.rt.substance;
 
+import av.VRP.rt.Utils.Constant;
 import com.teamdev.jxmaps.LatLng;
 
 /**
@@ -65,7 +66,9 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public LatLng getLatLng() {
-        return new LatLng(la / (clust), ln / (clust));
+        return new LatLng(
+                la / (clust),
+                ln / (clust));
     }
     //fixme Edivbyzero
 

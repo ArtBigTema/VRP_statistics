@@ -49,6 +49,7 @@ public class Vehicle {
     public void setTrip(Trip t, int index) {
         setBusy(true);
         indexOfTrip = index;
+        goToDepo = false;
 
         trip = t;
 
@@ -133,8 +134,8 @@ public class Vehicle {
 
         if (MapUtils.getDistance(currPoint, trip.getStartPoint()) < Constant.PRECISION) {
             Log.e("arrived to client with getDistance");
-            arrivedToPointStart();
             stepsLat = stepsLng = 0;//fixme
+            arrivedToPointStart();
             return false;
         }
         if (stepsLat == 0 && stepsLng == 0) {
@@ -159,8 +160,8 @@ public class Vehicle {
 
         if (MapUtils.getDistance(currPoint, trip.getEndPoint()) < Constant.PRECISION) {
             Log.e("arrived moveToEndPoint with distance");
-            arrivedToPointEnd();
             stepsLat = stepsLng = 0;//fixme
+            arrivedToPointEnd();
             // TODO move to cluster
             return false;
         }
@@ -183,9 +184,10 @@ public class Vehicle {
     private void arrivedToPointEnd() {
         withClient = false; // arrived to client end
         isBusy = false;
+        //  indexOfTrip = -1;
         goToDepo = true;
 
-        calculateSteps(currPoint.toLatLng(), depo.toLatLng());
+        //  calculateSteps(currPoint.toLatLng(), depo.toLatLng());
         // startPoint = null;
         // endPoint = null;
     }
@@ -219,6 +221,7 @@ public class Vehicle {
     public void resetDepo(Point point, int i) {
         depo = point;
         depoIndex = i;
+        calculateSteps(currPoint.toLatLng(), depo.toLatLng());
     }
 
     @Override
@@ -247,7 +250,15 @@ public class Vehicle {
         currPoint.incTime();
     }
 
-    public void setDepo(Point depo) {
-        this.depo = depo;
+    public Point getDepo() {
+        return depo;
+    }
+
+    public boolean goToDepo() {
+        return goToDepo;
+    }
+
+    public void resetGoDepo() {
+        goToDepo = false;
     }
 }

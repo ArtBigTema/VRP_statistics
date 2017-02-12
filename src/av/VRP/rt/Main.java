@@ -295,7 +295,6 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
                 cluster.constructClusters(trips);
                 vehicles.initDepo(cluster);
 
-
                 frame.showMap();
             }
         }
@@ -381,6 +380,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
         if (imitation != null) {
             stopImitation();
         }
+        vehicles.setInitDateTime(trips.getFirstPoint());
+        cluster.constructClusters(trips);
+        vehicles.initDepo(cluster);
+
         imitation = new ThreadImitation(map);
         imitation.setMessageListener(this);
         imitation.setCluster(cluster);

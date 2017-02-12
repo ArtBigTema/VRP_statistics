@@ -28,17 +28,21 @@ public class Vehicles {
     }
 
     public void initDepo(Cluster cluster) {
-        double part;
+        double part = 1.1d;
         int csize = cluster.getTripSize();
         int vsize = vehicles.size();
         int k = 0;
         int countVehicles;
         PointWithMessage point;
+        double max = Double.MIN_VALUE;
 
-        while (k < Constant.VEHICLES) {
+        while (k < Constant.VEHICLES && part > 0.5) {
             for (int i = 0; i < cluster.size(); i++) {
                 point = cluster.get(i);
                 part = vsize * point.getClustD() / csize;
+                if (part > max) {
+                    max = part;
+                }
 
                 countVehicles = (int) Math.round(part);
                 while (countVehicles > 0) {
@@ -49,14 +53,29 @@ public class Vehicles {
                     }
                     Vehicle vehicle = vehicles.get(k);
                     cluster.initDepo(vehicle, i);
-                    vehicle.setCurrPoint(point.getLatLng(),i);
+                    vehicle.setCurrPoint(point.getLatLng(), i);
                     vehicle.setFileIcon("vi/" + k + ".png");
                     vehicle.initTime(initDateTime);
                     k++;
                     countVehicles--;
                 }
             }
+            part = max;
         }
+        int i = 0;
+        while (k < Constant.VEHICLES) {
+            point = cluster.get(i);
+            Vehicle vehicle = vehicles.get(k);
+            cluster.initDepo(vehicle, i);
+            vehicle.setCurrPoint(point.getLatLng(), i);
+            vehicle.setFileIcon("vi/" + k + ".png");
+            vehicle.initTime(initDateTime);
+            k++;
+            if (i++ > cluster.size()) {
+                i = 0;
+            }
+        }
+
         cluster.sortMap();
 
         Log.e("depo initialized");
@@ -67,7 +86,7 @@ public class Vehicles {
     }
 
     public void setInitDateTime(PointWithTime pointWithTime) {
-        this.initDateTime = pointWithTime.getDateTime().minusMinutes(10);
+        this.initDateTime = new DateTime(pointWithTime.getDateTime().minusMinutes(10));
     }
 
     public List<Vehicle> getVehicles() {
