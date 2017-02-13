@@ -7,7 +7,7 @@ public class Log {//FIXME log to file
 
     //add Tag
     public static void p(Object s) {
-        // System.out.println(s.toString());
+        System.out.println(s.toString());
     }
 
     public static void pp(Object s) {
@@ -16,7 +16,7 @@ public class Log {//FIXME log to file
 
     public static void p(Object... s) {
         for (Object o : s) {
-            //  System.out.print(o.toString()+':');
+            System.out.print(o.toString() + ':');
         }
         p("");
     }
@@ -30,7 +30,7 @@ public class Log {//FIXME log to file
     }
 
     public static void e(Object s) {
-      //  System.err.println(s.toString());
+        System.err.println(s.toString());
     }
 
     public static void e(Exception e) {

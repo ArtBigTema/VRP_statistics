@@ -22,7 +22,7 @@ public class ThreadImitation extends Thread implements Runnable {
     private Cluster cluster;
     private Trips trips;
     private Vehicles vehicles;
-    private MapExample map;
+    private MapExample map;  boolean t = false;
 
     private Timer timer;
     private int period = 1000, oldPeriod = 1000;
@@ -136,6 +136,10 @@ public class ThreadImitation extends Thread implements Runnable {
 
                             vehicle.resetTrip();
                             int indexCluster = cluster.getNearestCluster(vehicle);
+                            if (indexCluster < 0) {
+                                continue;
+                            }
+
                             vehicle.resetDepo(cluster.get(indexCluster), indexCluster);
 
                             cluster.incComing(vehicle);
@@ -177,7 +181,10 @@ public class ThreadImitation extends Thread implements Runnable {
                         }
                     } else {
                         // отдых такси
-                        // map.showPoint(vehicle.getDepo().toLatLng(),"Отдыхаю");
+
+                        if (t) {
+                            map.showPoint(vehicle.getDepo().toLatLng(), "Ожидаю");
+                        }
                     }
                 }
                 vehicle.incTime();
@@ -227,7 +234,6 @@ public class ThreadImitation extends Thread implements Runnable {
                 } else {
                     cluster.decDepoSize(vehicles.get(index));
                 }
-
 
                 vehicles.transfer(index, trip, i);
                 //fixme check

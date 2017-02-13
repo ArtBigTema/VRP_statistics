@@ -41,7 +41,7 @@ public class Vehicles {
                 part = vsize * point.getClustD() / csize;
                 point.setPart(part);
 
-                countVehicles = (int) Math.max(part, 1);
+                countVehicles = point.getPart().intValue();//int) Math.max(part, 1);
                 while (countVehicles > 0) {
                     if (k >= Constant.VEHICLES) {
                         cluster.sortMap();

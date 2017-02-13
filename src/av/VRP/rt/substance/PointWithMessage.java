@@ -80,9 +80,9 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public boolean getComingMore() {
-        return comingVehicle <= getPart().intValue();
+       // return (comingVehicle) <= getPart().intValue();
+        return (comingVehicle+depoVehicle) <= getPart().intValue()+1;
     }
-
 
     public void decComingVehicle() {
         comingVehicle--;
@@ -96,7 +96,8 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public boolean needShuffle() {
-        return comingVehicle >= getPart().intValue();//countPoint > clust;
+       return (depoVehicle+comingVehicle+1) >= getPart().intValue();//countPoint > clust;
+      //  return comingVehicle >= getPart().intValue() + 1;//countPoint > clust;
     }
 
     public Double getPart() {
@@ -104,7 +105,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public void setPart(double p) {
-        part = Math.max(p, 1);
+        part = p;//Math.max(p, 1);
         // depoVehicle = part.intValue();
     }
 

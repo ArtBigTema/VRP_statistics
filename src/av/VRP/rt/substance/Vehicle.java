@@ -106,14 +106,14 @@ public class Vehicle {
         Log.p();
         Log.p("moveToDepo", currPoint.toLatLng(), depo.toLatLng());
 
-        if (MapUtils.getDistance(currPoint, depo) < Constant.PRECISION) {
-            Log.e("arrived to depo with distance");
-            stepsLat = stepsLng = 0;//fixme
+        if (stepsLat == 0 && stepsLng == 0) {
+            Log.e("arrived to Depo with 00");
             goToDepo = false;
             return false;
         }
-        if (stepsLat == 0 && stepsLng == 0) {
-            Log.e("arrived to Depo with 00");
+        if (MapUtils.getDistance(currPoint, depo) < Constant.PRECISION) {
+            Log.e("arrived to depo with distance");
+            stepsLat = stepsLng = 0;//fixme
             goToDepo = false;
             return false;
         }
@@ -132,14 +132,15 @@ public class Vehicle {
         Log.p();
         Log.p("moveToClient", currPoint.toLatLng(), trip.getStartPoint().toLatLng());
 
-        if (MapUtils.getDistance(currPoint, trip.getStartPoint()) < Constant.PRECISION) {
-            Log.e("arrived to client with getDistance");
-            stepsLat = stepsLng = 0;//fixme
+
+        if (stepsLat == 0 && stepsLng == 0) {
+            Log.e("arrived to client with 00");
             arrivedToPointStart();
             return false;
         }
-        if (stepsLat == 0 && stepsLng == 0) {
-            Log.e("arrived to client with 00");
+        if (MapUtils.getDistance(currPoint, trip.getStartPoint()) < Constant.PRECISION) {
+            Log.e("arrived to client with getDistance");
+            stepsLat = stepsLng = 0;//fixme
             arrivedToPointStart();
             return false;
         }
@@ -218,11 +219,22 @@ public class Vehicle {
         indexOfTrip = -1;
     }
 
-    public void resetDepo(Point point, int i) {
+    public boolean resetDepo(Point point, int i) {
+        calculateSteps(currPoint.toLatLng(), point.toLatLng());
+        if (MapUtils.getDistance(currPoint, point) < Constant.PRECISION) {
+            Log.e("resetDepo");
+            stepsLat = stepsLng = 0;//fixme
+            return false;
+        }
+        if (stepsLat == 0 && stepsLng == 0) {
+            Log.e("resetDepo with 00");
+            return false;
+        }
+
         goToDepo = true;
         depo = point;
         depoIndex = i;
-        calculateSteps(currPoint.toLatLng(), depo.toLatLng());
+        return true;
     }
 
     @Override

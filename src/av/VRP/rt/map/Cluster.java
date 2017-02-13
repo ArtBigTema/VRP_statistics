@@ -130,10 +130,11 @@ public class Cluster {
                             for (int k = 0; k < i; k++) {//find nearest
                                 PointWithMessage p = get(k);
                                 if (p.getComingMore()) {
-                                    incComing(vehicle);
-                                    decDepoSize(vehicle);
 
-                                    vehicle.resetDepo(p, k);
+                                    if (vehicle.resetDepo(p, k)) {
+                                        incComing(vehicle);
+                                        decDepoSize(vehicle);
+                                    }
                                     break;
                                 }
                             }
@@ -161,7 +162,7 @@ public class Cluster {
             }
         }
         if (index < 0) {
-            index = 0;
+            //  index = 0;
         }
         if (index == 197) {
             PointWithMessage point = clusters.get(197);
