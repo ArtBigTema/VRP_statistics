@@ -172,8 +172,8 @@ public class MapExample extends MapView {
             marker.setClickable(true);
             marker.setTitle("#" + i +
                     " Max veh " + point.getPart().intValue() +
-                    " Curr veh " + point.getCount() +
-                    " Coming " + point.getComing() +
+                    " Curr veh " + point.getDepoVehicle() +
+                    " Coming " + point.getComingVehicle() +
                     " Max client " + point.getClust());
             marker.setPosition(point.getLatLng());
             marker.setVisible(visible);

@@ -60,6 +60,7 @@ public class Vehicles {
         }
         int i = 0;
         while (k < Constant.VEHICLES) {
+            System.exit(1);
             point = cluster.get(i);
             Vehicle vehicle = vehicles.get(k);
             cluster.addVehicle(vehicle, i);

@@ -1,5 +1,6 @@
 package av.VRP.rt.substance;
 
+import av.VRP.rt.Utils.Log;
 import com.teamdev.jxmaps.LatLng;
 
 /**
@@ -7,9 +8,12 @@ import com.teamdev.jxmaps.LatLng;
  */
 public class PointWithMessage extends Point implements Comparable<PointWithMessage> {
     private Integer clust;
-    private int count;
-    private double part;
-    private int coming;
+    private int countPoint;
+
+    private Double part;
+
+    private int comingVehicle;
+    private int depoVehicle;
 
     private double la;
     private double ln;
@@ -23,9 +27,9 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
         ln = point.getLng();
 
         clust = 1; //fixme why 1 Edivbyzero
-        count = 1; //fixme why 1 Edivbyzero
         part = 1d;
-        coming = 1;
+        countPoint = 0; //fixme why 1
+        comingVehicle = 0;
 
         message = msg;
     }
@@ -51,48 +55,57 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
         ln += point.getLng();
     }
 
-    public void incCount() {
-        count++;
-        coming++;// пришли сами
+    public void incCountVehicle() {
+        depoVehicle++;
+        //   comingVehicle++;// пришли сами
     }
 
-    public void decCount() {
-        coming = Math.max(0, coming--);
-        // coming--;
-        count--;
+    public void decCountVehicle() {
+        depoVehicle--;
+        if (depoVehicle < 0) {
+            Log.e("errrrrrrrrrrrrrrrrrrrrrrr");
+        }
     }
 
-    public void incComing() {
-        coming++;
+    public int getDepoVehicle() {
+        return depoVehicle;
     }
 
-    public int getComing() {
-        return coming;
+    public void incComingVehicle() {
+        comingVehicle++;
+    }
+
+    public int getComingVehicle() {
+        return comingVehicle;
     }
 
     public boolean getComingMore() {
-        return coming < getPart().intValue();
+        return comingVehicle <= getPart().intValue();
     }
 
 
-    public void decComing() {
-        coming--;
+    public void decComingVehicle() {
+        comingVehicle--;
+        if (comingVehicle < 0) {
+            Log.e("errrrrrrrrrrrrrrrrrrrrrrr");
+        }
     }
 
-    public int getCount() {
-        return count;
+    public int getCountPoint() {
+        return countPoint;
     }
 
     public boolean needShuffle() {
-        return coming >= getPart().intValue();//count > clust;
+        return comingVehicle >= getPart().intValue();//countPoint > clust;
     }
 
     public Double getPart() {
-        return part + 1;// * clust;
+        return part;// * clust;
     }
 
-    public void setPart(double part) {
-        this.part = Math.max(part, 1);
+    public void setPart(double p) {
+        part = Math.max(p, 1);
+        // depoVehicle = part.intValue();
     }
 
     public LatLng getLatLng() {
@@ -105,7 +118,9 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     @Override
     public String toString() {
         return "PointWithMessage{" +// getLatLng() +
-                ", maxV=" + getPart().intValue() + ", curr=" + coming + ":" + message +
+                ", maxV=" + getPart().intValue() +
+                ", comingVehicle=" + comingVehicle +
+                ", curr=" + depoVehicle +
                 '}';
     }
 

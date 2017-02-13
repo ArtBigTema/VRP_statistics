@@ -261,5 +261,6 @@ public class Vehicle {
 
     public void resetGoDepo() {
         goToDepo = false;
+        isBusy = false;
     }
 }

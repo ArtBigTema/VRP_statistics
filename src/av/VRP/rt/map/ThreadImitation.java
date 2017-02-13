@@ -31,6 +31,7 @@ public class ThreadImitation extends Thread implements Runnable {
     private int tripSize = 0;
     private DateTime now;
 
+    // int countComing, countDepo;
     private int countCompleteClient, countFailedOrder;
 
     public ThreadImitation(MapExample mapExample) {
@@ -108,6 +109,9 @@ public class ThreadImitation extends Thread implements Runnable {
     }
 
     private void shuffleCluster() {
+        if (iter % 20 != 0) {
+            return;
+        }
         new Thread(() -> {
             cluster.shuffle();
         }).run();
@@ -127,13 +131,16 @@ public class ThreadImitation extends Thread implements Runnable {
                         map.moveVehicle(i, vehicle.getCurrPoint());
                     } else {
                         if (vehicle.containEndPoint()) {
+                            Log.p(" Taxi #" + i + " перевез клиента #" + vehicle.getIndexOfTrip());
                             map.removeClientMarkers(vehicle.getIndexOfTrip());
 
-                            // vehicle.resetTrip();
+                            vehicle.resetTrip();
                             int indexCluster = cluster.getNearestCluster(vehicle);
                             vehicle.resetDepo(cluster.get(indexCluster), indexCluster);
-                            cluster.incClusterSize(vehicle);
-                            map.toggleCluster(indexCluster, i, cluster.get(indexCluster).getComing());
+
+                            cluster.incComing(vehicle);
+
+                            map.toggleCluster(indexCluster, i, cluster.get(indexCluster).getComingVehicle());
                             map.showMessVehicleComplete(i, indexCluster);
 
                             vehicles.decBusy();
@@ -154,12 +161,18 @@ public class ThreadImitation extends Thread implements Runnable {
                             Log.p("start moveVehicles for depo");
                             map.moveVehicle(i, vehicle.getCurrPoint());
                             int k = vehicle.getDepoIndex();
-                            map.toggleCluster(k, i, cluster.get(k).getComing());
+                            if (iter % 10 == 0) {
+                                map.toggleCluster(k, i, cluster.get(k).getComingVehicle());
+                            }
                             Log.p("end moveVehicles for depo");
                         } else {//in depo
+                            Log.p(" Taxi #" + i + " arrived");
                             vehicle.resetGoDepo();
-                            //  map.showPoint(vehicle.getDepo().toLatLng(), "Car " + i + " to arrived");
+
+                            cluster.decComing(vehicle);
                             cluster.incClusterSize(vehicle);
+                            //  map.showPoint(vehicle.getDepo().toLatLng(), "Car " + i + " to arrived");
+
                             map.removeCluster(vehicle.getDepoIndex());
                         }
                     } else {
@@ -204,12 +217,19 @@ public class ThreadImitation extends Thread implements Runnable {
             }
 
             if (index >= 0) {
-                Log.e("Client #" + i + "   Taxi #" + index);
+                Log.p("Client #" + i + " transfered in  Taxi #" + index);
 
                 map.removeCluster(vehicles.get(index).getDepoIndex());
-                vehicles.transfer(index, trip, i);
-                cluster.decClusterSize(vehicles.get(index));
+                cluster.countTransfCl(+1);
 
+                if (vehicles.get(index).goToDepo()) {
+                    cluster.decComing(vehicles.get(index));
+                } else {
+                    cluster.decDepoSize(vehicles.get(index));
+                }
+
+
+                vehicles.transfer(index, trip, i);
                 //fixme check
                 trip.completed();
 
@@ -228,7 +248,7 @@ public class ThreadImitation extends Thread implements Runnable {
                 stopTimer();
                 map.showMsgFinish(Constant.MSG_IMITATION);
             }
-        }else{
+        } else {
             if (max-- < 0) {
                 //   stopTimer();
                 //  map.showMsgFinish(Constant.MSG_IMITATION);
