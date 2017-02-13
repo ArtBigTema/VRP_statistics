@@ -34,18 +34,14 @@ public class Vehicles {
         int k = 0;
         int countVehicles;
         PointWithMessage point;
-        double max = Double.MIN_VALUE;
 
-        while (k < Constant.VEHICLES && part > 0.5) {
+        while (k < Constant.VEHICLES) {
             for (int i = 0; i < cluster.size(); i++) {
                 point = cluster.get(i);
                 part = vsize * point.getClustD() / csize;
                 point.setPart(part);
-                if (part > max) {
-                    max = part;
-                }
 
-                countVehicles = (int) Math.round(part);//Math.max(part,1)
+                countVehicles = (int) Math.max(part, 1);
                 while (countVehicles > 0) {
                     if (k >= Constant.VEHICLES) {
                         cluster.sortMap();
@@ -53,7 +49,7 @@ public class Vehicles {
                         return;
                     }
                     Vehicle vehicle = vehicles.get(k);
-                    cluster.initDepo(vehicle, i);
+                    cluster.addVehicle(vehicle, i);
                     vehicle.setCurrPoint(point.getLatLng(), i);
                     vehicle.setFileIcon("vi/" + k + ".png");
                     vehicle.initTime(initDateTime);
@@ -61,13 +57,12 @@ public class Vehicles {
                     countVehicles--;
                 }
             }
-            part = max;
         }
         int i = 0;
         while (k < Constant.VEHICLES) {
             point = cluster.get(i);
             Vehicle vehicle = vehicles.get(k);
-            cluster.initDepo(vehicle, i);
+            cluster.addVehicle(vehicle, i);
             vehicle.setCurrPoint(point.getLatLng(), i);
             vehicle.setFileIcon("vi/" + k + ".png");
             vehicle.initTime(initDateTime);

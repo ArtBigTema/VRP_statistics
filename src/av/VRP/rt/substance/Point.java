@@ -14,9 +14,6 @@ public class Point {
     private double lng = 0d;
     private String hash;
 
-    public int x = 0;
-    public int y = 0;//FIXME remove
-
 
     public Point(double la, double ln) {
         lat = la;
@@ -26,8 +23,8 @@ public class Point {
     }
 
     public Point(int la, int ln) {
-        x = la;
-        y = ln;
+        lat = la;
+        lng = ln;
 
         hash = MapUtils.getHash(lat, lng);
     }

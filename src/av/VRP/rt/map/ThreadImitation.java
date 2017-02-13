@@ -62,7 +62,6 @@ public class ThreadImitation extends Thread implements Runnable {
         tripSize = trips.getSubAll().size();
         //minutes in month
 
-        vehicles.initDepo(cluster);
         showPassegerOnMap();
         showVehicleOnMap();
         showClusterOnMap();
@@ -84,6 +83,7 @@ public class ThreadImitation extends Thread implements Runnable {
                 new Thread(() -> {
                     messageListener.showMessage(getMessage());
 
+                    //checkImitation();
                     moveVehicles();
                     shuffleCluster();
 
@@ -93,10 +93,6 @@ public class ThreadImitation extends Thread implements Runnable {
 
                     findNearestCar(trips.get(now));//get same time
 
-                    if (max-- < 0) {
-                        //   stopTimer();
-                        //  map.showMsgFinish(Constant.MSG_IMITATION);
-                    }
                     if (oldPeriod != period) {
                         startTimer();
                     }
@@ -136,7 +132,8 @@ public class ThreadImitation extends Thread implements Runnable {
                             // vehicle.resetTrip();
                             int indexCluster = cluster.getNearestCluster(vehicle);
                             vehicle.resetDepo(cluster.get(indexCluster), indexCluster);
-                            map.toggleCluster(indexCluster, i, cluster.get(indexCluster).getClust());
+                            cluster.incClusterSize(vehicle);
+                            map.toggleCluster(indexCluster, i, cluster.get(indexCluster).getComing());
                             map.showMessVehicleComplete(i, indexCluster);
 
                             vehicles.decBusy();
@@ -157,7 +154,7 @@ public class ThreadImitation extends Thread implements Runnable {
                             Log.p("start moveVehicles for depo");
                             map.moveVehicle(i, vehicle.getCurrPoint());
                             int k = vehicle.getDepoIndex();
-                            map.toggleCluster(k, i, cluster.get(k).getClust());
+                            map.toggleCluster(k, i, cluster.get(k).getComing());
                             Log.p("end moveVehicles for depo");
                         } else {//in depo
                             vehicle.resetGoDepo();
@@ -172,7 +169,6 @@ public class ThreadImitation extends Thread implements Runnable {
                 }
                 vehicle.incTime();
             }
-            checkImitation();
         }).run();
     }
 
@@ -231,6 +227,11 @@ public class ThreadImitation extends Thread implements Runnable {
             if (vehicles.getCountBusy() == 0) {
                 stopTimer();
                 map.showMsgFinish(Constant.MSG_IMITATION);
+            }
+        }else{
+            if (max-- < 0) {
+                //   stopTimer();
+                //  map.showMsgFinish(Constant.MSG_IMITATION);
             }
         }
     }

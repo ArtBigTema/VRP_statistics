@@ -25,6 +25,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
         clust = 1; //fixme why 1 Edivbyzero
         count = 1; //fixme why 1 Edivbyzero
         part = 1d;
+        coming = 1;
 
         message = msg;
     }
@@ -50,17 +51,14 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
         ln += point.getLng();
     }
 
-    public boolean freeDepo() {
-        return count < clust;
-    }
-
     public void incCount() {
         count++;
-        coming++;
+        coming++;// пришли сами
     }
 
     public void decCount() {
-        coming--;
+        coming = Math.max(0, coming--);
+       // coming--;
         count--;
     }
 
@@ -73,7 +71,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public boolean getComingMore() {
-        return coming <= getPart();
+        return coming < getPart();
     }
 
 
@@ -90,7 +88,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public Double getPart() {
-        return part * clust;
+        return part + 1;// * clust;
     }
 
     public void setPart(double part) {
@@ -107,7 +105,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     @Override
     public String toString() {
         return "PointWithMessage{" +// getLatLng() +
-                ", max=" + clust + ", curr=" + count + ":" + message +
+                ", maxV=" + getPart().intValue() + ", curr=" + coming + ":" + message +
                 '}';
     }
 

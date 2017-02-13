@@ -170,7 +170,11 @@ public class MapExample extends MapView {
             marker.setIcon(icon);
 
             marker.setClickable(true);
-            marker.setTitle("#" + i + " Max " + point.getClust() + " Curr " + point.getCount());
+            marker.setTitle("#" + i +
+                    " Max veh " + point.getPart().intValue() +
+                    " Curr veh " + point.getCount() +
+                    " Coming " + point.getComing() +
+                    " Max client " + point.getClust());
             marker.setPosition(point.getLatLng());
             marker.setVisible(visible);
 
@@ -298,16 +302,22 @@ public class MapExample extends MapView {
 
     public void toggleCluster(int index, int i, int count) {
         Marker marker = clusterMarkers.get(index);
-        marker.setVisible(true);
+        marker.setVisible(false);
+
+        Marker marker1 = new Marker(getMap());
+        marker1.setPosition(marker.getPosition());
+        marker1.setTitle(marker.getTitle());
 
         Icon icon = new Icon();
         File file = MapUtils.getIcon(count);
         icon.loadFromFile(file);
-        marker.setIcon(icon);
+        marker1.setIcon(icon);
+
+        clusterMarkers.set(index, marker1);
 
         closeAllInfoWindow();
 
-        marker.addEventListener("click", new MapMouseEvent() {
+        marker1.addEventListener("click", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
                 closeAllInfoWindowForClients();
@@ -315,14 +325,15 @@ public class MapExample extends MapView {
                     infoWindow.close();
                 }
                 //  infoWindow = new InfoWindow(getMap());
-                infoWindow.setContent("#" + index + " Ближайший #" + i);
-                infoWindow.open(getMap(), marker);
+                infoWindow.setContent(marker1.getTitle());
+                infoWindow.open(getMap(), marker1);
 
                 if (infoWindowTaxi != null) {
                     infoWindowTaxi.close();
                 }
                 //  infoWindowTaxi = new InfoWindow(getMap());
-                infoWindowTaxi.setContent("#" + i + " Еду в депо #" + index);
+                infoWindowTaxi.setContent("#" + index + " Ближайший #" + i + " Там " + count);
+                //   infoWindowTaxi.setContent("#" + i + " Еду в депо #" + index);
                 infoWindowTaxi.open(getMap(), vehicleMarkers.get(i));
             }
         });

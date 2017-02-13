@@ -14,12 +14,10 @@ public class Cluster {
     private List<PointWithMessage> clusters;
     private Map<String, ArrayList<Vehicle>> clusterMap;
 
-    private int count;
     private int countPoints;
     private int pres;
 
     public Cluster() {
-        count = Constant.CLUSTERS;
         clusters = new ArrayList<>();
         clusterMap = new HashMap<>();
     }
@@ -40,7 +38,7 @@ public class Cluster {
         return clusters;
     }
 
-    public void initDepo(Vehicle vehicle, int indexCluster) {
+    public void addVehicle(Vehicle vehicle, int indexCluster) {
         clusters.get(indexCluster).incCount();
 
         String hash = clusters.get(indexCluster).getHash(pres);
@@ -87,23 +85,38 @@ public class Cluster {
     public void decClusterSize(Vehicle vehicle) {
         clusters.get(vehicle.getDepoIndex()).decCount();
 
-        String hash = vehicle.getDepo().getHash(pres);
-        ArrayList<Vehicle> vehicles = clusterMap.get(hash);
-        vehicles.remove(vehicle);
-        clusterMap.put(hash, vehicles);
+        if (vehicle.getDepoIndex() == 197) {
+            PointWithMessage point = clusters.get(197);
+            //  Log.p(vehicle.getDepoIndex());
+        }
+        // String hash = vehicle.getDepo().getHash(pres);
+        // ArrayList<Vehicle> vehicles = clusterMap.get(hash);if(vehicles.size()<1){Log.e("errro");}
+        // vehicles.remove(vehicle);
+        // clusterMap.put(hash, vehicles);
+    }
+
+    public void incComing(Vehicle vehicle) {
+        clusters.get(vehicle.getDepoIndex()).incComing();
     }
 
     public void incClusterSize(Vehicle vehicle) {
         clusters.get(vehicle.getDepoIndex()).incCount();
 
-        String hash = vehicle.getDepo().getHash(pres);
-        ArrayList<Vehicle> vehicles = clusterMap.get(hash);
-        vehicles.add(vehicle);
-        clusterMap.put(hash, vehicles);
+        if (vehicle.getDepoIndex() == 197) {
+            PointWithMessage point = clusters.get(197);
+            //  Log.p(vehicle.getDepoIndex());
+        }
+        // String hash = vehicle.getDepo().getHash(pres);
+        // ArrayList<Vehicle> vehicles = clusterMap.get(hash);
+        // vehicles.add(vehicle);
+        // clusterMap.put(hash, vehicles);
     }
 
     public void shuffle() {
         for (int i = clusters.size() - 1; i >= 0; i--) {
+            if (i == 197) {
+                //  Log.p(i);
+            }
             PointWithMessage point = get(i);
             if (point.needShuffle()) {
                 String hash = point.getHash(pres);
@@ -111,15 +124,18 @@ public class Cluster {
                 for (Vehicle vehicle : vehicles) {
                     if (!vehicle.isBusy()) {
                         if (!vehicle.goToDepo()) {
-                            vehicle.resetDepo(get(0), 0);
-                        /*    for (int k = 0; k < clusters.size(); k++) {
+                            // vehicle.resetDepo(get(0), 0);
+                            for (int k = 0; k < i; k++) {//find nearest
+                                if (i == 197) {
+                                    // Log.p(i);
+                                }
                                 PointWithMessage p = get(k);
-                                if(p.getComingMore()){
+                                if (p.getComingMore()) {
                                     p.incComing();//fixme dec if turnoff
                                     vehicle.resetDepo(p, k);
                                     break;
                                 }
-                            }*/
+                            }
                         }
                     }
                 }
@@ -136,19 +152,45 @@ public class Cluster {
 
             tmp = MapUtils.getDistance(point, vehicle.getCurrPoint());
 
-            if (tmp < distance) {
-                distance = tmp;
-                index = i;
+            if (point.getComingMore()) {
+
+                if (tmp < distance) {
+                    distance = tmp;
+                    index = i;
+                }
             }
         }
-
+        if (index < 0) {
+            index = 0;
+        }
+        if (index == 197) {
+            PointWithMessage point = clusters.get(197);
+            //   Log.p(index);
+        }
         // incClusterSize(index);
-        // initDepo(vehicle, index);
+        // addVehicle(vehicle, index);
         return index;
     }
 
     public void constructClusters(Trips trips) {
-        constructClusters(trips, Constant.CLUSTERS);
+        clear();
+        constructClusters(trips, getClusterZoom(trips.getSubAll().size()));
+    }
+
+    public int getClusterZoom(int tripSize) {
+        if (tripSize >= 2000) {
+            return 5;
+        }
+        if (tripSize >= 1000) {
+            return 6;
+        }
+        if (tripSize >= 500) {
+            return 7;
+        }
+        if (tripSize >= 100) {
+            return 8;
+        }
+        return Constant.CLUSTERS;
     }
 
     public void clear() {
