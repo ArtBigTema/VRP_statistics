@@ -58,7 +58,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
 
     public void decCount() {
         coming = Math.max(0, coming--);
-       // coming--;
+        // coming--;
         count--;
     }
 
@@ -71,7 +71,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public boolean getComingMore() {
-        return coming < getPart();
+        return coming < getPart().intValue();
     }
 
 
@@ -84,7 +84,7 @@ public class PointWithMessage extends Point implements Comparable<PointWithMessa
     }
 
     public boolean needShuffle() {
-        return coming >= getPart();//count > clust;
+        return coming >= getPart().intValue();//count > clust;
     }
 
     public Double getPart() {

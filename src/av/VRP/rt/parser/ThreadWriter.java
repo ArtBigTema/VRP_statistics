@@ -49,14 +49,14 @@ public class ThreadWriter extends Thread implements Runnable {
                     break;
                 }
                 if (line.contains(",0,0,0,")) {
-                    continue;
+                  //  continue;
                 }
                 i++;
                 writer.append(line.replace("\"", ""));
                 writer.append(System.lineSeparator());
 
                 if (i > 10 * Constant.MIDDLE_SIZE) {
-                    break;
+                 //   break;
                 }
             }
 

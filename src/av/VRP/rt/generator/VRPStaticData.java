@@ -43,7 +43,7 @@ public class VRPStaticData {//FIXME all
         }
 
         timer.scheduleAtFixedRate(new TimerTask() {
-                public void run() {
+            public void run() {
                 if (decTime()) {
                     genertate();
                 }
@@ -78,8 +78,8 @@ public class VRPStaticData {//FIXME all
 
     private PointT generatePointT() {
         count++;
-        PointT t = new PointT(new Point(random(min.x, max.x), random(min.y, max.y)));
-        t.setEndPoint(random(min.x, max.x), random(min.y, max.y));
+        PointT t = new PointT(new Point(random(min.getLat(), max.getLat()), random(min.getLng(), max.getLng())));
+        t.setEndPoint(random(min.getLat(), max.getLat()), random(min.getLng(), max.getLng()));
         t.setDelay(0);
         // t.setTimeWindow(random(predMaxTime, predMaxTime + predMaxTime / 3), random(maxTime, maxTime + maxTime / 3));
 
@@ -87,17 +87,16 @@ public class VRPStaticData {//FIXME all
         maxTime = (int) (maxTime + 5 * t.dis);// Math.max(maxTime, t.end);
 
         int k = 1;
-        max.x = max.x + k;// Math.max(t.getEndPlace().x, t.getPoint().x);
-        max.y = max.y + k;// Math.max(t.getEndPlace().y, t.getPoint().y);
-        // min.x = min.x + k;
-        // min.y = min.y + k;
-        // max = new Point(min.x + 10, min.y + 10);
+        max = new Point(max.getLat() + k, +max.getLng() + k);// Math.max(t.getEndPlace().getLng(), t.getPoint().getLng());
+        // min.getLat() = min.getLat() + k;
+        // min.getLng() = min.getLng() + k;
+        // max = new Point(min.getLat() + 10, min.getLng() + 10);
         return t;
     }
 
     private Point generatePoint() {
         count++;
-        return new Point(random(min.x, max.x), random(min.y, max.y));
+        return new Point(random(min.getLat(), max.getLat()), random(min.getLng(), max.getLng()));
     }
 
     public void setMaxPoint(int x, int y) {
@@ -116,11 +115,11 @@ public class VRPStaticData {//FIXME all
         min = new Point(x, y);
     }
 
-    public static int random(int start, int end) {
+    public static int random(Double start, Double end) {
         Random rand = new Random();
         if (start >= end)
-            return (int) (start + rand.nextInt(start - end + 1));// FIXME
+            return (int) (start + rand.nextInt(start.intValue() - end.intValue() + 1));// FIXME
         else
-            return (int) (start + rand.nextInt(end - start + 1));
+            return (int) (start + rand.nextInt(end.intValue() - start.intValue() + 1));
     }
 }

@@ -76,7 +76,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
     public void startParserThread() {
         Log.d("startForH threads parser");
-        // size = size / 200_000;//for 1m = 5
+         size = size / 200_000;//for 1m = 5
 
         /*
         VRPStaticData data = new VRPStaticData();
@@ -258,10 +258,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             trips.add(s, ss);
         }
 
-        //  if (++i > size) {
+          if (++i > size) {
         i = 0;
         trips.add(ss);
-        // }
+         }
     }
 
     @Override
