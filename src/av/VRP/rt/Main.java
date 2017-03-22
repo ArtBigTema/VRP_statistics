@@ -16,6 +16,7 @@ import av.VRP.rt.substance.Vehicles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Artem on 09.04.2016.
@@ -56,7 +57,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     private Main() {
-        modeMap = true;
+        modeMap = false;
 
         frame = new MainFrame();
         trips = new Trips();
@@ -76,7 +77,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
 
     public void startParserThread() {
         Log.d("startForH threads parser");
-         size = size / 200_000;//for 1m = 5
+        size = size / 200_000;//for 1m = 5
 
         /*
         VRPStaticData data = new VRPStaticData();
@@ -121,14 +122,14 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
         Integer[][] counts = trips.getCountTripsForDay();
         String[] months = trips.getTitles();
 
-        frame.showGraphForDays("Дни", counts, months);
+        frame.showGraphForDays("Days", counts, months);
     }
 
     private void showStatisticForHour() {//FIXME rename
         Integer[][] counts = trips.getCountTripsForHour();
         String[] months = trips.getTitles();
 
-        frame.showGraphForHours("Часы", counts, months);
+        frame.showGraphForHours("Hours", counts, months);
     }
 
     public void aggregateList() {
@@ -258,10 +259,10 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
             trips.add(s, ss);
         }
 
-          if (++i > size) {
-        i = 0;
-        trips.add(ss);
-         }
+        if (++i > size) {
+            i = 0;
+            trips.add(ss);
+        }
     }
 
     @Override

@@ -285,7 +285,7 @@ public class MainFrame extends JFrame implements KeyListener {
         sample = new MapExample();
         map_panel.add(sample);
 
-        showDark();
+        //  showDark();
     }
 
     private void showDark() {
@@ -428,9 +428,9 @@ public class MainFrame extends JFrame implements KeyListener {
     private JFreeChart createChart(final XYDataset dataset, String dayOrHour) {
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
-                "Статистика: " + dayOrHour,      // chart title
+                "Statistic: " + dayOrHour,      // chart title
                 dayOrHour,                      // x axis label
-                "Загруженность",                      // y axis label
+                "Load",                      // y axis label
                 dataset,                  // data
                 PlotOrientation.VERTICAL,
                 true,                     // include legend

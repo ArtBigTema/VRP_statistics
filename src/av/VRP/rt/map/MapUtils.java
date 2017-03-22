@@ -34,10 +34,10 @@ public class MapUtils {
 
     public static File getVehicleIcon(String path) {
         File file = new File(path);
-        if (file == null || !file.exists()) {
-            file = new File("vi/-1.png");
-        }
-        return file;
+       // if (file == null || !file.exists()) {
+          return   file = new File("vi/-1.png");
+      //  }
+     //   return file;
     }
 
     public static File getIconFu() {
