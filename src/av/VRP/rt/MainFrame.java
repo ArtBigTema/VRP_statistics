@@ -199,30 +199,30 @@ public class MainFrame extends JFrame implements KeyListener {
         btnForecastH.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (listForecastH.getSelectedIndices().length < 2) {
-                    JOptionPane.showMessageDialog(MainFrame.this, Constant.MSG_MORE_ONE);
-                } else {
-                    btnForecastH.setEnabled(false);
-                    Main.getInstance().startForecastH(listForecastH.getSelectedIndices());
+                //if (listForecastH.getSelectedIndices().length < 2) {
+                //   JOptionPane.showMessageDialog(MainFrame.this, Constant.MSG_MORE_ONE);
+                // } else {
+                btnForecastH.setEnabled(false);
+                Main.getInstance().startForecastH(listForecastH.getSelectedIndices());
 
-                    btnForecastCoefH.setEnabled(true);
-                    tabbedPane1.getRootPane().setDefaultButton(btnForecastCoefH);
-                }
+                btnForecastCoefH.setEnabled(true);
+                tabbedPane1.getRootPane().setDefaultButton(btnForecastCoefH);
+                //  }
             }
         });
 
         btnForecastD.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (listForecastD.getSelectedIndices().length < 2) {
-                    JOptionPane.showMessageDialog(MainFrame.this, Constant.MSG_MORE_ONE);
-                } else {
-                    btnForecastD.setEnabled(false);
-                    Main.getInstance().startForecastD(listForecastD.getSelectedIndices());//fixme for days
+                //  if (listForecastD.getSelectedIndices().length < 2) {
+                //  JOptionPane.showMessageDialog(MainFrame.this, Constant.MSG_MORE_ONE);
+                //  } else {
+                btnForecastD.setEnabled(false);
+                Main.getInstance().startForecastD(listForecastD.getSelectedIndices());//fixme for days
 
-                    btnForecastCoefD.setEnabled(true);
-                    tabbedPane1.getRootPane().setDefaultButton(btnForecastCoefD);
-                }
+                btnForecastCoefD.setEnabled(true);
+                tabbedPane1.getRootPane().setDefaultButton(btnForecastCoefD);
+                //  }
             }
         });
 

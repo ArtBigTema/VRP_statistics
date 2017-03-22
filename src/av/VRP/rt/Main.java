@@ -2,6 +2,7 @@ package av.VRP.rt;
 
 import av.VRP.rt.Utils.*;
 import av.VRP.rt.forecasting.Forecast;
+import av.VRP.rt.forecasting.OpenForecast;
 import av.VRP.rt.listener.FileWriterListener;
 import av.VRP.rt.listener.MessageListener;
 import av.VRP.rt.listener.VRPgeneratorListener;
@@ -40,6 +41,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     private volatile Vehicles vehicles;
 
     private Forecast forecast;
+    private OpenForecast openForecast;
     private Cluster cluster;
 
     private boolean modeMap;
@@ -187,6 +189,9 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     public void agregateForecast() {
+        openForecast = new OpenForecast(frame);
+        openForecast.setTrips(trips);
+
         forecast = new Forecast(frame);
         forecast.setTrips(trips);
 
@@ -194,11 +199,14 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
     }
 
     public void startForecastH(int[] index) {
-        forecast.startForH(index);
+        openForecast.startForH(index);
+       // forecast.startForH(index);
     }
 
     public void startForecastD(int[] index) {
-        forecast.startForD(index);
+
+        // forecast.startForD(index);
+        openForecast.startForD(index);
     }
 
     public void showForecastGraphicFor(int index, boolean forH) {
