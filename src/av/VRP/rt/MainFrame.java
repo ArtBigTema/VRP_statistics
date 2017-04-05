@@ -16,7 +16,6 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.XYBarDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -410,31 +409,37 @@ public class MainFrame extends JFrame implements KeyListener {
     }
 
     public JPanel getGraphic(String dayOrHour, Integer[][] dots, String[] month) {
-        final CategoryDataset dataset = createDataset(dots, month);
+        final XYDataset dataset = createDataset(dots, month);
+        //  final CategoryDataset dataset = createDataset(dots, month);
         final JFreeChart chart = createChart(dataset, dayOrHour);
         final ChartPanel chartPanel = new ChartPanel(chart);
         return chartPanel;
     }
 
-    private CategoryDataset createDataset(Integer[][] dots, String[] month) {
-       // XYBarDataset dataset = new XYBarDataset();
-        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
+    private XYDataset createDataset(Integer[][] dots, String[] month) {
+        // private CategoryDataset createDataset(Integer[][] dots, String[] month) {
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        //  final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         for (int i = 0; i < dots.length; i++) {
             XYSeries s = new XYSeries(month[i]);
             for (int j = 0; j < dots[i].length; j++) {
                 s.add(j + 1, dots[i][j]);
-                dataset.addValue(dots[i][j], j+"", month[i]);
+                //  dataset.addValue(dots[i][j], (j/2)+"", month[i]);
+
             }
+            dataset.addSeries(s);
         }
         return dataset;
 
     }
 
-    private JFreeChart createChart(final CategoryDataset dataset, String dayOrHour) {
+    private JFreeChart createChart(final XYDataset dataset, String dayOrHour) {
+        //  private JFreeChart createChart(final CategoryDataset dataset, String dayOrHour) {
         // create the chart...
-        final JFreeChart chart = ChartFactory.createBarChart(
+
+        final JFreeChart chart = ChartFactory.createXYLineChart(
+                //  final JFreeChart chart = ChartFactory.createBarChart(
                 "Statistic: " + dayOrHour,      // chart title
                 dayOrHour,                      // x axis label
                 "Load",                      // y axis label
@@ -451,12 +456,15 @@ public class MainFrame extends JFrame implements KeyListener {
         //      legend.setDisplaySeriesShapes(true);
 
         // get a reference to the plot for further customisation...
-        final CategoryPlot plot = chart.getCategoryPlot();
+        //  final CategoryPlot plot = chart.getCategoryPlot();
+        final XYPlot plot = chart.getXYPlot();
         plot.setBackgroundPaint(Color.LIGHT_GRAY);
         plot.setDomainGridlinePaint(Color.white);
         plot.setRangeGridlinePaint(Color.white);
 
-        final BarRenderer renderer = new BarRenderer ();
+        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        //final BarRenderer renderer = new BarRenderer ();
+
         //  renderer.setSeriesLinesVisible(0, false);
         //  renderer.setSeriesShapesVisible(1, false);
         plot.setRenderer(renderer);

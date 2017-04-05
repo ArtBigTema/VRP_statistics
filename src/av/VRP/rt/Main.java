@@ -131,7 +131,7 @@ public class Main implements VRPgeneratorListener, FileWriterListener, MessageLi
         Integer[][] counts = trips.getCountTripsForHour();
         String[] months = trips.getTitles();
 
-        frame.showGraphForHours("Hours", counts, months);
+        frame.showGraphForHours("Week", counts, months);
     }
 
     public void aggregateList() {
