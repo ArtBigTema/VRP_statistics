@@ -84,7 +84,7 @@ public class Trips {
             mapTripsForDay.put(key, 1);
         }
 
-        key = who.replace(Constant.FILE_FORMAT, "&") + t.getTimeStr();
+        key = who.replace(Constant.FILE_FORMAT, "&") + t.getTimeStr() + "." + t.getDayOfWeekStr();
 
         if (mapTripsForHour.get(key) != null) {
             mapTripsForHour.put(key, mapTripsForHour.get(key) + 1);
@@ -222,15 +222,18 @@ public class Trips {
             //     List<String> keys = getKeysContainsTitle(title, mapTripsForHour, PointWithTime.fmtTime);
             String preKey = title.split("&")[0] + "&";//FIXME to index
 
-            int lastHour = 24;
-            for (int i = 0; i < lastHour; i++) {
+            for (int j = 1; j < 8; j++) {
 
-                String postKey = (i < 10 ? "0" + i : i) + "";//fixme pattern
-                //  + getDateFromStr(title).toString(PointWithTime.fmtTime);
-                if (mapTripsForHour.containsKey(preKey + postKey)) {
-                    subResult.add(mapTripsForHour.get(preKey + postKey));
-                } else {
-                    subResult.add(0);
+                int lastHour = 24;
+                for (int i = 0; i < lastHour; i++) {
+
+                    String postKey = (i < 10 ? "0" + i : i) + "."+j;//fixme pattern
+                    //  + getDateFromStr(title).toString(PointWithTime.fmtTime);
+                    if (mapTripsForHour.containsKey(preKey + postKey)) {
+                        subResult.add(mapTripsForHour.get(preKey + postKey));
+                    } else {
+                        subResult.add(0);
+                    }
                 }
             }
             result[titles.indexOf(title)] = subResult.toArray(new Integer[subResult.size()]);

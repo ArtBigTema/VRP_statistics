@@ -105,6 +105,9 @@ public class Trip implements Comparable<Trip> {
     public String getTimeStr() {
         return startPoint.getTimeStr();
     }
+    public String getDayOfWeekStr() {
+        return startPoint.getDayOfWeek();
+    }
 
     public String getMonthYear() {
         return getStartPoint().getDateTime().toString("MM.yyyy");//FIXME const

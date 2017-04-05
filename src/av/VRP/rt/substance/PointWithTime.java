@@ -85,6 +85,10 @@ public class PointWithTime extends Point implements Comparable<PointWithTime> {/
         return _dateTime.toString(fmtTime);
     }
 
+    public String getDayOfWeek() {
+        return _dateTime.getDayOfWeek()+"";
+    }
+
     public String getDateStr() {
         return _dateTime.toString(fmtLong);
     }
